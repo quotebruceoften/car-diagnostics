@@ -26,6 +26,7 @@ const _adapterNameHints = [
   'konnwei',
   'viecar',
   'veepeak',
+  'carly',
 ];
 
 /// Whether a scanned device looks like an OBD adapter (shown first in the list).

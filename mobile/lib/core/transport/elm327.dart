@@ -57,7 +57,15 @@ class Elm327Transport implements Transport {
 
   /// Resets the adapter, configures it and detects the vehicle protocol.
   Future<void> initialize({String protocol = '0'}) => _lock.run(() async {
-    final lines = await _command('ATZ', timeout: const Duration(seconds: 5));
+    final List<String> lines;
+    try {
+      lines = await _command('ATZ', timeout: const Duration(seconds: 5));
+    } on TransportException {
+      throw TransportException(
+        'The adapter connected but does not respond like an ELM327. Some brand-locked adapters '
+        "(for example Carly's own scanners) only work with their maker's app.",
+      );
+    }
     version = lines.firstWhere((l) => l.toUpperCase().contains('ELM'), orElse: () => lines.isEmpty ? '' : lines.last);
     for (final cmd in ['ATE0', 'ATL0', 'ATS0', 'ATH1', 'ATCAF1', 'ATST${_hex2(_st)}', 'ATSP$protocol']) {
       await _expectOk(cmd);

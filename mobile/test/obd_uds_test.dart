@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:cardiag_mobile/core/coding/security.dart';
+import 'package:cardiag_mobile/core/transport/byte_channel.dart';
+import 'package:cardiag_mobile/core/transport/elm327.dart';
 import 'package:cardiag_mobile/core/errors.dart';
 import 'package:cardiag_mobile/core/obd/obd_client.dart';
 import 'package:cardiag_mobile/core/uds/uds_client.dart';
@@ -8,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'helpers.dart';
 
 void main() {
+  adapterTests();
   forEachTransport((name, setup) {
     test('VIN and supported PIDs across ECUs', () async {
       final (t, _) = await setup();
@@ -98,5 +103,33 @@ void main() {
     await uds.securityAccess(3, demoXor); // zero seed: already unlocked
     await uds.writeDataByIdentifier(0x0600, List.filled(30, 0));
     expect(await uds.readDataByIdentifier(0x0600), List.filled(30, 0));
+  });
+}
+
+/// An adapter that accepts the connection but never speaks ELM327.
+class _SilentChannel implements ByteChannel {
+  final _incoming = StreamController<List<int>>();
+
+  @override
+  String get name => 'silent';
+
+  @override
+  Stream<List<int>> get incoming => _incoming.stream;
+
+  @override
+  Future<void> write(List<int> data) async => _incoming.close();
+
+  @override
+  Future<void> close() async {}
+}
+
+void adapterTests() {
+  test('explains when an adapter is not an ELM327', () async {
+    await expectLater(
+      Elm327Transport(_SilentChannel()).initialize(),
+      throwsA(
+        isA<TransportException>().having((e) => e.message, 'message', contains('does not respond like an ELM327')),
+      ),
+    );
   });
 }

@@ -31,9 +31,26 @@ Volkswagen Group cars (VW, Audi, Škoda, SEAT, Cupra).
 | Bluetooth LE / "BLE 4.0" ELM327 (Vgate iCar Pro BLE, vLinker, many clones) | ✅ | ✅ |
 | Wi-Fi ELM327 | ✅ | ✅ |
 | Classic Bluetooth ELM327 (pairs in system settings) | not yet | ❌ never works on iPhone |
+| Brand-locked adapters made for one app (e.g. Carly) | usually ❌ | usually ❌ |
+
+If an adapter connects but doesn't answer like an ELM327, the app says so.
 
 The car must use CAN (ISO 15765-4). That covers US cars from model year 2008
 and most European cars from about 2006, including every UDS-era VW.
+
+## Get the Android app
+
+GitHub builds the APK on every push (see `.github/workflows/build.yml`). To
+install it:
+
+1. On GitHub, open the repository's **Actions** tab and click the latest
+   green **Build** run.
+2. Under **Artifacts**, download **car-diagnostics-apk**. It's a zip that
+   contains `app-release.apk`.
+3. Copy the APK to your phone and open it. Android asks you to allow
+   installing from that source the first time.
+
+iPhone builds need a Mac with Xcode and an Apple developer account.
 
 ## Run it
 
