@@ -1,0 +1,26 @@
+{
+  "id": "demo_bcm",
+  "name": "Demo body control module (simulator)",
+  "description": "Matches the body control module in the built-in simulator. Use it as a template for real modules.",
+  "tx_id": "0x726",
+  "rx_id": "0x72E",
+  "session": "0x03",
+  "security": {"level": 1, "algorithm": "demo_xor"},
+  "did": "0x0600",
+  "length": 8,
+  "options": [
+    {"key": "drl", "label": "Daytime running lights", "byte": 0, "bit": 0, "type": "bool"},
+    {"key": "auto_lock", "label": "Auto-lock when driving", "byte": 0, "bit": 1, "width": 2, "type": "enum",
+     "values": {"0": "off", "1": "8 km/h", "2": "15 km/h", "3": "25 km/h"}},
+    {"key": "unlock_mode", "label": "Remote unlock", "byte": 0, "bit": 3, "type": "enum",
+     "values": {"0": "all doors", "1": "driver first"}},
+    {"key": "seatbelt_chime", "label": "Seatbelt warning chime", "byte": 0, "bit": 4, "type": "bool"},
+    {"key": "mirror_fold", "label": "Fold mirrors on lock", "byte": 0, "bit": 5, "type": "bool"},
+    {"key": "comfort_blinks", "label": "Comfort turn signal flashes", "byte": 1, "bit": 0, "width": 3,
+     "type": "int", "min": 1, "max": 7},
+    {"key": "coming_home", "label": "Coming-home lights duration", "byte": 2, "bit": 0, "width": 8,
+     "type": "int", "min": 0, "max": 240, "unit": "s"},
+    {"key": "region", "label": "Market", "byte": 3, "bit": 0, "width": 2, "type": "enum",
+     "values": {"0": "EU", "1": "US", "2": "ROW"}}
+  ]
+}

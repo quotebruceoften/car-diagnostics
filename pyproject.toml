@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cardiag"
+version = "0.1.0"
+description = "Car diagnostics and ECU coding tool (OBD-II, UDS, ELM327)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = ["pyserial>=3.5"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+cardiag = "cardiag.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["cardiag*"]
+
+[tool.setuptools.package-data]
+"cardiag.coding" = ["profiles/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
