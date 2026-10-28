@@ -6,7 +6,8 @@ plugins {
 
 android {
     namespace = "com.cardiag.cardiag_mobile"
-    compileSdk = flutter.compileSdkVersion
+    // permission_handler and flutter_reactive_ble are built against API 37.
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
