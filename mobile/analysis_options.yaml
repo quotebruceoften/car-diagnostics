@@ -1,0 +1,17 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+  language:
+    strict-casts: true
+
+linter:
+  rules:
+    prefer_single_quotes: true
+    require_trailing_commas: false
+
+formatter:
+  page_width: 120

@@ -1,8 +1,18 @@
 # cardiag
 
-A car diagnostics and ECU coding tool for the command line. It works with
-cheap ELM327 adapters (USB, Bluetooth or Wi-Fi) and includes a simulated
-vehicle, so you can try every feature without a car.
+Car diagnostics and ECU coding. The repository has two parts:
+
+- **[`mobile/`](mobile/README.md): the Android and iOS app (Flutter).**
+  Fault codes and live data for any OBD-II car, plus module scanning and long
+  coding for Volkswagen Group cars. New makes can be added through a brand
+  plug-in interface.
+- **The `cardiag` command-line tool (Python, this directory).** The same
+  diagnostics from a laptop. It's useful for development and scripting.
+
+Both work with cheap ELM327 adapters, include a simulated car so you can try
+everything without one, and share the coding profile format.
+
+The rest of this file covers the command-line tool.
 
 - **OBD-II (SAE J1979):** VIN, MIL status, supported PIDs, live data with CSV
   logging, stored/pending/permanent trouble codes, freeze frames, clearing codes.
@@ -138,4 +148,3 @@ through the ELM327 emulator, which tests the real adapter driver end to end.
 
 - Support for other adapter types (J2534 pass-thru, SocketCAN, STN/OBDLink).
 - Coding profiles for real modules.
-- A GUI or web dashboard on top of the same library.
