@@ -18,6 +18,17 @@ import '../sim/vehicle.dart';
 import 'scan_state.dart';
 
 /// The connection to one car, shared by every screen.
+/// Paint colours offered for the 3D car.
+const carPaints = [
+  Color(0xFF2F5D9E), // blue
+  Color(0xFFC3C7CC), // silver
+  Color(0xFF6B717A), // grey
+  Color(0xFF26292D), // black
+  Color(0xFFF2F3F5), // white
+  Color(0xFFB3261E), // red
+  Color(0xFF2E6B4F), // green
+];
+
 class DiagSession extends ChangeNotifier {
   DiagSession({BackupStore? backupStore, AssetBundle? assets, this.demoLatency = const Duration(milliseconds: 15)})
     : _backupStore = backupStore,
@@ -41,6 +52,17 @@ class DiagSession extends ChangeNotifier {
 
   /// Module scan results, shared by the Modules and Coding tabs.
   final scan = ScanState();
+
+  /// Model, year and body style decoded from the VIN.
+  VehicleIdentity get identity => brand.identify(vin);
+
+  /// Paint colour for the 3D car (the car doesn't report it, so the user picks).
+  Color carPaint = carPaints.first;
+
+  void setCarPaint(Color c) {
+    carPaint = c;
+    notifyListeners();
+  }
 
   bool get connected => _transport != null;
   Transport get transport => _transport ?? (throw CarDiagException('Not connected'));

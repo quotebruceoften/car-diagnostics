@@ -9,6 +9,8 @@ Planned work, roughly in priority order. Nothing here is scheduled yet.
   Golf 7 central electrics (09) and instrument cluster (17).
 - **Classic Bluetooth adapters on Android.** Many cheap ELM327 adapters only do classic Bluetooth (SPP).
 - **Adaptations, output tests and basic settings** for VW Group modules.
+- **Realistic 3D models (optional).** The 3D car is a generated low-poly model. A realistic model per
+  car (e.g. a Golf 7) would need a model licensed for use in apps; the renderer would need a glTF loader.
 - **More makes.** Each make is one file under `mobile/lib/brands/` (see `mobile/README.md`).
 
 ## Laptop tool (`cardiag`, Python)

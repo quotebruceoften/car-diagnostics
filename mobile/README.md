@@ -8,8 +8,12 @@ Volkswagen Group cars (VW, Audi, Škoda, SEAT, Cupra).
 
 - **Connect** to a Bluetooth LE or Wi-Fi ELM327 adapter, or to a built-in
   demo car (a simulated VW Golf) so you can try every screen without a car.
-- **Overview:** VIN, detected make, check engine light, number of stored
-  codes, battery voltage.
+- **3D car:** the connected car, decoded from the VIN (for example "Volkswagen Golf 7 · 2013"),
+  as an interactive low-poly model in the right body style (hatchback, sedan, wagon or SUV).
+  After a module scan, hotspots on the engine, chassis, interior and lights turn green or red;
+  tap one to see that area's modules. The model is generated in code, so there are no model files
+  or licences involved.
+- **Overview:** check engine light, number of stored codes, battery voltage, coolant temperature.
 - **Faults:** stored, pending and permanent emissions codes with
   descriptions, the freeze frame, and clearing codes.
 - **Live data:** pick sensors and watch them update, with a small chart for

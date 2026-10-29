@@ -3,10 +3,44 @@ import '../core/errors.dart';
 import '../core/hex.dart';
 import '../core/obd/dtc.dart';
 import '../core/uds/uds_client.dart';
+import '../core/vin.dart';
+
+/// Where in the car a module sits, for the 3D car view.
+enum CarZone {
+  engine('Engine & gearbox', 'Engine'),
+  chassis('Brakes & steering', 'Chassis'),
+  interior('Interior & dashboard', 'Interior'),
+  body('Lights & body', 'Lights');
+
+  const CarZone(this.label, this.short);
+  final String label;
+  final String short;
+}
+
+enum BodyStyle { hatchback, sedan, wagon, suv }
+
+/// What the app knows about the connected car from its VIN.
+class VehicleIdentity {
+  const VehicleIdentity({required this.name, this.year, this.bodyStyle = BodyStyle.hatchback});
+
+  /// e.g. "Volkswagen Golf 7"; the make alone when the model is unknown.
+  final String name;
+  final int? year;
+  final BodyStyle bodyStyle;
+
+  String get title => year == null ? name : '$name · $year';
+}
 
 /// A diagnosable module (control unit) in a car.
 class ModuleDef {
-  const ModuleDef({required this.address, required this.name, required this.txId, required this.rxId, this.codingDid});
+  const ModuleDef({
+    required this.address,
+    required this.name,
+    required this.txId,
+    required this.rxId,
+    this.codingDid,
+    this.zone = CarZone.interior,
+  });
 
   /// The brand's own short name for the module, e.g. VW "09".
   final String address;
@@ -16,6 +50,9 @@ class ModuleDef {
 
   /// Overrides [Brand.codingDid] for this module.
   final int? codingDid;
+
+  /// Where the module is shown on the 3D car.
+  final CarZone zone;
 
   String get label => address.isEmpty ? name : '$address · $name';
 
@@ -59,6 +96,10 @@ abstract class Brand {
   int? codingDidFor(ModuleDef module) => module.codingDid ?? codingDid;
 
   CodingAccess codingAccessFor(ModuleDef module) => const CodingAccess();
+
+  /// Model, year and body style from the VIN. Brands that can decode their
+  /// model codes override this; the default only knows the make and year.
+  VehicleIdentity identify(String? vin) => VehicleIdentity(name: name, year: vin == null ? null : modelYear(vin));
 
   bool matchesVin(String vin) {
     final v = vin.toUpperCase();

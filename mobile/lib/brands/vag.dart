@@ -1,5 +1,6 @@
 import '../core/errors.dart';
 import '../core/uds/uds_client.dart';
+import '../core/vin.dart';
 import 'brand.dart';
 
 /// Volkswagen Group: VW, Audi, Škoda, SEAT, Cupra.
@@ -24,23 +25,67 @@ class VagBrand extends Brand {
     'VSS', // SEAT / Cupra
   ];
 
-  static ModuleDef _m(String address, String name, int txId) =>
-      ModuleDef(address: address, name: name, txId: txId, rxId: txId + 0x6A);
+  static ModuleDef _m(String address, String name, int txId, CarZone zone) =>
+      ModuleDef(address: address, name: name, txId: txId, rxId: txId + 0x6A, zone: zone);
 
   @override
   List<ModuleDef> get modules => [
-    const ModuleDef(address: '01', name: 'Engine', txId: 0x7E0, rxId: 0x7E8),
-    const ModuleDef(address: '02', name: 'Transmission', txId: 0x7E1, rxId: 0x7E9),
-    _m('03', 'Brakes (ABS/ESC)', 0x713),
-    _m('08', 'Climate control', 0x746),
-    _m('09', 'Central electrics', 0x70E),
-    _m('15', 'Airbags', 0x715),
-    _m('16', 'Steering wheel electronics', 0x70C),
-    _m('17', 'Instrument cluster', 0x714),
-    _m('19', 'Gateway', 0x710),
-    _m('44', 'Steering assist', 0x712),
-    _m('5F', 'Infotainment', 0x773),
+    const ModuleDef(address: '01', name: 'Engine', txId: 0x7E0, rxId: 0x7E8, zone: CarZone.engine),
+    const ModuleDef(address: '02', name: 'Transmission', txId: 0x7E1, rxId: 0x7E9, zone: CarZone.engine),
+    _m('03', 'Brakes (ABS/ESC)', 0x713, CarZone.chassis),
+    _m('08', 'Climate control', 0x746, CarZone.interior),
+    _m('09', 'Central electrics', 0x70E, CarZone.body),
+    _m('15', 'Airbags', 0x715, CarZone.interior),
+    _m('16', 'Steering wheel electronics', 0x70C, CarZone.interior),
+    _m('17', 'Instrument cluster', 0x714, CarZone.interior),
+    _m('19', 'Gateway', 0x710, CarZone.interior),
+    _m('44', 'Steering assist', 0x712, CarZone.chassis),
+    _m('5F', 'Infotainment', 0x773, CarZone.interior),
   ];
+
+  static const _makes = {
+    'WVW': 'Volkswagen', 'WV1': 'Volkswagen', 'WV2': 'Volkswagen', 'WVG': 'Volkswagen', //
+    '1VW': 'Volkswagen', '3VW': 'Volkswagen', '9BW': 'Volkswagen', '8AW': 'Volkswagen', 'AAV': 'Volkswagen',
+    'WAU': 'Audi', 'WA1': 'Audi', 'WUA': 'Audi', 'TRU': 'Audi',
+    'TMB': 'Škoda', 'TMP': 'Škoda',
+    'VSS': 'SEAT',
+  };
+
+  /// Model codes in VIN positions 7-8, per make.
+  static const _models = {
+    'Volkswagen': {
+      'AU': ('Golf 7', BodyStyle.hatchback),
+      'CD': ('Golf 8', BodyStyle.hatchback),
+      '1K': ('Golf 5/6', BodyStyle.hatchback),
+      '6R': ('Polo', BodyStyle.hatchback),
+      'AW': ('Polo', BodyStyle.hatchback),
+      '3C': ('Passat', BodyStyle.sedan),
+      '3G': ('Passat', BodyStyle.sedan),
+      '5N': ('Tiguan', BodyStyle.suv),
+      'AD': ('Tiguan', BodyStyle.suv),
+      '7P': ('Touareg', BodyStyle.suv),
+    },
+    'Audi': {
+      '8V': ('A3', BodyStyle.hatchback),
+      '8K': ('A4', BodyStyle.sedan),
+      '8W': ('A4', BodyStyle.sedan),
+      '4G': ('A6', BodyStyle.sedan),
+    },
+    'Škoda': {'5E': ('Octavia', BodyStyle.sedan)},
+    'SEAT': {'5F': ('Leon', BodyStyle.hatchback)},
+  };
+
+  @override
+  VehicleIdentity identify(String? vin) {
+    if (vin == null || vin.length != 17) return VehicleIdentity(name: name);
+    final make = _makes[vin.substring(0, 3).toUpperCase()] ?? 'Volkswagen';
+    final model = _models[make]?[vin.substring(6, 8).toUpperCase()];
+    return VehicleIdentity(
+      name: model == null ? make : '$make ${model.$1}',
+      year: modelYear(vin),
+      bodyStyle: model?.$2 ?? BodyStyle.hatchback,
+    );
+  }
 
   @override
   Map<int, String> get identificationDids => const {
