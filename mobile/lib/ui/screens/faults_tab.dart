@@ -4,6 +4,7 @@ import '../../core/obd/dtc.dart';
 import '../../core/obd/obd_client.dart';
 import '../session.dart';
 import '../widgets/common.dart';
+import '../widgets/dtc_tile.dart';
 
 class _Faults {
   _Faults(this.byKind, this.freeze);
@@ -21,6 +22,8 @@ class FaultsTab extends StatefulWidget {
 
 class _FaultsTabState extends State<FaultsTab> {
   Key _loaderKey = UniqueKey();
+
+  void _reload() => setState(() => _loaderKey = UniqueKey());
 
   Future<_Faults> _load(DiagSession session) async {
     final obd = session.obd;
@@ -47,7 +50,7 @@ class _FaultsTabState extends State<FaultsTab> {
     } catch (e) {
       if (mounted) showMessage(context, errorText(e));
     }
-    setState(() => _loaderKey = UniqueKey());
+    _reload();
   }
 
   @override
@@ -57,33 +60,56 @@ class _FaultsTabState extends State<FaultsTab> {
       key: _loaderKey,
       load: () => _load(session),
       builder: (context, f, reload) {
-        final stored = f.byKind[DtcKind.stored]!;
-        final count = stored.values.fold(0, (n, l) => n + l.length);
+        int count(DtcKind k) => f.byKind[k]!.values.fold(0, (n, l) => n + l.length);
+        final stored = count(DtcKind.stored), pending = count(DtcKind.pending);
+        final total = stored + pending + count(DtcKind.permanent);
         return RefreshIndicator(
-          onRefresh: () async => setState(() => _loaderKey = UniqueKey()),
+          onRefresh: () async => _reload(),
           child: ListView(
-            padding: const EdgeInsets.only(bottom: 24),
+            padding: const EdgeInsets.only(top: 4, bottom: 24),
             children: [
+              StatusBanner(
+                tone: stored > 0 ? Tone.bad : (pending > 0 ? Tone.warn : Tone.ok),
+                icon: total == 0 ? Icons.check_circle_rounded : Icons.report_problem_rounded,
+                title: total == 0 ? 'No fault codes' : '$total fault code${total == 1 ? '' : 's'}',
+                subtitle: total == 0
+                    ? 'The engine computers report no emissions faults'
+                    : '$stored stored · $pending pending',
+              ),
               for (final kind in DtcKind.values) ..._section(session, kind, f.byKind[kind]!),
               if (f.freeze != null) ...[
-                SectionHeader('Freeze frame (${f.freeze!.$1})'),
-                for (final r in f.freeze!.$2)
-                  ListTile(dense: true, title: Text(r.pid.description), trailing: Text('$r')),
+                SectionHeader('Freeze frame · ${f.freeze!.$1}'),
+                Card(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
+                        child: Text(
+                          'Conditions when ${f.freeze!.$1} was stored',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                      for (final r in f.freeze!.$2) InfoRow(r.pid.description, '$r'),
+                    ],
+                  ),
+                ),
               ],
               Padding(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
                 child: OutlinedButton.icon(
-                  icon: const Icon(Icons.delete_sweep_outlined),
-                  label: Text(count == 0 ? 'Clear fault codes' : 'Clear $count fault code(s)'),
+                  icon: const Icon(Icons.delete_sweep_rounded),
+                  label: Text(stored == 0 ? 'Clear fault codes' : 'Clear $stored fault code${stored == 1 ? '' : 's'}'),
                   onPressed: () => _clear(session),
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: Text(
-                  'These are the emissions-related codes every car reports. For airbag, ABS, body and other '
-                  'modules, use the Modules tab.',
+                  'These are the emissions codes every car reports. For airbag, ABS, body and other modules, '
+                  'use the Modules tab.',
                   textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ),
             ],
@@ -94,36 +120,31 @@ class _FaultsTabState extends State<FaultsTab> {
   }
 
   List<Widget> _section(DiagSession session, DtcKind kind, Map<int, List<Dtc>> byEcu) {
-    final (title, empty) = switch (kind) {
-      DtcKind.stored => ('Stored codes', 'No stored codes'),
-      DtcKind.pending => ('Pending codes', 'No pending codes'),
-      DtcKind.permanent => ('Permanent codes', 'No permanent codes'),
-    };
     final codes = [
       for (final e in byEcu.entries)
         for (final d in e.value) (e.key, d),
     ];
+    if (codes.isEmpty) return const [];
+    final title = switch (kind) {
+      DtcKind.stored => 'Stored',
+      DtcKind.pending => 'Pending',
+      DtcKind.permanent => 'Permanent',
+    };
     return [
-      SectionHeader(title),
-      if (codes.isEmpty)
-        ListTile(
-          dense: true,
-          leading: const Icon(Icons.check, color: Colors.green),
-          title: Text(empty),
+      SectionHeader('$title (${codes.length})'),
+      Card(
+        child: Column(
+          children: [
+            for (final (ecu, d) in codes)
+              DtcTile(
+                dtc: d,
+                description: session.brand.describeDtc(d),
+                tone: kind == DtcKind.pending ? Tone.warn : Tone.bad,
+                caption: obdEcuName(ecu),
+              ),
+          ],
         ),
-      for (final (ecu, d) in codes)
-        ListTile(
-          leading: Icon(
-            kind == DtcKind.pending ? Icons.schedule : Icons.warning_amber,
-            color: kind == DtcKind.pending ? Colors.orange : Theme.of(context).colorScheme.error,
-          ),
-          title: Text(
-            d.code,
-            style: const TextStyle(fontWeight: FontWeight.w600, fontFamily: 'monospace'),
-          ),
-          subtitle: Text('${session.brand.describeDtc(d)}\n${obdEcuName(ecu)}'),
-          isThreeLine: true,
-        ),
+      ),
     ];
   }
 }

@@ -17,6 +17,8 @@ Volkswagen Group cars (VW, Audi, Škoda, SEAT, Cupra).
 - **Modules (VW Group):** scan every module (engine, transmission, ABS,
   airbags, central electrics, instrument cluster, gateway, …). See each
   module's part number, software version and fault codes, and clear them.
+- **Coding tab (VW Group):** lists every module that can be coded, shows which ones have named
+  options, and keeps the backups for this car in one place.
 - **Long coding (VW Group):**
   - A byte and bit editor that works on any module.
   - Named options (switches, dropdowns) when a coding profile matches the
@@ -149,6 +151,8 @@ which module the profile applies to:
 coding layouts depend on the module's part number and software version.**
 Only add a profile for a real module once you've confirmed its layout,
 for example by comparing coding before and after a known change.
+
+See [ROADMAP.md](../ROADMAP.md) for planned work.
 
 ## Safety and limits
 

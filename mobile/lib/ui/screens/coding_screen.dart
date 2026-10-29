@@ -154,7 +154,7 @@ class _CodingScreenState extends State<CodingScreen> {
             for (final b in backups)
               ListTile(
                 leading: const Icon(Icons.restore),
-                title: Text(_formatTime(b.timestamp)),
+                title: Text(formatTimestamp(b.timestamp)),
                 subtitle: Text(
                   '${b.vin.isEmpty ? '' : '${b.vin}\n'}${bytesToHex(b.data, separator: ' ')}',
                   maxLines: 3,
@@ -168,12 +168,6 @@ class _CodingScreenState extends State<CodingScreen> {
       ),
     );
     if (picked != null) setState(() => _edited = Uint8List.fromList(picked.data));
-  }
-
-  static String _formatTime(DateTime t) {
-    final l = t.toLocal();
-    String two(int n) => n.toString().padLeft(2, '0');
-    return '${l.year}-${two(l.month)}-${two(l.day)} ${two(l.hour)}:${two(l.minute)}';
   }
 
   Future<void> _editByte(int index) async {
@@ -244,27 +238,41 @@ class _CodingScreenState extends State<CodingScreen> {
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                     child: ErrorPanel(error: _error!, hint: _hint),
                   ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                  child: Text(
-                    _profile == null
-                        ? 'No option names are known for this module (part number ${widget.partNumber.isEmpty ? 'unknown' : widget.partNumber}). '
-                              'You can still change individual bits if you know what they do.'
-                        : _profile!.description,
-                    style: TextStyle(color: scheme.onSurfaceVariant),
-                  ),
-                ),
+                _summaryCard(scheme),
                 if (_profile != null) ...[
                   const SectionHeader('Options'),
-                  for (final o in _profile!.options) _optionTile(o),
+                  Card(
+                    child: Column(
+                      children: [
+                        for (final (i, o) in _profile!.options.indexed) ...[
+                          if (i > 0) const Divider(height: 1, indent: 16, endIndent: 16),
+                          _optionTile(o),
+                        ],
+                      ],
+                    ),
+                  ),
                 ],
                 SectionHeader('Bytes (${_original!.length})'),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Wrap(
-                    spacing: 6,
-                    runSpacing: 6,
-                    children: [for (var i = 0; i < _edited!.length; i++) _byteChip(i, scheme)],
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(4, 0, 4, 12),
+                          child: Text(
+                            'Tap a byte to switch its bits. Changed bytes are highlighted.',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                          ),
+                        ),
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: [for (var i = 0; i < _edited!.length; i++) _byteChip(i, scheme)],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -298,6 +306,58 @@ class _CodingScreenState extends State<CodingScreen> {
                 ),
               ),
             ),
+    );
+  }
+
+  Widget _summaryCard(ColorScheme scheme) {
+    final theme = Theme.of(context);
+    final changedBytes = [
+      for (var i = 0; i < _original!.length; i++)
+        if (_original![i] != _edited![i]) i,
+    ].length;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                ModuleBadge(widget.module.address.isEmpty ? widget.module.name[0] : widget.module.address),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(widget.module.name, style: theme.textTheme.titleLarge),
+                      Text(
+                        widget.partNumber.isEmpty ? 'Part number unknown' : widget.partNumber,
+                        style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+                      ),
+                      const SizedBox(height: 8),
+                      changedBytes == 0
+                          ? Pill('No changes', color: scheme.onSurfaceVariant)
+                          : Pill(
+                              '$changedBytes byte${changedBytes == 1 ? '' : 's'} changed',
+                              color: toneColor(context, Tone.warn),
+                              icon: Icons.edit_rounded,
+                            ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            Text(
+              _profile == null
+                  ? 'No option names are known for this module. '
+                        'You can still change individual bits if you know what they do.'
+                  : _profile!.description,
+              style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

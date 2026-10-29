@@ -15,6 +15,7 @@ import '../core/transport/transport.dart';
 import '../core/uds/uds_client.dart';
 import '../sim/elm_emulator.dart';
 import '../sim/vehicle.dart';
+import 'scan_state.dart';
 
 /// The connection to one car, shared by every screen.
 class DiagSession extends ChangeNotifier {
@@ -37,6 +38,9 @@ class DiagSession extends ChangeNotifier {
   bool busy = false;
   String status = '';
   List<CodingProfile> profiles = const [];
+
+  /// Module scan results, shared by the Modules and Coding tabs.
+  final scan = ScanState();
 
   bool get connected => _transport != null;
   Transport get transport => _transport ?? (throw CarDiagException('Not connected'));
@@ -132,6 +136,7 @@ class DiagSession extends ChangeNotifier {
   /// Lets the user pick the make when the VIN doesn't tell us.
   Future<void> setBrand(Brand b) async {
     brand = b;
+    scan.reset();
     await _loadProfiles();
     notifyListeners();
   }
@@ -155,6 +160,7 @@ class DiagSession extends ChangeNotifier {
     _transport = null;
     vin = null;
     demoVehicle = null;
+    scan.reset();
     brand = genericBrand;
     profiles = const [];
     await t?.close();

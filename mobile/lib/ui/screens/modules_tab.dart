@@ -1,72 +1,154 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import '../../brands/scanner.dart';
+import '../scan_state.dart';
 import '../session.dart';
 import '../widgets/common.dart';
 import 'module_screen.dart';
 
 /// Scans the car's modules (control units) and lists their fault codes.
-class ModulesTab extends StatefulWidget {
+class ModulesTab extends StatelessWidget {
   const ModulesTab({super.key});
 
   @override
-  State<ModulesTab> createState() => _ModulesTabState();
-}
-
-class _ModulesTabState extends State<ModulesTab> {
-  final _results = <ModuleInfo>[];
-  String? _brandId;
-  bool _scanning = false;
-  Object? _error;
-  StreamSubscription<ModuleInfo>? _scan;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final brand = SessionScope.of(context).brand;
-    if (brand.id != _brandId) {
-      // The make changed: earlier results used another module list.
-      _scan?.cancel();
-      _brandId = brand.id;
-      _results.clear();
-      _scanning = false;
-    }
-  }
-
-  @override
-  void dispose() {
-    _scan?.cancel();
-    super.dispose();
-  }
-
-  void _startScan() {
-    final session = SessionScope.read(context);
-    setState(() {
-      _results.clear();
-      _error = null;
-      _scanning = true;
-    });
-    _scan = ModuleScanner(session.transport, session.brand).scan().listen(
-      (info) => setState(() => _results.add(info)),
-      onError: (Object e) => setState(() {
-        _error = e;
-        _scanning = false;
-      }),
-      onDone: () => setState(() => _scanning = false),
+  Widget build(BuildContext context) {
+    final session = SessionScope.of(context);
+    return ListenableBuilder(
+      listenable: session.scan,
+      builder: (context, _) {
+        final scan = session.scan;
+        final present = scan.present;
+        final absent = scan.absent;
+        return ListView(
+          padding: const EdgeInsets.only(top: 4, bottom: 24),
+          children: [
+            ScanSummaryCard(scan: scan, onScan: () => scan.start(session.transport, session.brand)),
+            if (scan.error != null)
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: ErrorPanel(error: scan.error!),
+              ),
+            if (!scan.hasResults && !scan.scanning)
+              EmptyState(
+                icon: Icons.developer_board_rounded,
+                title: 'Check every module',
+                message:
+                    'Reads the fault memory and identification of each ${session.brand.name} module: '
+                    'engine, gearbox, ABS, airbags, body electronics and more.',
+              ),
+            if (present.isNotEmpty) ...[
+              SectionHeader('Found (${present.length})'),
+              Card(
+                child: Column(
+                  children: [
+                    for (final (i, m) in present.indexed) ...[
+                      if (i > 0) const Divider(height: 1, indent: 76),
+                      _ModuleRow(info: m),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+            if (absent.isNotEmpty && !scan.scanning)
+              Card(
+                child: ExpansionTile(
+                  leading: const TintedIcon(Icons.do_not_disturb_on_outlined, size: 40),
+                  title: Text('Not found (${absent.length})'),
+                  subtitle: const Text('Not fitted, or uses another address'),
+                  children: [
+                    for (final m in absent)
+                      ListTile(dense: true, leading: ModuleBadge(m.def.address, dimmed: true), title: Text(m.def.name)),
+                  ],
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
+}
 
-  Future<void> _open(ModuleInfo info) async {
+/// Scan progress / summary with the scan button. Shared with the Coding tab.
+class ScanSummaryCard extends StatelessWidget {
+  const ScanSummaryCard({super.key, required this.scan, required this.onScan, this.showFaults = true});
+  final ScanState scan;
+  final VoidCallback onScan;
+
+  /// The Coding tab shows a neutral summary instead of the fault count.
+  final bool showFaults;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    if (scan.scanning) {
+      final done = scan.results.length;
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Scanning modules...', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 4),
+              Text(
+                done < scan.total ? 'Checking ${scan.total > 0 ? done + 1 : 0} of ${scan.total}' : 'Finishing',
+                style: theme.textTheme.bodySmall,
+              ),
+              const SizedBox(height: 14),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(value: scan.total == 0 ? null : done / scan.total, minHeight: 8),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    if (!scan.hasResults) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+        child: FilledButton.icon(
+          icon: const Icon(Icons.radar_rounded),
+          label: const Text('Scan all modules'),
+          onPressed: onScan,
+        ),
+      );
+    }
+    final faults = scan.faultCount;
+    if (!showFaults) {
+      return StatusBanner(
+        tone: Tone.neutral,
+        icon: Icons.developer_board_rounded,
+        title: '${scan.present.length} modules scanned',
+        subtitle: scan.finishedAt == null ? null : formatTimestamp(scan.finishedAt!),
+        action: IconButton.filledTonal(
+          tooltip: 'Scan again',
+          onPressed: onScan,
+          icon: const Icon(Icons.refresh_rounded),
+        ),
+      );
+    }
+    return StatusBanner(
+      tone: faults == 0 ? Tone.ok : Tone.bad,
+      icon: faults == 0 ? Icons.verified_rounded : Icons.report_problem_rounded,
+      title: '${scan.present.length} modules · $faults fault${faults == 1 ? '' : 's'}',
+      subtitle: scan.finishedAt == null ? null : 'Scanned ${formatTimestamp(scan.finishedAt!)}',
+      action: IconButton.filledTonal(tooltip: 'Scan again', onPressed: onScan, icon: const Icon(Icons.refresh_rounded)),
+    );
+  }
+}
+
+class _ModuleRow extends StatelessWidget {
+  const _ModuleRow({required this.info});
+  final ModuleInfo info;
+
+  Future<void> _open(BuildContext context) async {
     final session = SessionScope.read(context);
     await Navigator.push(context, MaterialPageRoute<void>(builder: (_) => ModuleScreen(module: info.def)));
-    // Fault codes may have been cleared or coding changed; refresh this row.
-    if (!mounted || !session.connected) return;
+    // Fault codes may have been cleared or coding changed; refresh this module.
+    if (!session.connected) return;
     try {
-      final updated = await ModuleScanner(session.transport, session.brand).probe(info.def);
-      final i = _results.indexOf(info);
-      if (mounted && i >= 0) setState(() => _results[i] = updated);
+      await session.scan.refresh(session.transport, session.brand, info.def);
     } catch (_) {
       // Keep the old row; the user can rescan.
     }
@@ -74,80 +156,19 @@ class _ModulesTabState extends State<ModulesTab> {
 
   @override
   Widget build(BuildContext context) {
-    final session = SessionScope.of(context);
-    final total = session.brand.modules.length;
-    final present = _results.where((r) => r.present).toList();
-    final absent = _results.where((r) => !r.present).toList();
-    final faults = present.fold(0, (n, r) => n + (r.dtcs?.length ?? 0));
-    final scheme = Theme.of(context).colorScheme;
-
-    return ListView(
-      padding: const EdgeInsets.only(bottom: 24),
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (_scanning) ...[
-                LinearProgressIndicator(value: _results.length / total),
-                const SizedBox(height: 8),
-                Text('Checking ${_results.length + 1 > total ? total : _results.length + 1} of $total modules...'),
-              ] else
-                FilledButton.icon(
-                  icon: const Icon(Icons.radar),
-                  label: Text(_results.isEmpty ? 'Scan all modules' : 'Scan again'),
-                  onPressed: _startScan,
-                ),
-              if (!_scanning && _results.isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Text('${present.length} modules found · $faults fault code(s)', textAlign: TextAlign.center),
-              ],
-              if (_results.isEmpty && !_scanning) ...[
-                const SizedBox(height: 12),
-                Text(
-                  'Checks each ${session.brand.name} module for fault codes and identification. '
-                  'Takes about ${(total * 1.5).round()} seconds on a real adapter.',
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ],
-          ),
-        ),
-        if (_error != null)
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: ErrorPanel(error: _error!),
-          ),
-        if (present.isNotEmpty) const SectionHeader('Modules'),
-        for (final m in present)
-          ListTile(
-            leading: CircleAvatar(
-              backgroundColor: scheme.primaryContainer,
-              child: Text(
-                m.def.address.isEmpty ? m.def.name[0] : m.def.address,
-                style: TextStyle(color: scheme.onPrimaryContainer, fontWeight: FontWeight.bold),
-              ),
-            ),
-            title: Text(m.def.name),
-            subtitle: Text([m.systemName, m.partNumber].where((s) => s.isNotEmpty).join(' · ')),
-            trailing: m.dtcs == null
-                ? const Pill('?', color: Colors.grey)
-                : m.dtcs!.isEmpty
-                ? const Pill('OK', color: Colors.green)
-                : Pill('${m.dtcs!.length} fault${m.dtcs!.length == 1 ? '' : 's'}', color: scheme.error),
-            onTap: () => _open(m),
-          ),
-        if (absent.isNotEmpty && !_scanning)
-          ExpansionTile(
-            title: Text('Not found (${absent.length})'),
-            subtitle: const Text('Not fitted to this car, or uses another address'),
-            children: [
-              for (final m in absent)
-                ListTile(dense: true, enabled: false, leading: Text(m.def.address), title: Text(m.def.name)),
-            ],
-          ),
-      ],
+    final dtcs = info.dtcs;
+    final subtitle = [info.systemName, info.partNumber].where((s) => s.isNotEmpty).join(' · ');
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      leading: ModuleBadge(info.def.address.isEmpty ? info.def.name[0] : info.def.address),
+      title: Text(info.def.name, style: const TextStyle(fontWeight: FontWeight.w600)),
+      subtitle: subtitle.isEmpty ? null : Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis),
+      trailing: dtcs == null
+          ? Pill('?', color: Theme.of(context).colorScheme.outline)
+          : dtcs.isEmpty
+          ? Pill('OK', color: toneColor(context, Tone.ok), icon: Icons.check_rounded)
+          : Pill('${dtcs.length} fault${dtcs.length == 1 ? '' : 's'}', color: toneColor(context, Tone.bad)),
+      onTap: () => _open(context),
     );
   }
 }

@@ -8,7 +8,7 @@ import '../core/uds/uds_client.dart';
 import 'brand.dart';
 
 class ModuleInfo {
-  ModuleInfo(this.def, {required this.present, this.identification = const {}, this.dtcs, this.error});
+  ModuleInfo(this.def, {required this.present, this.identification = const {}, this.dtcs, this.coding, this.error});
 
   final ModuleDef def;
   final bool present;
@@ -16,7 +16,12 @@ class ModuleInfo {
 
   /// null when fault codes could not be read.
   final List<Dtc>? dtcs;
+
+  /// The module's current coding; null when the make has no coding or the module doesn't report it.
+  final Uint8List? coding;
   final String? error;
+
+  bool get codable => coding != null && coding!.isNotEmpty;
 
   String? text(int did) {
     final v = identification[did];
@@ -58,7 +63,16 @@ class ModuleScanner {
     } on CarDiagException catch (e) {
       error = e.message;
     }
-    return ModuleInfo(m, present: true, identification: ident, dtcs: dtcs, error: error);
+    Uint8List? coding;
+    final codingDid = brand.codingDidFor(m);
+    if (codingDid != null) {
+      try {
+        coding = await uds.readDataByIdentifier(codingDid);
+      } on CarDiagException {
+        coding = null; // not codable this way
+      }
+    }
+    return ModuleInfo(m, present: true, identification: ident, dtcs: dtcs, coding: coding, error: error);
   }
 
   /// Probes every module of the brand, yielding results as they arrive.

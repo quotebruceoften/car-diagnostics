@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../brands/brand.dart';
 import '../../brands/scanner.dart';
 import '../../core/hex.dart';
-import '../../core/obd/dtc.dart';
 import '../session.dart';
 import '../widgets/common.dart';
+import '../widgets/dtc_tile.dart';
 import 'coding_screen.dart';
 
 /// One module: identification, fault codes and (where supported) coding.
@@ -59,89 +59,105 @@ class _ModuleScreenState extends State<ModuleScreen> {
           }
           final dtcs = info.dtcs;
           final codingDid = brand.codingDidFor(m);
+          final theme = Theme.of(context);
+          final faults = dtcs?.length ?? 0;
           return RefreshIndicator(
             onRefresh: () async => _reload(),
             child: ListView(
-              padding: const EdgeInsets.only(bottom: 32),
+              padding: const EdgeInsets.only(top: 4, bottom: 32),
               children: [
-                SectionHeader(
-                  'Fault codes',
-                  trailing: dtcs != null && dtcs.isNotEmpty
-                      ? TextButton(onPressed: () => _clear(session, info), child: const Text('Clear'))
-                      : null,
-                ),
-                if (dtcs == null)
-                  ListTile(title: const Text('Could not read fault codes'), subtitle: Text(info.error ?? ''))
-                else if (dtcs.isEmpty)
-                  const ListTile(
-                    leading: Icon(Icons.check, color: Colors.green),
-                    title: Text('No fault codes'),
-                  )
-                else
-                  for (final d in dtcs) _DtcTile(dtc: d, description: brand.describeDtc(d)),
-                if (codingDid != null) ...[
-                  const SectionHeader('Coding'),
-                  ListTile(
-                    leading: const Icon(Icons.tune),
-                    title: const Text('Long coding'),
-                    subtitle: Text(
-                      session.profileFor(m.address, info.partNumber) != null
-                          ? 'Named options available for this module'
-                          : 'Byte and bit editor',
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        ModuleBadge(m.address.isEmpty ? m.name[0] : m.address),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(m.name, style: theme.textTheme.titleLarge),
+                              if (info.systemName.isNotEmpty || info.partNumber.isNotEmpty)
+                                Text(
+                                  [info.systemName, info.partNumber].where((s) => s.isNotEmpty).join(' · '),
+                                  style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                                ),
+                            ],
+                          ),
+                        ),
+                        if (dtcs != null)
+                          Pill(
+                            faults == 0 ? 'OK' : '$faults fault${faults == 1 ? '' : 's'}',
+                            color: toneColor(context, faults == 0 ? Tone.ok : Tone.bad),
+                          ),
+                      ],
                     ),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(
-                        builder: (_) => CodingScreen(module: m, did: codingDid, partNumber: info.partNumber),
+                  ),
+                ),
+                if (codingDid != null && info.codable)
+                  Card(
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                      leading: const TintedIcon(Icons.tune_rounded, size: 40),
+                      title: const Text('Long coding', style: TextStyle(fontWeight: FontWeight.w600)),
+                      subtitle: Text(
+                        session.profileFor(m.address, info.partNumber) != null
+                            ? 'Named options available'
+                            : '${info.coding!.length} bytes · bit editor',
+                      ),
+                      trailing: const Icon(Icons.chevron_right_rounded),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (_) => CodingScreen(module: m, did: codingDid, partNumber: info.partNumber),
+                        ),
                       ),
                     ),
                   ),
-                ],
+                SectionHeader(
+                  'Fault codes',
+                  trailing: dtcs != null && dtcs.isNotEmpty
+                      ? TextButton.icon(
+                          onPressed: () => _clear(session, info),
+                          icon: const Icon(Icons.delete_sweep_rounded, size: 18),
+                          label: const Text('Clear'),
+                        )
+                      : null,
+                ),
+                Card(
+                  child: dtcs == null
+                      ? ListTile(title: const Text('Could not read fault codes'), subtitle: Text(info.error ?? ''))
+                      : dtcs.isEmpty
+                      ? ListTile(
+                          leading: Icon(Icons.check_circle_rounded, color: toneColor(context, Tone.ok)),
+                          title: const Text('No fault codes'),
+                        )
+                      : Column(
+                          children: [
+                            for (final (i, d) in dtcs.indexed) ...[
+                              if (i > 0) const Divider(height: 1, indent: 16, endIndent: 16),
+                              DtcTile(dtc: d, description: brand.describeDtc(d)),
+                            ],
+                          ],
+                        ),
+                ),
                 const SectionHeader('Identification'),
-                for (final e in brand.identificationDids.entries)
-                  if (info.identification[e.key] != null)
-                    ListTile(
-                      dense: true,
-                      title: Text(e.value),
-                      subtitle: SelectableText(formatDidValue(info.identification[e.key]!)),
-                    ),
-                ListTile(
-                  dense: true,
-                  title: const Text('CAN address'),
-                  subtitle: Text('${hexId(m.txId)} → ${hexId(m.rxId)}'),
+                Card(
+                  child: Column(
+                    children: [
+                      for (final e in brand.identificationDids.entries)
+                        if (info.identification[e.key] != null)
+                          InfoRow(e.value, formatDidValue(info.identification[e.key]!), selectable: true),
+                      InfoRow('CAN address', '${hexId(m.txId)} → ${hexId(m.rxId)}'),
+                    ],
+                  ),
                 ),
               ],
             ),
           );
         },
       ),
-    );
-  }
-}
-
-class _DtcTile extends StatelessWidget {
-  const _DtcTile({required this.dtc, required this.description});
-  final Dtc dtc;
-  final String description;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return ListTile(
-      leading: Icon(dtc.active ? Icons.error : Icons.history, color: dtc.active ? scheme.error : Colors.orange),
-      title: Row(
-        children: [
-          Text(
-            dtc.display,
-            style: const TextStyle(fontWeight: FontWeight.w600, fontFamily: 'monospace'),
-          ),
-          const SizedBox(width: 8),
-          Pill(dtc.active ? 'active' : 'stored', color: dtc.active ? scheme.error : Colors.orange),
-        ],
-      ),
-      subtitle: Text('$description\n${dtc.statusFlags.join(' · ')}'),
-      isThreeLine: true,
     );
   }
 }
