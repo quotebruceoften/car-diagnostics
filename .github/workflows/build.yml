@@ -68,7 +68,7 @@ jobs:
 
   release:
     name: Publish latest build
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     needs: [python, android]
     runs-on: ubuntu-latest
     permissions:
