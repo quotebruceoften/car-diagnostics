@@ -86,7 +86,12 @@ jobs:
         run: |
           # A uniquely named copy too, so phones never reuse a cached download.
           cp car-diagnostics.apk "car-diagnostics-build-${{ github.run_number }}.apk"
-          gh release delete latest-build --cleanup-tag --yes || true
+          # Retry: the GitHub API occasionally answers with a server error.
+          for attempt in 1 2 3; do
+            gh release view latest-build >/dev/null 2>&1 || break
+            gh release delete latest-build --cleanup-tag --yes && break
+            sleep $((attempt * 10))
+          done
           gh release create latest-build car-diagnostics.apk "car-diagnostics-build-${{ github.run_number }}.apk" \
             --prerelease \
             --target "${{ github.sha }}" \
