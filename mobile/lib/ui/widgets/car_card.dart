@@ -6,6 +6,7 @@ import '../../brands/brand.dart';
 import '../../brands/scanner.dart';
 import '../car_media.dart';
 import '../screens/module_screen.dart';
+import '../screens/scan_screen.dart';
 import '../session.dart';
 import 'common.dart';
 
@@ -82,7 +83,7 @@ class CarCard extends StatelessWidget {
         children: [
           Expanded(child: Text('Scan the modules to see the health of each area.', style: muted)),
           const SizedBox(width: 8),
-          FilledButton.tonal(onPressed: () => scan.start(session.transport, session.brand), child: const Text('Scan')),
+          FilledButton.tonal(onPressed: () => openScan(context), child: const Text('Scan')),
         ],
       );
     }

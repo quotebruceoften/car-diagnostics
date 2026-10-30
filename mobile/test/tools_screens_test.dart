@@ -147,6 +147,30 @@ void main() {
     await _finish(tester);
   });
 
+  testWidgets('the scan button scans every module and groups the faults', (tester) async {
+    final s = await _connect(tester);
+    expect(find.text('Scan car'), findsOneWidget);
+    await tester.tap(find.text('Scan car'));
+    await tester.pumpAndSettle();
+    expect(s.scan.hasResults, isTrue);
+    expect(find.textContaining('faults in'), findsOneWidget);
+    expect(find.text('01 · ENGINE'), findsOneWidget);
+    expect(find.text('Report'), findsOneWidget);
+    expect(find.text('Scan again'), findsOneWidget);
+    // The scan was saved to the history like any other.
+    expect(await (await s.historyStore()).list(s.vin!), hasLength(1));
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Last scan:'), findsOneWidget);
+    // The top bar button opens it from any tab.
+    await tester.tap(find.text('Live'));
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.tap(find.byTooltip('Scan car'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('faults in'), findsOneWidget);
+    await _finish(tester);
+  });
+
   testWidgets('settings offer backup, fuel and alert options', (tester) async {
     await _connect(tester);
     await tester.tap(find.byTooltip('Settings'));

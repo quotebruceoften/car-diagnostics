@@ -11,6 +11,7 @@ import '../widgets/skeleton.dart';
 import 'battery_screen.dart';
 import 'history_screen.dart';
 import 'performance_screen.dart';
+import 'scan_screen.dart';
 import 'service_screen.dart';
 import 'trip_screen.dart';
 import 'readiness_screen.dart';
@@ -95,6 +96,7 @@ class _OverviewTabState extends State<OverviewTab> {
             padding: const EdgeInsets.only(top: 4, bottom: 24),
             children: [
               const CarCard(),
+              const _ScanButton(),
               if (snap.connectionState != ConnectionState.done)
                 const Skeleton(tiles: true, cards: 2)
               else if (snap.hasError)
@@ -227,6 +229,74 @@ class _OverviewTabState extends State<OverviewTab> {
         ],
       ),
     ];
+  }
+}
+
+/// The main call to action: scan every module for faults.
+class _ScanButton extends StatelessWidget {
+  const _ScanButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final session = SessionScope.of(context);
+    final theme = Theme.of(context);
+    return ListenableBuilder(
+      listenable: session.scan,
+      builder: (context, _) {
+        final scan = session.scan;
+        final String subtitle;
+        if (scan.scanning) {
+          subtitle = 'Scanning: ${scan.results.length} of ${scan.total} modules';
+        } else if (scan.hasResults) {
+          final n = scan.faultCount;
+          subtitle = 'Last scan: $n fault${n == 1 ? '' : 's'} in ${scan.present.length} modules';
+        } else {
+          subtitle = 'Check all ${session.brand.modules.length} modules for faults';
+        }
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+          child: Material(
+            color: theme.colorScheme.primary,
+            borderRadius: BorderRadius.circular(24),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              onTap: () => openScan(context),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 18, 16, 18),
+                child: Row(
+                  children: [
+                    Icon(Icons.radar_rounded, size: 36, color: theme.colorScheme.onPrimary),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Scan car',
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              color: theme.colorScheme.onPrimary,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            subtitle,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onPrimary.withValues(alpha: 0.85),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.chevron_right_rounded, color: theme.colorScheme.onPrimary),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 

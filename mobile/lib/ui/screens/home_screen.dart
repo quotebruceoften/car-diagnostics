@@ -9,6 +9,7 @@ import 'faults_tab.dart';
 import 'live_tab.dart';
 import 'modules_tab.dart';
 import 'overview_tab.dart';
+import 'scan_screen.dart';
 import 'settings_screen.dart';
 
 /// Tab indexes, so tabs can send the user to each other.
@@ -94,6 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         actions: [
+          IconButton(tooltip: 'Scan car', icon: const Icon(Icons.radar_rounded), onPressed: () => openScan(context)),
           IconButton(
             tooltip: 'Settings',
             icon: const Icon(Icons.settings_outlined),
