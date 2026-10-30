@@ -9,6 +9,7 @@ import '../../core/errors.dart';
 import '../../core/obd/pids.dart';
 import '../session.dart';
 import '../settings.dart';
+import '../widgets/alert_banner.dart';
 import '../widgets/common.dart';
 
 const _preferred = ['rpm', 'speed', 'coolant_temp', 'engine_load', 'throttle', 'module_voltage'];
@@ -67,6 +68,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    keepScreenOn(true);
     WidgetsBinding.instance.addPostFrameCallback((_) => _poll());
   }
 
@@ -74,6 +76,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void dispose() {
     SystemChrome.setPreferredOrientations([]);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    keepScreenOn(false);
     super.dispose();
   }
 
@@ -87,6 +90,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           if (!mounted) return;
           try {
             final r = await session.obd.read(p.pid);
+            session.observe(r.pid, r.value);
             if (mounted) setState(() => _values[p.pid] = r.value);
           } on NoResponseException {
             continue;
@@ -169,6 +173,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: SafeArea(
         child: Column(
           children: [
+            const AlertBanner(dark: true),
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
               child: Row(
@@ -240,7 +245,9 @@ class _Dial extends StatelessWidget {
     final (shown, unit) = value == null ? ('–', settings.convert(pid, pid.min).$2) : settings.convert(pid, value!);
     final fraction = shown is num ? ((shown.toDouble() - lo) / (hi - lo)).clamp(0.0, 1.0) : 0.0;
     final accent = Theme.of(context).colorScheme.primary;
-    final color = fraction > 0.85 && (pid.name == 'rpm' || pid.name == 'coolant_temp')
+    final color =
+        SessionScope.of(context).alerts.isActive(pid.name) ||
+            fraction > 0.85 && (pid.name == 'rpm' || pid.name == 'coolant_temp')
         ? const Color(0xFFFF6B6B)
         : Color.lerp(accent, Colors.white, 0.35)!;
     return Padding(

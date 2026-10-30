@@ -28,6 +28,12 @@ abstract class Transport {
   Future<void> close() async {}
 }
 
+/// Transports that can measure the car's battery voltage at the OBD port
+/// directly (ELM327 "AT RV"), which works even while the engine cranks.
+abstract interface class BatteryVoltageReader {
+  Future<double?> batteryVoltage();
+}
+
 /// Serialises async operations: adapters can only do one request at a time,
 /// but the UI (live data, scans, button presses) fires them concurrently.
 class AsyncLock {

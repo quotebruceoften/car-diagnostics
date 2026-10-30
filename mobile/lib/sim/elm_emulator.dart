@@ -103,7 +103,7 @@ class Elm327Emulator implements ByteChannel {
       case 'DPN':
         return [_connected ? 'A$protocol' : '0'];
       case 'RV':
-        return ['14.2V'];
+        return ['${vehicle.engine.voltage().toStringAsFixed(1)}V'];
       default:
         if (c.startsWith('SH')) {
           _header = int.parse(c.substring(2), radix: 16);

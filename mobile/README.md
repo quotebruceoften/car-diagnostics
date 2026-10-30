@@ -16,14 +16,26 @@ Volkswagen Group cars (VW, Audi, Škoda, SEAT, Cupra).
 - **Overview:** check engine light, number of stored codes, battery voltage, coolant temperature,
   and an **inspection readiness** check (which emissions self-tests have finished).
 - **Faults:** stored, pending and permanent emissions codes with
-  descriptions, the freeze frame, and clearing codes. Tap a code for a plain-language page:
-  what it means, how serious it is, common causes and whether it's safe to drive.
+  descriptions and clearing codes. Tap a code for a plain-language page:
+  what it means, how serious it is, common causes, whether it's safe to drive and, for engine
+  codes, the **freeze frame** (speed, load, temperature when it was stored) explained in words.
 - **Live data:** pick sensors and watch them update, with a small chart for
-  each one. The **driving dashboard** shows four large dials in landscape and can record a drive
-  to a CSV file.
+  each one. Tap a sensor for a full graph (30 s to 10 min) with lowest, highest and average.
+  **Alerts** vibrate and show a red bar when a value crosses a limit you set (for example
+  coolant above 110 °C). The **driving dashboard** shows four large dials in landscape and can
+  record a drive to a CSV file.
+- **Battery test:** battery voltage at rest, the dip while the engine starts, and the charging
+  voltage, each with a verdict.
+- **Trip computer:** live fuel consumption (from fuel rate, or from air flow on petrol
+  engines), distance, average economy and the cost of each drive.
+- **Performance timer:** 0–100 km/h, 80–120 km/h and 100–0 km/h (or mph equivalents), started
+  and stopped automatically from the car's speed, with braking distance.
+- **Service log:** record services and get reminders by date or distance. Works without the
+  adapter; cars that report their odometer over OBD update the mileage automatically.
 - **Scan history and reports:** every module scan is saved per car, with new and fixed faults
   compared to the previous scan. Any scan can be shared as a PDF report.
-- **Settings:** °C/°F, km/miles, light/dark/automatic theme, automatic reconnect.
+- **Settings:** °C/°F, km/miles, fuel economy unit, fuel price, light/dark/automatic theme,
+  automatic reconnect, and **backup and restore** of all app data in one file.
 - **Modules (VW Group):** scan every module (engine, transmission, ABS,
   airbags, central electrics, instrument cluster, gateway, …). See each
   module's part number, software version and fault codes, and clear them.

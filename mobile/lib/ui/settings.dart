@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../core/alerts.dart';
 import '../core/obd/pids.dart';
+import '../core/trip.dart';
 
 enum TempUnit { celsius, fahrenheit }
 
@@ -41,6 +43,18 @@ class SavedAdapter {
   }
 }
 
+/// The car last connected, so its service log is available offline.
+class SavedCar {
+  const SavedCar({required this.vin, required this.name});
+  final String vin;
+  final String name;
+
+  Map<String, dynamic> toJson() => {'vin': vin, 'name': name};
+
+  static SavedCar? fromJson(Object? j) =>
+      j is Map<String, dynamic> && j['vin'] is String ? SavedCar(vin: j['vin'] as String, name: '${j['name']}') : null;
+}
+
 /// User preferences, saved on the phone. Without [SharedPreferences] (tests),
 /// settings live in memory only.
 class AppSettings extends ChangeNotifier {
@@ -51,11 +65,21 @@ class AppSettings extends ChangeNotifier {
     temp = TempUnit.values.asNameMap()[p.getString('temp')] ?? TempUnit.celsius;
     distance = DistanceUnit.values.asNameMap()[p.getString('distance')] ?? DistanceUnit.km;
     autoReconnect = p.getBool('autoReconnect') ?? true;
-    final saved = p.getString('lastAdapter');
+    economy = EconomyUnit.values.asNameMap()[p.getString('economy')] ?? EconomyUnit.lPer100km;
+    fuelPrice = p.getDouble('fuelPrice');
+    currency = p.getString('currency') ?? '';
+    lastAdapter = SavedAdapter.fromJson(_decode(p.getString('lastAdapter')));
+    lastCar = SavedCar.fromJson(_decode(p.getString('lastCar')));
+    final rules = _decode(p.getString('alerts'));
+    if (rules is List) alertRules = [for (final r in rules) ?AlertRule.fromJson(r)];
+  }
+
+  static Object? _decode(String? text) {
+    if (text == null) return null;
     try {
-      lastAdapter = saved == null ? null : SavedAdapter.fromJson(jsonDecode(saved));
+      return jsonDecode(text);
     } on FormatException {
-      lastAdapter = null;
+      return null;
     }
   }
 
@@ -68,6 +92,15 @@ class AppSettings extends ChangeNotifier {
   DistanceUnit distance = DistanceUnit.km;
   bool autoReconnect = true;
   SavedAdapter? lastAdapter;
+  SavedCar? lastCar;
+  EconomyUnit economy = EconomyUnit.lPer100km;
+
+  /// Price of a litre of fuel, for trip costs; null until the user sets it.
+  double? fuelPrice;
+
+  /// Currency symbol shown with costs, e.g. "€" (may be empty).
+  String currency = '';
+  List<AlertRule> alertRules = defaultAlertRules;
 
   void setThemeMode(ThemeMode v) => _set(() => themeMode = v, (p) => p.setString('theme', v.name));
   void setTemp(TempUnit v) => _set(() => temp = v, (p) => p.setString('temp', v.name));
@@ -77,6 +110,53 @@ class AppSettings extends ChangeNotifier {
     () => lastAdapter = a,
     (p) => a == null ? p.remove('lastAdapter') : p.setString('lastAdapter', jsonEncode(a.toJson())),
   );
+
+  void setLastCar(SavedCar c) => _set(() => lastCar = c, (p) => p.setString('lastCar', jsonEncode(c.toJson())));
+  void setEconomy(EconomyUnit v) => _set(() => economy = v, (p) => p.setString('economy', v.name));
+  void setFuelPrice(double? v, String currency) => _set(
+    () {
+      fuelPrice = v;
+      this.currency = currency;
+    },
+    (p) async {
+      await p.setString('currency', currency);
+      return v == null ? p.remove('fuelPrice') : p.setDouble('fuelPrice', v);
+    },
+  );
+  void setAlertRules(List<AlertRule> rules) => _set(
+    () => alertRules = List.unmodifiable(rules),
+    (p) => p.setString('alerts', jsonEncode([for (final r in rules) r.toJson()])),
+  );
+
+  /// "€12.40" / "12.40" when no currency is set.
+  String money(double v) => '$currency${v.toStringAsFixed(2)}';
+
+  /// Preferences worth carrying to a new phone (not the adapter, which is
+  /// tied to this phone's Bluetooth).
+  Map<String, dynamic> toJson() => {
+    'theme': themeMode.name,
+    'temp': temp.name,
+    'distance': distance.name,
+    'economy': economy.name,
+    'autoReconnect': autoReconnect,
+    'fuelPrice': fuelPrice,
+    'currency': currency,
+    'lastCar': lastCar?.toJson(),
+    'alerts': [for (final r in alertRules) r.toJson()],
+  };
+
+  void applyJson(Map<String, dynamic> j) {
+    if (ThemeMode.values.asNameMap()[j['theme']] case final v?) setThemeMode(v);
+    if (TempUnit.values.asNameMap()[j['temp']] case final v?) setTemp(v);
+    if (DistanceUnit.values.asNameMap()[j['distance']] case final v?) setDistance(v);
+    if (EconomyUnit.values.asNameMap()[j['economy']] case final v?) setEconomy(v);
+    if (j['autoReconnect'] case final bool v) setAutoReconnect(v);
+    if (j.containsKey('fuelPrice') || j.containsKey('currency')) {
+      setFuelPrice((j['fuelPrice'] as num?)?.toDouble(), (j['currency'] ?? currency) as String);
+    }
+    if (SavedCar.fromJson(j['lastCar']) case final c? when lastCar == null) setLastCar(c);
+    if (j['alerts'] case final List rules) setAlertRules([for (final r in rules) ?AlertRule.fromJson(r)]);
+  }
 
   void _set(VoidCallback change, Future<bool> Function(SharedPreferences p) persist) {
     change();
@@ -99,6 +179,36 @@ class AppSettings extends ChangeNotifier {
       _ => (value, pid.unit),
     };
   }
+
+  /// Converts a number in the user's units back to the PID's own unit.
+  double toPidUnit(Pid pid, double shown) => switch (pid.unit) {
+    '°C' when temp == TempUnit.fahrenheit => (shown - 32) * 5 / 9,
+    'km/h' || 'km' when distance == DistanceUnit.miles => shown / 0.621371,
+    _ => shown,
+  };
+
+  /// Formats a distance in km in the user's units ("87,654 km").
+  String km(double km, {int decimals = 1}) {
+    final miles = distance == DistanceUnit.miles;
+    final v = miles ? km * 0.621371 : km;
+    final text = decimals == 0 ? grouped(v.round()) : v.toStringAsFixed(decimals);
+    return '$text ${miles ? 'mi' : 'km'}';
+  }
+
+  /// 87654 -> "87,654".
+  static String grouped(int n) {
+    final digits = n.abs().toString();
+    final out = StringBuffer(n < 0 ? '-' : '');
+    for (var i = 0; i < digits.length; i++) {
+      if (i > 0 && (digits.length - i) % 3 == 0) out.write(',');
+      out.write(digits[i]);
+    }
+    return out.toString();
+  }
+
+  /// Formats a speed in km/h in the user's units.
+  String speed(double kmh) =>
+      distance == DistanceUnit.miles ? '${(kmh * 0.621371).round()} mph' : '${kmh.round()} km/h';
 
   /// Display range of a PID in the user's units (for gauges).
   (double, double) range(Pid pid) {

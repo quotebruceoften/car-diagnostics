@@ -7,10 +7,15 @@ import '../settings.dart';
 import '../widgets/common.dart';
 import '../widgets/sparkline.dart';
 import '../widgets/skeleton.dart';
+import 'alerts_screen.dart';
 import 'dashboard_screen.dart';
+import 'sensor_screen.dart';
 
 const _defaultPids = ['rpm', 'speed', 'coolant_temp', 'engine_load', 'throttle', 'module_voltage'];
-const _historyLength = 60;
+
+/// Values kept per sensor for its graph (about 10 minutes of a busy poll).
+const _historyLength = 3000;
+const _sparkLength = 60;
 
 /// Streams live sensor values while the tab is visible.
 class LiveTab extends StatefulWidget {
@@ -27,7 +32,7 @@ class _LiveTabState extends State<LiveTab> {
   List<Pid>? _available;
   final _selected = <Pid>[];
   final _latest = <int, Object>{};
-  final _history = <int, List<double>>{};
+  final _history = <int, List<TimedValue>>{};
   Object? _error;
   bool _paused = false;
   bool _polling = false;
@@ -75,13 +80,14 @@ class _LiveTabState extends State<LiveTab> {
           try {
             final r = await session.obd.read(p.pid);
             if (!mounted) break;
+            session.observe(r.pid, r.value);
             setState(() {
               _latest[p.pid] = r.value;
               final n = r.numeric;
               if (n != null) {
                 final h = _history.putIfAbsent(p.pid, () => []);
-                h.add(n);
-                if (h.length > _historyLength) h.removeAt(0);
+                h.add((DateTime.now(), n));
+                if (h.length > _historyLength) h.removeRange(0, h.length - _historyLength);
               }
             });
           } on NoResponseException {
@@ -97,14 +103,17 @@ class _LiveTabState extends State<LiveTab> {
     }
   }
 
-  Future<void> _openDashboard() async {
+  /// Opens a screen that polls on its own, pausing this tab meanwhile.
+  Future<void> _openPolling(Widget screen) async {
     final wasPaused = _paused;
-    setState(() => _paused = true); // the dashboard polls on its own
-    await Navigator.push(context, MaterialPageRoute<void>(builder: (_) => DashboardScreen(available: _available!)));
+    setState(() => _paused = true);
+    await Navigator.push(context, MaterialPageRoute<void>(builder: (_) => screen));
     if (!mounted) return;
     setState(() => _paused = wasPaused);
     if (!_paused) _poll();
   }
+
+  Future<void> _openDashboard() => _openPolling(DashboardScreen(available: _available!));
 
   Future<void> _choosePids() async {
     final chosen = await showModalBottomSheet<List<Pid>>(
@@ -170,6 +179,12 @@ class _LiveTabState extends State<LiveTab> {
                   onPressed: _openDashboard,
                 ),
                 IconButton.filledTonal(
+                  tooltip: 'Alerts',
+                  icon: const Icon(Icons.notifications_outlined),
+                  onPressed: () =>
+                      Navigator.push(context, MaterialPageRoute<void>(builder: (_) => const AlertsScreen())),
+                ),
+                IconButton.filledTonal(
                   tooltip: 'Choose sensors',
                   icon: const Icon(Icons.tune_rounded),
                   onPressed: _choosePids,
@@ -200,7 +215,15 @@ class _LiveTabState extends State<LiveTab> {
               itemCount: _selected.length,
               itemBuilder: (context, i) {
                 final p = _selected[i];
-                return _GaugeTile(pid: p, value: _latest[p.pid], history: _history[p.pid] ?? const []);
+                final history = _history[p.pid] ?? const <TimedValue>[];
+                return _GaugeTile(
+                  pid: p,
+                  value: _latest[p.pid],
+                  history: [
+                    for (final (_, v) in history.skip(history.length - _sparkLength.clamp(0, history.length))) v,
+                  ],
+                  onTap: () => _openPolling(SensorScreen(pid: p, history: List.of(history))),
+                );
               },
             ),
           ),
@@ -229,58 +252,71 @@ class _LiveDot extends StatelessWidget {
 }
 
 class _GaugeTile extends StatelessWidget {
-  const _GaugeTile({required this.pid, required this.value, required this.history});
+  const _GaugeTile({required this.pid, required this.value, required this.history, required this.onTap});
   final Pid pid;
   final Object? value;
   final List<double> history;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
-    final (shown, unit) = value == null ? ('–', pid.unit) : SessionScope.of(context).settings.convert(pid, value!);
+    final session = SessionScope.of(context);
+    final (shown, unit) = value == null ? ('–', pid.unit) : session.settings.convert(pid, value!);
     final last = history.isEmpty ? null : history.last;
     final fraction = last == null ? 0.0 : ((last - pid.min) / (pid.max - pid.min)).clamp(0.0, 1.0);
+    final alerting = session.alerts.isActive(pid.name);
     return Card(
       margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              pid.description,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
-            ),
-            const SizedBox(height: 4),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                Flexible(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(AppSettings.number(shown), style: theme.textTheme.headlineMedium),
-                  ),
-                ),
-                const SizedBox(width: 4),
-                Text(unit, style: theme.textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
-              ],
-            ),
-            const SizedBox(height: 6),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: LinearProgressIndicator(
-                value: fraction,
-                minHeight: 6,
-                backgroundColor: scheme.surfaceContainerHighest,
+      shape: alerting
+          ? RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: const BorderSide(color: Color(0xFFC62828), width: 2),
+            )
+          : null,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                pid.description,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
               ),
-            ),
-            const Spacer(),
-            Sparkline(values: history, min: pid.min, max: pid.max, height: 40),
-          ],
+              const SizedBox(height: 4),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Flexible(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(AppSettings.number(shown), style: theme.textTheme.headlineMedium),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(unit, style: theme.textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
+                ],
+              ),
+              const SizedBox(height: 6),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  value: fraction,
+                  minHeight: 6,
+                  backgroundColor: scheme.surfaceContainerHighest,
+                ),
+              ),
+              const Spacer(),
+              Sparkline(values: history, min: pid.min, max: pid.max, height: 40),
+            ],
+          ),
         ),
       ),
     );

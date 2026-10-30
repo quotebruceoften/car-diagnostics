@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/errors.dart';
 import '../../core/obd/dtc.dart';
 import '../../core/obd/dtc_info.dart';
+import '../../core/obd/freeze_frame.dart';
+import '../../core/obd/obd_client.dart';
 import '../session.dart';
 import '../widgets/common.dart';
 
@@ -116,6 +119,7 @@ class DtcScreen extends StatelessWidget {
           ],
           const SectionHeader('Can I drive?'),
           _TextCard(info.driving),
+          if (session.connected && dtc.code.startsWith('P')) _FreezeFrameSection(code: dtc.code),
           if (dtc.statusFlags.isNotEmpty) ...[
             const SectionHeader('Status reported by the module'),
             Card(
@@ -147,6 +151,87 @@ class DtcScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// The conditions the engine computer saved when it stored this code, if
+/// the stored freeze frame belongs to it.
+class _FreezeFrameSection extends StatefulWidget {
+  const _FreezeFrameSection({required this.code});
+  final String code;
+
+  @override
+  State<_FreezeFrameSection> createState() => _FreezeFrameSectionState();
+}
+
+class _FreezeFrameSectionState extends State<_FreezeFrameSection> {
+  late final Future<List<Reading>?> _future = _load();
+
+  Future<List<Reading>?> _load() async {
+    try {
+      final ff = await SessionScope.read(context).obd.freezeFrame();
+      return ff != null && ff.$1 == widget.code ? ff.$2 : null;
+    } on CarDiagException {
+      return null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final session = SessionScope.of(context);
+    final theme = Theme.of(context);
+    return FutureBuilder<List<Reading>?>(
+      future: _future,
+      builder: (context, snap) {
+        if (snap.connectionState != ConnectionState.done) {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+            child: Row(
+              children: [
+                const SizedBox.square(dimension: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+                const SizedBox(width: 12),
+                Text('Reading the freeze frame...', style: theme.textTheme.bodySmall),
+              ],
+            ),
+          );
+        }
+        final readings = snap.data;
+        if (readings == null || readings.isEmpty) return const SizedBox.shrink();
+        final sentences = describeConditions({
+          for (final r in readings)
+            if (r.numeric != null) r.pid.name: r.numeric!,
+        });
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SectionHeader('When it happened'),
+            Card(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+                    child: Text(
+                      'The engine computer saved these readings the moment it stored ${widget.code}.',
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ),
+                  for (final s in sentences)
+                    ListTile(
+                      dense: true,
+                      leading: Icon(Icons.circle, size: 8, color: theme.colorScheme.primary),
+                      minLeadingWidth: 12,
+                      title: Text(s, style: theme.textTheme.bodyMedium),
+                    ),
+                  const Divider(height: 1, indent: 16, endIndent: 16),
+                  for (final r in readings) InfoRow(r.pid.description, session.settings.format(r.pid, r.value)),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

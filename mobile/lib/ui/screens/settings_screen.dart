@@ -1,9 +1,54 @@
+import 'dart:convert';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 
+import '../../core/data_backup.dart';
+import '../../core/trip.dart';
 import '../session.dart';
 import '../settings.dart';
 import '../widgets/common.dart';
+import 'alerts_screen.dart';
+import 'trip_screen.dart';
+
+Future<void> _backUp(BuildContext context) async {
+  final session = SessionScope.read(context);
+  try {
+    final text = await exportData(await session.dataStore(), session.settings.toJson());
+    final name = 'car-diagnostics-backup-${DateTime.now().toIso8601String().substring(0, 10)}.json';
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile.fromData(utf8.encode(text), mimeType: 'application/json', name: name)],
+        fileNameOverrides: [name],
+        subject: 'Car Diagnostics backup',
+      ),
+    );
+  } catch (e) {
+    if (context.mounted) showMessage(context, 'Could not create the backup: ${errorText(e)}');
+  }
+}
+
+Future<void> _restore(BuildContext context) async {
+  final session = SessionScope.read(context);
+  try {
+    final picked = await FilePicker.pickFiles(dialogTitle: 'Choose a Car Diagnostics backup');
+    if (picked.isEmpty) return;
+    final text = utf8.decode(await picked.first.readAsBytes(), allowMalformed: true);
+    final result = await importData(await session.dataStore(), text);
+    session.settings.applyJson(result.settings);
+    HapticFeedback.mediumImpact();
+    if (context.mounted) {
+      final n = result.added + result.updated;
+      showMessage(context, n == 0 ? 'Settings restored; no new records' : 'Restored $n record${n == 1 ? '' : 's'}');
+    }
+  } on FormatException catch (e) {
+    if (context.mounted) showMessage(context, e.message);
+  } catch (e) {
+    if (context.mounted) showMessage(context, 'Could not restore: ${errorText(e)}');
+  }
+}
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -41,6 +86,40 @@ class SettingsScreen extends StatelessWidget {
               options: const {DistanceUnit.km: 'km · km/h', DistanceUnit.miles: 'miles · mph'},
               onChanged: settings.setDistance,
             ),
+            _Choice<EconomyUnit>(
+              icon: Icons.local_gas_station_outlined,
+              title: 'Fuel economy',
+              value: settings.economy,
+              options: const {
+                EconomyUnit.lPer100km: 'L/100km',
+                EconomyUnit.kmPerL: 'km/L',
+                EconomyUnit.mpgUs: 'US mpg',
+                EconomyUnit.mpgUk: 'UK mpg',
+              },
+              onChanged: settings.setEconomy,
+            ),
+            Card(
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.payments_outlined),
+                    title: const Text('Fuel price'),
+                    subtitle: Text(
+                      settings.fuelPrice == null ? 'Not set' : '${settings.money(settings.fuelPrice!)} per litre',
+                    ),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => editFuelPrice(context),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.notifications_outlined),
+                    title: const Text('Live data alerts'),
+                    subtitle: Text('${settings.alertRules.where((r) => r.enabled).length} on'),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => Navigator.push(context, MaterialPageRoute<void>(builder: (_) => const AlertsScreen())),
+                  ),
+                ],
+              ),
+            ),
             const SectionHeader('Connection'),
             Card(
               child: Column(
@@ -68,11 +147,32 @@ class SettingsScreen extends StatelessWidget {
                 ],
               ),
             ),
+            const SectionHeader('Your data'),
+            Card(
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.backup_outlined),
+                    title: const Text('Back up all data'),
+                    subtitle: const Text(
+                      'Scan history, coding backups, service log, trips, timer results and settings in one file',
+                    ),
+                    onTap: () => _backUp(context),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.settings_backup_restore_rounded),
+                    title: const Text('Restore from a backup'),
+                    subtitle: const Text('Adds what is missing; nothing on this phone is deleted'),
+                    onTap: () => _restore(context),
+                  ),
+                ],
+              ),
+            ),
             const SectionHeader('About'),
             const Card(
               child: Column(
                 children: [
-                  InfoRow('Version', '0.2.0'),
+                  InfoRow('Version', '0.3.0'),
                   Padding(
                     padding: EdgeInsets.fromLTRB(16, 4, 16, 14),
                     child: Text(

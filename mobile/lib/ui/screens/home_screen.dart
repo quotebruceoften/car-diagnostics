@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../brands/registry.dart';
 import '../session.dart';
+import '../widgets/alert_banner.dart';
 import 'coding_tab.dart';
 import 'faults_tab.dart';
 import 'live_tab.dart';
@@ -111,7 +112,14 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(width: 4),
         ],
       ),
-      body: IndexedStack(index: _tab, children: tabs),
+      body: Column(
+        children: [
+          const AlertBanner(),
+          Expanded(
+            child: IndexedStack(index: _tab, children: tabs),
+          ),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _tab,
         onDestinationSelected: _go,

@@ -76,6 +76,15 @@ final List<Pid> allPids = [
   Pid(0x49, 'accel_pedal_d', 'Accelerator pedal', '%', 1, _pct),
   Pid(0x5C, 'oil_temp', 'Oil temperature', '°C', 1, _temp, min: -40, max: 150),
   Pid(0x5E, 'fuel_rate', 'Fuel rate', 'L/h', 2, (d) => _u16(d) / 20, max: 30),
+  Pid(
+    0xA6,
+    'odometer',
+    'Odometer',
+    'km',
+    4,
+    (d) => _round(((d[0] << 24) | (d[1] << 16) | (d[2] << 8) | d[3]) / 10),
+    max: 500000,
+  ),
 ];
 
 final Map<int, Pid> pidsByNumber = {for (final p in allPids) p.pid: p};

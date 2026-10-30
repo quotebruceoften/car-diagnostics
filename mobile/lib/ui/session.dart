@@ -5,13 +5,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'package:wakelock_plus/wakelock_plus.dart';
+
 import '../brands/registry.dart';
+import '../core/alerts.dart';
 import '../core/coding/coder.dart';
 import '../core/coding/profile.dart';
 import '../core/errors.dart';
 import '../core/history.dart';
 import '../core/obd/dtc.dart';
 import '../core/obd/obd_client.dart';
+import '../core/obd/pids.dart';
+import '../core/service_log.dart';
+import '../core/store.dart';
 import '../core/transport/byte_channel.dart';
 import '../core/transport/elm327.dart';
 import '../core/transport/transport.dart';
@@ -29,14 +35,71 @@ class DiagSession extends ChangeNotifier {
     BackupStore? backupStore,
     CarMediaStore? mediaStore,
     HistoryStore? historyStore,
+    DataStore? dataStore,
     AssetBundle? assets,
     this.demoLatency = const Duration(milliseconds: 15),
   }) : settings = settings ?? AppSettings(),
        _backupStore = backupStore,
        _mediaStore = mediaStore,
        _historyStore = historyStore,
+       _dataStore = dataStore,
        _assets = assets ?? rootBundle {
     scan.onComplete = _saveScan;
+    alerts.rules = this.settings.alertRules;
+    this.settings.addListener(() => alerts.rules = this.settings.alertRules);
+  }
+
+  /// Live-data alerts (e.g. engine too hot), shared by every live screen.
+  final alerts = AlertWatcher(onTriggered: (_) => HapticFeedback.heavyImpact());
+
+  /// Feeds a live reading to the alerts.
+  void observe(Pid pid, Object value) {
+    if (value is num) alerts.report(pid.name, value.toDouble(), range: pid.max - pid.min);
+  }
+
+  /// Battery voltage at the OBD port: measured by the adapter when it can
+  /// (fast, and works while cranking), otherwise reported by the engine.
+  Future<double?> batteryVoltage() async {
+    final t = transport;
+    if (t is BatteryVoltageReader) return (t as BatteryVoltageReader).batteryVoltage();
+    return (await obd.read('module_voltage')).numeric;
+  }
+
+  DataStore? _dataStore;
+
+  /// The app's own files (service log, trips, timer results).
+  Future<DataStore> dataStore() async {
+    final existing = _dataStore;
+    if (existing != null) return existing;
+    final docs = await getApplicationDocumentsDirectory();
+    return _dataStore = FileDataStore(docs);
+  }
+
+  Future<ServiceLog> loadServiceLog(String vin) async =>
+      ServiceLog.parse(await (await dataStore()).read(ServiceLog.pathFor(vin)));
+
+  Future<void> saveServiceLog(String vin, ServiceLog log) async =>
+      (await dataStore()).write(ServiceLog.pathFor(vin), log.toJsonString());
+
+  /// Last odometer reading from the car this session (km), if it reports one.
+  double? odometerKm;
+
+  /// Cars from about 2019 report the odometer over OBD; record it in the
+  /// service log so reminders by distance stay current.
+  Future<void> _syncOdometer() async {
+    final v = vin;
+    if (v == null) return;
+    try {
+      final km = (await obd.read('odometer')).numeric;
+      if (km == null || !connected || vin != v) return;
+      odometerKm = km;
+      final log = await loadServiceLog(v);
+      log.updateMileage(km.round(), DateTime.now());
+      await saveServiceLog(v, log);
+      notifyListeners();
+    } catch (_) {
+      // Most older cars don't report it; the owner types it in instead.
+    }
   }
 
   final AssetBundle _assets;
@@ -219,7 +282,9 @@ class DiagSession extends ChangeNotifier {
       // Only now do the screens switch over to the connected car.
       _transport = t;
       if (remember != null) settings.setLastAdapter(remember);
+      if (vin case final v? when demoVehicle == null) settings.setLastCar(SavedCar(vin: v, name: identity.title));
       unawaited(_loadCarMedia());
+      unawaited(_syncOdometer());
     } catch (e) {
       await t?.close();
       vin = null;
@@ -277,6 +342,8 @@ class DiagSession extends ChangeNotifier {
     demoVehicle = null;
     carMedia = null;
     lastRecord = null;
+    odometerKm = null;
+    alerts.reset();
     scan.reset();
     brand = genericBrand;
     profiles = const [];
@@ -287,6 +354,15 @@ class DiagSession extends ChangeNotifier {
   void _setStatus(String s) {
     status = s;
     notifyListeners();
+  }
+}
+
+/// Keeps the screen on while driving screens are open.
+Future<void> keepScreenOn(bool on) async {
+  try {
+    await WakelockPlus.toggle(enable: on);
+  } catch (_) {
+    // Not available in tests or on some platforms.
   }
 }
 

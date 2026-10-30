@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../core/obd/dtc.dart';
+import '../../core/obd/freeze_frame.dart';
 import '../../core/obd/obd_client.dart';
 import '../session.dart';
 import '../widgets/common.dart';
@@ -80,21 +81,22 @@ class _FaultsTabState extends State<FaultsTab> {
                     : '$stored stored · $pending pending',
               ),
               for (final kind in DtcKind.values) ..._section(session, kind, f.byKind[kind]!),
-              if (f.freeze != null) ...[
-                SectionHeader('Freeze frame · ${f.freeze!.$1}'),
+              if (f.freeze case (final code, final readings)) ...[
+                const SectionHeader('Freeze frame'),
                 Card(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
-                        child: Text(
-                          'Conditions when ${f.freeze!.$1} was stored',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ),
-                      for (final r in f.freeze!.$2) InfoRow(r.pid.description, session.settings.format(r.pid, r.value)),
-                    ],
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    leading: const TintedIcon(Icons.photo_camera_outlined, size: 40),
+                    title: Text('Saved with $code', style: const TextStyle(fontWeight: FontWeight.w600)),
+                    subtitle: Text(
+                      describeConditions({
+                            for (final r in readings)
+                              if (r.numeric != null) r.pid.name: r.numeric!,
+                          }).firstOrNull ??
+                          '${readings.length} readings from the moment the fault was stored',
+                    ),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => openDtc(context, Dtc(code), session.brand.describeDtc(Dtc(code)), source: 'Engine'),
                   ),
                 ),
               ],

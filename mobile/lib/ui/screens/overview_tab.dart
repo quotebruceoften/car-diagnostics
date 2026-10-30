@@ -5,9 +5,14 @@ import '../../core/obd/obd_client.dart';
 import '../../core/obd/pids.dart';
 import '../../core/obd/readiness.dart';
 import '../session.dart';
+import '../../core/service_log.dart';
 import '../widgets/car_card.dart';
 import '../widgets/skeleton.dart';
+import 'battery_screen.dart';
 import 'history_screen.dart';
+import 'performance_screen.dart';
+import 'service_screen.dart';
+import 'trip_screen.dart';
 import 'readiness_screen.dart';
 import '../widgets/common.dart';
 import 'home_screen.dart';
@@ -129,6 +134,7 @@ class _OverviewTabState extends State<OverviewTab> {
             : null,
       ),
       if (o.readiness case final r?) _ReadinessCard(readiness: r),
+      const _ServiceCard(),
       const SizedBox(height: 6),
       TileGrid(
         children: [
@@ -191,11 +197,94 @@ class _OverviewTabState extends State<OverviewTab> {
           _Shortcut(
             icon: Icons.history_rounded,
             label: 'Scan history',
-            onTap: () => Navigator.push(context, MaterialPageRoute<void>(builder: (_) => const HistoryScreen())),
+            onTap: () => _open(context, const HistoryScreen()),
+          ),
+        ],
+      ),
+      const SectionHeader('Tools'),
+      TileGrid(
+        children: [
+          _Shortcut(
+            icon: Icons.local_gas_station_rounded,
+            label: 'Trip computer',
+            onTap: () => _open(context, const TripScreen()),
+          ),
+          _Shortcut(
+            icon: Icons.battery_charging_full_rounded,
+            label: 'Battery test',
+            onTap: () => _open(context, const BatteryScreen()),
+          ),
+          _Shortcut(
+            icon: Icons.timer_outlined,
+            label: 'Performance',
+            onTap: () => _open(context, const PerformanceScreen()),
+          ),
+          _Shortcut(
+            icon: Icons.build_circle_outlined,
+            label: 'Service log',
+            onTap: () => _open(context, ServiceScreen(vin: session.vin ?? '', carName: session.identity.title)),
           ),
         ],
       ),
     ];
+  }
+}
+
+void _open(BuildContext context, Widget screen) =>
+    Navigator.push(context, MaterialPageRoute<void>(builder: (_) => screen));
+
+/// The most urgent service reminder, if the owner keeps a service log.
+class _ServiceCard extends StatefulWidget {
+  const _ServiceCard();
+
+  @override
+  State<_ServiceCard> createState() => _ServiceCardState();
+}
+
+class _ServiceCardState extends State<_ServiceCard> {
+  ServiceLog? _log;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final session = SessionScope.read(context);
+    try {
+      final log = await session.loadServiceLog(session.vin ?? '');
+      if (mounted) setState(() => _log = log);
+    } catch (_) {
+      // No service log is fine.
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final session = SessionScope.of(context);
+    final log = _log;
+    final now = DateTime.now();
+    final next = log?.reminders(now).firstOrNull;
+    if (log == null || next == null) return const SizedBox.shrink();
+    return Card(
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        leading: TintedIcon(Icons.build_circle_rounded, color: toneColor(context, dueTone(next.status)), size: 40),
+        title: Text(next.type.label, style: const TextStyle(fontWeight: FontWeight.w600)),
+        subtitle: Text(describeReminder(next, log, session.settings, now)),
+        trailing: const Icon(Icons.chevron_right_rounded),
+        onTap: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (_) => ServiceScreen(vin: session.vin ?? '', carName: session.identity.title),
+            ),
+          );
+          if (mounted) _load();
+        },
+      ),
+    );
   }
 }
 

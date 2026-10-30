@@ -6,6 +6,7 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import '../../platform/ble_channel.dart';
 import '../session.dart';
 import '../settings.dart';
+import 'service_screen.dart';
 import 'settings_screen.dart';
 import '../widgets/common.dart';
 
@@ -193,6 +194,20 @@ class _ConnectScreenState extends State<ConnectScreen> {
                         onTap: () => _run(session.connectDemo),
                         onLongPress: () => _run(() => session.connectDemo(throughEmulatedAdapter: true)),
                       ),
+                      if (session.settings.lastCar case final car?) ...[
+                        const SectionHeader('Without the adapter'),
+                        _OptionCard(
+                          icon: Icons.build_circle_outlined,
+                          title: 'Service log',
+                          subtitle: '${car.name}: services and reminders',
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute<void>(
+                              builder: (_) => ServiceScreen(vin: car.vin, carName: car.name),
+                            ),
+                          ),
+                        ),
+                      ],
                       const SectionHeader('Good to know'),
                       Card(
                         child: Padding(

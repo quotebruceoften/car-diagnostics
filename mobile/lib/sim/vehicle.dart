@@ -259,34 +259,78 @@ class ObdEcu extends VirtualEcu {
   }
 }
 
+/// The demo car's engine and battery, so the battery test and timers have
+/// something realistic to measure.
+class DemoEngine {
+  bool running = true;
+  DateTime? _crankedAt;
+  final _random = Random();
+
+  void stop() {
+    running = false;
+    _crankedAt = null;
+  }
+
+  /// Turns the starter; the engine runs about 1.2 s later.
+  void crank() {
+    _crankedAt = DateTime.now();
+    running = true;
+  }
+
+  /// Seconds since the starter was turned, while it is still cranking.
+  double? get _cranking {
+    final at = _crankedAt;
+    if (at == null) return null;
+    final s = DateTime.now().difference(at).inMilliseconds / 1000;
+    return s < 1.2 ? s : null;
+  }
+
+  bool get turning => running && _cranking == null;
+
+  double voltage() {
+    final noise = (_random.nextDouble() - 0.5) * 0.04;
+    final c = _cranking;
+    if (c != null) {
+      if (c < 0.15) return 12.5 - c / 0.15 * 2.4 + noise;
+      return 10.1 + 0.25 * sin(c * 40) + (c > 0.9 ? (c - 0.9) * 8 : 0) + noise;
+    }
+    if (!running) return 12.55 + noise;
+    return 14.1 + 0.1 * sin(DateTime.now().millisecondsSinceEpoch / 1000) + noise;
+  }
+}
+
 List<int> _u16(num v) => [(v.toInt() >> 8) & 0xFF, v.toInt() & 0xFF];
 
-Map<int, LiveValue> _engineLive() {
+Map<int, LiveValue> _engineLive(DemoEngine engine) {
   double wave(double t) => (1 + sin(t / 3)) / 2;
+  LiveValue running(LiveValue f, List<int> off) =>
+      (t) => engine.turning ? f(t) : off;
   return {
-    0x04: (t) => [(255 * (0.2 + 0.4 * wave(t))).toInt()],
+    0x04: running((t) => [(255 * (0.2 + 0.4 * wave(t))).toInt()], [0]),
     0x05: (t) => [40 + min(90, (20 + t * 2).toInt())],
     0x06: (t) => [128 + (6 * sin(t)).toInt()],
     0x07: (t) => [131],
     0x0B: (t) => [(30 + 60 * wave(t)).toInt()],
-    0x0C: (t) => _u16((800 + 1800 * wave(t)) * 4),
-    0x0D: (t) => [(60 * (1 + sin(t / 3 - 0.6)) / 2).toInt()],
+    0x0C: running((t) => _u16((800 + 1800 * wave(t)) * 4), [0, 0]),
+    0x0D: running((t) => [(60 * (1 + sin(t / 3 - 0.6)) / 2).toInt()], [0]),
     0x0E: (t) => [((12 + 8 * sin(t / 3) + 64) * 2).toInt()],
     0x0F: (t) => [40 + 24],
-    0x10: (t) => _u16(100 * (3 + 20 * wave(t))),
+    0x10: running((t) => _u16(100 * (3 + 20 * wave(t))), [0, 0]),
     0x11: (t) => [(255 * (0.12 + 0.5 * wave(t))).toInt()],
     0x1F: (t) => _u16(t),
     0x2F: (t) => [(255 * 0.62).toInt()],
     0x33: (t) => [101],
-    0x42: (t) => _u16(14100 + 150 * sin(t)),
+    0x42: (t) => _u16(engine.voltage() * 1000),
     0x46: (t) => [40 + 18],
     0x5C: (t) => [40 + min(100, (15 + t * 1.5).toInt())],
+    0xA6: (t) => [0, 0x0D, 0x5F, 0xFF], // 87,654.3 km
   };
 }
 
 class Vehicle {
-  Vehicle(this.name, this.vin, this.ecus);
+  Vehicle(this.name, this.vin, this.ecus, {DemoEngine? engine}) : engine = engine ?? DemoEngine();
 
+  final DemoEngine engine;
   final String name;
   final String vin;
   final List<VirtualEcu> ecus;
@@ -314,7 +358,9 @@ class Vehicle {
     const vin = 'WVWZZZAUZHW123456';
     final vinBytes = vin.codeUnits;
     List<int> ascii(String s) => s.codeUnits;
-    return Vehicle('Demo VW Golf (simulated)', vin, [
+    final engine = DemoEngine();
+    final live = _engineLive(engine);
+    return Vehicle('Demo VW Golf (simulated)', vin, engine: engine, [
       ObdEcu(
         'Engine',
         0x7E0,
@@ -323,7 +369,7 @@ class Vehicle {
         stored: ['P0301', 'P0420'],
         pending: ['P0171'],
         permanent: ['P0420'],
-        live: _engineLive(),
+        live: live,
         dids: {
           0xF187: ascii('04E906016DE'),
           0xF189: ascii('0004'),
@@ -340,7 +386,7 @@ class Vehicle {
         0x7E9,
         pending: ['P0730'],
         live: {
-          0x0D: _engineLive()[0x0D]!,
+          0x0D: live[0x0D]!,
           0x46: (t) => [58],
         },
         dids: {0xF187: ascii('0CW300040H'), 0xF189: ascii('3110'), 0xF197: ascii('DQ200-MQB'), 0xF190: vinBytes},
@@ -406,7 +452,7 @@ class Vehicle {
 }
 
 /// Talks to a [Vehicle] directly, with an optional delay to feel realistic.
-class SimulatorTransport implements Transport {
+class SimulatorTransport implements Transport, BatteryVoltageReader {
   SimulatorTransport([Vehicle? vehicle, this.latency = Duration.zero]) : vehicle = vehicle ?? Vehicle.demoGolf();
 
   final Vehicle vehicle;
@@ -422,6 +468,12 @@ class SimulatorTransport implements Transport {
       for (final (id, data) in vehicle.handle(txId, payload))
         if (rxId == null || id == rxId) Message(id, data),
     ];
+  }
+
+  @override
+  Future<double?> batteryVoltage() async {
+    if (latency > Duration.zero) await Future<void>.delayed(latency);
+    return double.parse(vehicle.engine.voltage().toStringAsFixed(1));
   }
 
   @override
