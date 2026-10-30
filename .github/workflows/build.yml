@@ -58,7 +58,7 @@ jobs:
 
       - name: Build APK
         run: |
-          flutter build apk --release --build-number=${{ github.run_number }}
+          flutter build apk --release --build-number=${{ github.run_number }} --dart-define=BUILD_NUMBER=${{ github.run_number }}
           cp build/app/outputs/flutter-apk/app-release.apk car-diagnostics.apk
       - uses: actions/upload-artifact@v4
         with:
@@ -84,9 +84,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
+          # A uniquely named copy too, so phones never reuse a cached download.
+          cp car-diagnostics.apk "car-diagnostics-build-${{ github.run_number }}.apk"
           gh release delete latest-build --cleanup-tag --yes || true
-          gh release create latest-build car-diagnostics.apk \
+          gh release create latest-build car-diagnostics.apk "car-diagnostics-build-${{ github.run_number }}.apk" \
             --prerelease \
             --target "${{ github.sha }}" \
             --title "Latest build (#${{ github.run_number }})" \
-            --notes "Built from ${{ github.ref_name }} at ${{ github.sha }}. Download car-diagnostics.apk below and open it on your Android phone."
+            --notes "Build ${{ github.run_number }}, from ${{ github.ref_name }} at ${{ github.sha }}. Download car-diagnostics-build-${{ github.run_number }}.apk below and open it on your Android phone. Settings > About in the app shows the build number."

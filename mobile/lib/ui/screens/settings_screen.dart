@@ -50,6 +50,10 @@ Future<void> _restore(BuildContext context) async {
   }
 }
 
+/// Set by the CI build, so the build can be matched to its download.
+const _build = String.fromEnvironment('BUILD_NUMBER');
+const _version = _build == '' ? '0.3.0' : '0.3.0 (build $_build)';
+
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
@@ -172,7 +176,7 @@ class SettingsScreen extends StatelessWidget {
             const Card(
               child: Column(
                 children: [
-                  InfoRow('Version', '0.3.0'),
+                  InfoRow('Version', _version),
                   Padding(
                     padding: EdgeInsets.fromLTRB(16, 4, 16, 14),
                     child: Text(
