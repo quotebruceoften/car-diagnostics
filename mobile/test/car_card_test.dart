@@ -121,6 +121,10 @@ void main() {
       expect(find.text('Engine'), findsOneWidget);
       await tester.tap(find.widgetWithText(FilledButton, 'Scan'));
       await tester.pumpAndSettle();
+      // The scan runs on its own screen; the card updates behind it.
+      expect(find.text('Scan again'), findsOneWidget);
+      await tester.pageBack();
+      await tester.pumpAndSettle();
       expect(find.text('Engine · 4'), findsOneWidget);
       expect(find.text('Chassis · 1'), findsOneWidget);
       expect(find.text('Lights · 1'), findsOneWidget);

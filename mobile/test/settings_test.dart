@@ -63,6 +63,7 @@ void main() {
     await pump(tester, session);
     await tester.tap(find.text('Demo car'));
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('767 mi'), 300, scrollable: find.byType(Scrollable).first);
     expect(find.textContaining('°F'), findsWidgets);
     expect(find.text('767 mi'), findsOneWidget); // 1234 km since codes were cleared
   });
