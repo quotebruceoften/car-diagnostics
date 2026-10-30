@@ -80,6 +80,8 @@ void main() {
     await tester.tap(find.text('Scan all modules'));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Gateway'), 200);
+    await tester.drag(find.byType(Scrollable).hitTestable().first, const Offset(0, -200));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Gateway'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Long coding'));

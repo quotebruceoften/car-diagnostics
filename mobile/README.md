@@ -8,15 +8,22 @@ Volkswagen Group cars (VW, Audi, Škoda, SEAT, Cupra).
 
 - **Connect** to a Bluetooth LE or Wi-Fi ELM327 adapter, or to a built-in
   demo car (a simulated VW Golf) so you can try every screen without a car.
+  The app remembers your adapter and reconnects automatically when it opens.
 - **Your car:** the car's name and year from the VIN (for example "Volkswagen Golf 7 · 2013")
   over your own photo, or a short muted video loop, taken in the app or picked from your gallery.
   Pictures are stored on the phone, one per car. After a module scan, chips for the engine,
   chassis, interior and lights turn green or red; tap one to see that area's modules.
-- **Overview:** check engine light, number of stored codes, battery voltage, coolant temperature.
+- **Overview:** check engine light, number of stored codes, battery voltage, coolant temperature,
+  and an **inspection readiness** check (which emissions self-tests have finished).
 - **Faults:** stored, pending and permanent emissions codes with
-  descriptions, the freeze frame, and clearing codes.
+  descriptions, the freeze frame, and clearing codes. Tap a code for a plain-language page:
+  what it means, how serious it is, common causes and whether it's safe to drive.
 - **Live data:** pick sensors and watch them update, with a small chart for
-  each one.
+  each one. The **driving dashboard** shows four large dials in landscape and can record a drive
+  to a CSV file.
+- **Scan history and reports:** every module scan is saved per car, with new and fixed faults
+  compared to the previous scan. Any scan can be shared as a PDF report.
+- **Settings:** °C/°F, km/miles, light/dark/automatic theme, automatic reconnect.
 - **Modules (VW Group):** scan every module (engine, transmission, ABS,
   airbags, central electrics, instrument cluster, gateway, …). See each
   module's part number, software version and fault codes, and clear them.
@@ -45,15 +52,31 @@ and most European cars from about 2006, including every UDS-era VW.
 
 ## Get the Android app
 
-GitHub builds the APK on every push (see `.github/workflows/build.yml`). To
-install it:
+GitHub builds the app on every push (see `.github/workflows/build.yml`) and
+publishes it as the **Latest build** release, so the download link never
+changes:
 
-1. On GitHub, open the repository's **Actions** tab and click the latest
-   green **Build** run.
-2. Under **Artifacts**, download **car-diagnostics-apk**. It's a zip that
-   contains `app-release.apk`.
-3. Copy the APK to your phone and open it. Android asks you to allow
-   installing from that source the first time.
+`https://github.com/<owner>/<repo>/releases/download/latest-build/car-diagnostics.apk`
+
+Open that link on your Android phone and install the file. Android asks you
+to allow installing from that source the first time.
+
+### Stable signing (so updates install over the old version)
+
+Android only installs an update over an existing app if both are signed with
+the same key. Add these two repository secrets once (GitHub: **Settings →
+Secrets and variables → Actions → New repository secret**):
+
+| Secret | Value |
+| --- | --- |
+| `ANDROID_KEYSTORE_BASE64` | The keystore file, base64-encoded |
+| `ANDROID_KEYSTORE_PASSWORD` | Its password (the key alias is `cardiag`) |
+
+To make your own key: `keytool -genkeypair -keystore release.jks -storetype PKCS12
+-alias cardiag -keyalg RSA -keysize 2048 -validity 10000`, then `base64 -w0
+release.jks`. Keep the keystore safe: losing it means users have to uninstall
+to get updates. Without the secrets, builds fall back to a debug key that may
+differ between builds.
 
 iPhone builds need a Mac with Xcode and an Apple developer account.
 

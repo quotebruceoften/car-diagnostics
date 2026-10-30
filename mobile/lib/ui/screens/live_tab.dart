@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import '../../core/errors.dart';
 import '../../core/obd/pids.dart';
 import '../session.dart';
+import '../settings.dart';
 import '../widgets/common.dart';
 import '../widgets/sparkline.dart';
+import '../widgets/skeleton.dart';
+import 'dashboard_screen.dart';
 
 const _defaultPids = ['rpm', 'speed', 'coolant_temp', 'engine_load', 'throttle', 'module_voltage'];
 const _historyLength = 60;
@@ -23,7 +26,7 @@ class LiveTab extends StatefulWidget {
 class _LiveTabState extends State<LiveTab> {
   List<Pid>? _available;
   final _selected = <Pid>[];
-  final _latest = <int, String>{};
+  final _latest = <int, Object>{};
   final _history = <int, List<double>>{};
   Object? _error;
   bool _paused = false;
@@ -73,7 +76,7 @@ class _LiveTabState extends State<LiveTab> {
             final r = await session.obd.read(p.pid);
             if (!mounted) break;
             setState(() {
-              _latest[p.pid] = _format(r.value);
+              _latest[p.pid] = r.value;
               final n = r.numeric;
               if (n != null) {
                 final h = _history.putIfAbsent(p.pid, () => []);
@@ -92,6 +95,15 @@ class _LiveTabState extends State<LiveTab> {
     } finally {
       _polling = false;
     }
+  }
+
+  Future<void> _openDashboard() async {
+    final wasPaused = _paused;
+    setState(() => _paused = true); // the dashboard polls on its own
+    await Navigator.push(context, MaterialPageRoute<void>(builder: (_) => DashboardScreen(available: _available!)));
+    if (!mounted) return;
+    setState(() => _paused = wasPaused);
+    if (!_paused) _poll();
   }
 
   Future<void> _choosePids() async {
@@ -125,7 +137,9 @@ class _LiveTabState extends State<LiveTab> {
         ],
       );
     }
-    if (_available == null) return const LoadingView(message: 'Finding sensors...');
+    if (_available == null) {
+      return ListView(padding: const EdgeInsets.only(top: 8), children: const [Skeleton(tiles: true, cards: 2)]);
+    }
     final theme = Theme.of(context);
     return CustomScrollView(
       slivers: [
@@ -149,6 +163,11 @@ class _LiveTabState extends State<LiveTab> {
                     setState(() => _paused = !_paused);
                     if (!_paused) _poll();
                   },
+                ),
+                IconButton.filledTonal(
+                  tooltip: 'Driving dashboard',
+                  icon: const Icon(Icons.fullscreen_rounded),
+                  onPressed: _openDashboard,
                 ),
                 IconButton.filledTonal(
                   tooltip: 'Choose sensors',
@@ -188,12 +207,6 @@ class _LiveTabState extends State<LiveTab> {
       ],
     );
   }
-
-  static String _format(Object value) {
-    if (value is! num) return '$value';
-    if (value == value.roundToDouble()) return value.toInt().toString();
-    return value.abs() >= 100 ? value.toStringAsFixed(0) : value.toStringAsFixed(1);
-  }
 }
 
 class _LiveDot extends StatelessWidget {
@@ -218,13 +231,14 @@ class _LiveDot extends StatelessWidget {
 class _GaugeTile extends StatelessWidget {
   const _GaugeTile({required this.pid, required this.value, required this.history});
   final Pid pid;
-  final String? value;
+  final Object? value;
   final List<double> history;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    final (shown, unit) = value == null ? ('–', pid.unit) : SessionScope.of(context).settings.convert(pid, value!);
     final last = history.isEmpty ? null : history.last;
     final fraction = last == null ? 0.0 : ((last - pid.min) / (pid.max - pid.min)).clamp(0.0, 1.0);
     return Card(
@@ -248,11 +262,11 @@ class _GaugeTile extends StatelessWidget {
                 Flexible(
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
-                    child: Text(value ?? '–', style: theme.textTheme.headlineMedium),
+                    child: Text(AppSettings.number(shown), style: theme.textTheme.headlineMedium),
                   ),
                 ),
                 const SizedBox(width: 4),
-                Text(pid.unit, style: theme.textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
+                Text(unit, style: theme.textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
               ],
             ),
             const SizedBox(height: 6),

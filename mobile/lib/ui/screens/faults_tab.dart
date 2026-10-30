@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../core/obd/dtc.dart';
 import '../../core/obd/obd_client.dart';
 import '../session.dart';
 import '../widgets/common.dart';
 import '../widgets/dtc_tile.dart';
+import 'dtc_screen.dart';
 
 class _Faults {
   _Faults(this.byKind, this.freeze);
@@ -46,6 +48,7 @@ class _FaultsTabState extends State<FaultsTab> {
     if (!ok || !mounted) return;
     try {
       final acked = await session.obd.clearDtcs();
+      HapticFeedback.mediumImpact();
       if (mounted) showMessage(context, 'Cleared by ${acked.map(obdEcuName).join(', ')}');
     } catch (e) {
       if (mounted) showMessage(context, errorText(e));
@@ -90,7 +93,7 @@ class _FaultsTabState extends State<FaultsTab> {
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
-                      for (final r in f.freeze!.$2) InfoRow(r.pid.description, '$r'),
+                      for (final r in f.freeze!.$2) InfoRow(r.pid.description, session.settings.format(r.pid, r.value)),
                     ],
                   ),
                 ),
@@ -141,6 +144,7 @@ class _FaultsTabState extends State<FaultsTab> {
                 description: session.brand.describeDtc(d),
                 tone: kind == DtcKind.pending ? Tone.warn : Tone.bad,
                 caption: obdEcuName(ecu),
+                onTap: () => openDtc(context, d, session.brand.describeDtc(d), source: obdEcuName(ecu)),
               ),
           ],
         ),

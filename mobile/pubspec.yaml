@@ -1,7 +1,7 @@
 name: cardiag_mobile
 description: "Car diagnostics and coding for OBD-II and Volkswagen Group cars."
 publish_to: 'none'
-version: 0.1.0+1
+version: 0.2.0+1
 
 environment:
   sdk: ^3.9.0
@@ -10,17 +10,46 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_reactive_ble: ^5.6.0
+  pdf: ^3.13.1
   image_picker: ^1.2.4
   path_provider: ^2.1.6
   permission_handler: ^13.0.2
+  share_plus: ^13.3.1
+  shared_preferences: ^2.5.6
+  url_launcher: ^6.3.3
   video_player: ^2.14.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.4
   flutter_lints: ^6.0.0
+  flutter_native_splash: ^2.4.8
 
 flutter:
   uses-material-design: true
   assets:
     - assets/profiles/
+
+# App icon: `dart run flutter_launcher_icons` (artwork from tool/make_icon.py).
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/branding/icon.png
+  adaptive_icon_background: "#0B1B33"
+  adaptive_icon_foreground: assets/branding/icon_foreground.png
+  remove_alpha_ios: true
+
+# Launch screen: `dart run flutter_native_splash:create`.
+flutter_native_splash:
+  color: "#1F4E8C"
+  image: assets/branding/splash.png
+  color_dark: "#0B1B33"
+  image_dark: assets/branding/splash.png
+  android_12:
+    color: "#1F4E8C"
+    image: assets/branding/splash.png
+    icon_background_color: "#1F4E8C"
+    color_dark: "#0B1B33"
+    image_dark: assets/branding/splash.png
+    icon_background_color_dark: "#0B1B33"

@@ -1,6 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../brands/brand.dart';
 import '../../core/coding/coder.dart';
@@ -122,6 +121,7 @@ class _CodingScreenState extends State<CodingScreen> {
       );
       if (!mounted) return;
       setState(() => _original = edited);
+      HapticFeedback.heavyImpact();
       showMessage(context, 'Coding written and verified. The previous coding was backed up.');
     } catch (e) {
       if (!mounted) return;

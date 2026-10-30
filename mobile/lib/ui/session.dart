@@ -9,6 +9,8 @@ import '../brands/registry.dart';
 import '../core/coding/coder.dart';
 import '../core/coding/profile.dart';
 import '../core/errors.dart';
+import '../core/history.dart';
+import '../core/obd/dtc.dart';
 import '../core/obd/obd_client.dart';
 import '../core/transport/byte_channel.dart';
 import '../core/transport/elm327.dart';
@@ -18,19 +20,29 @@ import '../sim/elm_emulator.dart';
 import '../sim/vehicle.dart';
 import 'car_media.dart';
 import 'scan_state.dart';
+import 'settings.dart';
 
 /// The connection to one car, shared by every screen.
 class DiagSession extends ChangeNotifier {
   DiagSession({
+    AppSettings? settings,
     BackupStore? backupStore,
     CarMediaStore? mediaStore,
+    HistoryStore? historyStore,
     AssetBundle? assets,
     this.demoLatency = const Duration(milliseconds: 15),
-  }) : _backupStore = backupStore,
+  }) : settings = settings ?? AppSettings(),
+       _backupStore = backupStore,
        _mediaStore = mediaStore,
-       _assets = assets ?? rootBundle;
+       _historyStore = historyStore,
+       _assets = assets ?? rootBundle {
+    scan.onComplete = _saveScan;
+  }
 
   final AssetBundle _assets;
+
+  /// User preferences (units, theme, remembered adapter).
+  final AppSettings settings;
 
   /// Simulated per-request delay of the demo car, so it feels like a real one.
   final Duration demoLatency;
@@ -39,6 +51,7 @@ class DiagSession extends ChangeNotifier {
   Vehicle? demoVehicle;
   BackupStore? _backupStore;
   CarMediaStore? _mediaStore;
+  HistoryStore? _historyStore;
 
   /// The user's photo or video of the connected car, if they added one.
   CarMedia? carMedia;
@@ -96,6 +109,51 @@ class DiagSession extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<HistoryStore> historyStore() async {
+    final existing = _historyStore;
+    if (existing != null) return existing;
+    final docs = await getApplicationDocumentsDirectory();
+    return _historyStore = FileHistoryStore(Directory('${docs.path}/scan_history'));
+  }
+
+  /// The scan record of the last completed scan in this session.
+  ScanRecord? lastRecord;
+
+  ScanRecord recordFromScan() => ScanRecord(
+    timestamp: scan.finishedAt ?? DateTime.now(),
+    vin: vin ?? '',
+    carName: identity.title,
+    modules: [
+      for (final m in scan.present)
+        ModuleRecord(
+          address: m.def.address,
+          name: m.def.name,
+          partNumber: m.partNumber,
+          faultsReadable: m.dtcs != null,
+          faults: [
+            for (final d in m.dtcs ?? const <Dtc>[])
+              FaultRecord(
+                code: d.code,
+                display: d.display,
+                description: brand.describeDtc(d),
+                active: d.status == null ? null : d.active,
+              ),
+          ],
+        ),
+    ],
+  );
+
+  Future<void> _saveScan() async {
+    if (!connected || scan.present.isEmpty) return;
+    final record = lastRecord = recordFromScan();
+    notifyListeners();
+    try {
+      await (await historyStore()).save(record);
+    } catch (_) {
+      // History is a convenience; a failed save must not disturb diagnostics.
+    }
+  }
+
   Future<BackupStore> backupStore() async {
     final existing = _backupStore;
     if (existing != null) return existing;
@@ -112,22 +170,28 @@ class DiagSession extends ChangeNotifier {
     return elm;
   });
 
-  Future<void> connectWifi(String host, int port) => _connect(() async {
-    _setStatus('Connecting to $host:$port...');
-    final channel = await TcpByteChannel.connect(host, port).catchError(
-      (Object e) => throw TransportException(
-        'Could not reach the adapter at $host:$port. '
-        'Is the phone connected to the adapter\'s Wi-Fi network?',
-      ),
-    );
-    return _initAdapter(channel);
-  });
+  /// Set once the app has tried reconnecting to the saved adapter at launch.
+  bool autoReconnectTried = false;
 
-  /// Connects through an already opened adapter channel (e.g. Bluetooth).
-  Future<void> connectChannel(Future<ByteChannel> Function() open) => _connect(() async {
-    _setStatus('Connecting to adapter...');
-    return _initAdapter(await open());
-  });
+  Future<void> connectWifi(String host, int port) =>
+      _connect(remember: SavedAdapter.wifi(host: host, port: port), () async {
+        _setStatus('Connecting to $host:$port...');
+        final channel = await TcpByteChannel.connect(host, port).catchError(
+          (Object e) => throw TransportException(
+            'Could not reach the adapter at $host:$port. '
+            'Is the phone connected to the adapter\'s Wi-Fi network?',
+          ),
+        );
+        return _initAdapter(channel);
+      });
+
+  /// Connects through an adapter channel (e.g. Bluetooth); [remember] saves
+  /// the adapter for reconnecting next time.
+  Future<void> connectChannel(Future<ByteChannel> Function() open, {SavedAdapter? remember}) =>
+      _connect(remember: remember, () async {
+        _setStatus('Connecting to adapter...');
+        return _initAdapter(await open());
+      });
 
   Future<Transport> _initAdapter(ByteChannel channel) async {
     final elm = Elm327Transport(channel);
@@ -141,7 +205,7 @@ class DiagSession extends ChangeNotifier {
     }
   }
 
-  Future<void> _connect(Future<Transport> Function() open) async {
+  Future<void> _connect(Future<Transport> Function() open, {SavedAdapter? remember}) async {
     await disconnect();
     busy = true;
     notifyListeners();
@@ -154,6 +218,7 @@ class DiagSession extends ChangeNotifier {
       await _loadProfiles();
       // Only now do the screens switch over to the connected car.
       _transport = t;
+      if (remember != null) settings.setLastAdapter(remember);
       unawaited(_loadCarMedia());
     } catch (e) {
       await t?.close();
@@ -211,6 +276,7 @@ class DiagSession extends ChangeNotifier {
     vin = null;
     demoVehicle = null;
     carMedia = null;
+    lastRecord = null;
     scan.reset();
     brand = genericBrand;
     profiles = const [];

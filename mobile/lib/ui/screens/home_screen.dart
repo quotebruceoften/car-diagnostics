@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../brands/registry.dart';
 import '../session.dart';
@@ -7,6 +8,7 @@ import 'faults_tab.dart';
 import 'live_tab.dart';
 import 'modules_tab.dart';
 import 'overview_tab.dart';
+import 'settings_screen.dart';
 
 /// Tab indexes, so tabs can send the user to each other.
 abstract final class HomeTabs {
@@ -27,7 +29,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _tab = HomeTabs.overview;
 
-  void _go(int tab) => setState(() => _tab = tab);
+  void _go(int tab) {
+    if (tab != _tab) HapticFeedback.selectionClick();
+    setState(() => _tab = tab);
+  }
 
   Future<void> _chooseBrand(DiagSession session) async {
     final picked = await showModalBottomSheet<Brand>(
@@ -88,6 +93,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         actions: [
+          IconButton(
+            tooltip: 'Settings',
+            icon: const Icon(Icons.settings_outlined),
+            onPressed: () => Navigator.push(context, MaterialPageRoute<void>(builder: (_) => const SettingsScreen())),
+          ),
           IconButton(
             tooltip: 'Change car make',
             icon: const Icon(Icons.swap_horiz_rounded),

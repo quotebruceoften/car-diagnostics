@@ -3,18 +3,23 @@ import 'package:flutter/material.dart';
 import '../../core/errors.dart';
 import '../../core/obd/obd_client.dart';
 import '../../core/obd/pids.dart';
+import '../../core/obd/readiness.dart';
 import '../session.dart';
 import '../widgets/car_card.dart';
+import '../widgets/skeleton.dart';
+import 'history_screen.dart';
+import 'readiness_screen.dart';
 import '../widgets/common.dart';
 import 'home_screen.dart';
 
 class _Overview {
-  _Overview(this.status, this.voltage, this.coolant, this.distanceSinceClear, this.supported);
+  _Overview(this.status, this.voltage, this.coolant, this.distanceSinceClear, this.supported, this.readiness);
   final MonitorStatus? status;
   final Reading? voltage;
   final Reading? coolant;
   final Reading? distanceSinceClear;
   final Map<int, Set<int>> supported;
+  final Readiness? readiness;
 }
 
 class OverviewTab extends StatefulWidget {
@@ -61,7 +66,16 @@ class _OverviewTabState extends State<OverviewTab> {
       await optional('coolant_temp'),
       await optional('distance_since_clear'),
       await obd.supportedPids(),
+      await _readiness(obd),
     );
+  }
+
+  static Future<Readiness?> _readiness(ObdClient obd) async {
+    try {
+      return await obd.readiness();
+    } on CarDiagException {
+      return null;
+    }
   }
 
   @override
@@ -77,7 +91,7 @@ class _OverviewTabState extends State<OverviewTab> {
             children: [
               const CarCard(),
               if (snap.connectionState != ConnectionState.done)
-                const LoadingView(message: 'Reading the engine computer...')
+                const Skeleton(tiles: true, cards: 2)
               else if (snap.hasError)
                 Padding(
                   padding: const EdgeInsets.all(16),
@@ -114,6 +128,7 @@ class _OverviewTabState extends State<OverviewTab> {
               )
             : null,
       ),
+      if (o.readiness case final r?) _ReadinessCard(readiness: r),
       const SizedBox(height: 6),
       TileGrid(
         children: [
@@ -132,13 +147,15 @@ class _OverviewTabState extends State<OverviewTab> {
           StatTile(
             icon: Icons.thermostat_rounded,
             label: 'Coolant temperature',
-            value: o.coolant == null ? '–' : '${o.coolant!.value} °C',
+            value: o.coolant == null ? '–' : session.settings.format(o.coolant!.pid, o.coolant!.value),
             tone: (o.coolant?.numeric ?? 0) > 110 ? Tone.bad : Tone.neutral,
           ),
           StatTile(
             icon: Icons.route_rounded,
             label: 'Since codes cleared',
-            value: o.distanceSinceClear == null ? '–' : '${o.distanceSinceClear!.value} km',
+            value: o.distanceSinceClear == null
+                ? '–'
+                : session.settings.format(o.distanceSinceClear!.pid, o.distanceSinceClear!.value),
           ),
           StatTile(icon: Icons.memory_rounded, label: 'Engine computers', value: '${o.supported.length}'),
         ],
@@ -171,6 +188,11 @@ class _OverviewTabState extends State<OverviewTab> {
           if (session.brand.codingDid != null)
             _Shortcut(icon: Icons.tune_rounded, label: 'Coding', onTap: () => onNavigate(HomeTabs.coding)),
           _Shortcut(icon: Icons.report_problem_rounded, label: 'Fault codes', onTap: () => onNavigate(HomeTabs.faults)),
+          _Shortcut(
+            icon: Icons.history_rounded,
+            label: 'Scan history',
+            onTap: () => Navigator.push(context, MaterialPageRoute<void>(builder: (_) => const HistoryScreen())),
+          ),
         ],
       ),
     ];
@@ -202,4 +224,25 @@ class _Shortcut extends StatelessWidget {
       ),
     ),
   );
+}
+
+class _ReadinessCard extends StatelessWidget {
+  const _ReadinessCard({required this.readiness});
+  final Readiness readiness;
+
+  @override
+  Widget build(BuildContext context) {
+    final (tone, icon, title, _) = describeVerdict(readiness);
+    final done = readiness.monitors.where((m) => m.complete).length;
+    return Card(
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        leading: TintedIcon(icon, color: toneColor(context, tone), size: 40),
+        title: Text('Inspection: $title', style: const TextStyle(fontWeight: FontWeight.w600)),
+        subtitle: Text('$done of ${readiness.monitors.length} emissions self-tests complete'),
+        trailing: const Icon(Icons.chevron_right_rounded),
+        onTap: () => Navigator.push(context, MaterialPageRoute<void>(builder: (_) => const ReadinessScreen())),
+      ),
+    );
+  }
 }

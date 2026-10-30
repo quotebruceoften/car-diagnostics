@@ -4,6 +4,7 @@ import '../../brands/scanner.dart';
 import '../scan_state.dart';
 import '../session.dart';
 import '../widgets/common.dart';
+import 'history_screen.dart';
 import 'module_screen.dart';
 
 /// Scans the car's modules (control units) and lists their fault codes.
@@ -23,6 +24,29 @@ class ModulesTab extends StatelessWidget {
           padding: const EdgeInsets.only(top: 4, bottom: 24),
           children: [
             ScanSummaryCard(scan: scan, onScan: () => scan.start(session.transport, session.brand)),
+            Card(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ListTile(
+                      leading: const Icon(Icons.history_rounded),
+                      title: const Text('Scan history'),
+                      onTap: () =>
+                          Navigator.push(context, MaterialPageRoute<void>(builder: (_) => const HistoryScreen())),
+                    ),
+                  ),
+                  if (session.lastRecord case final record? when !scan.scanning)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: TextButton.icon(
+                        icon: const Icon(Icons.picture_as_pdf_outlined, size: 18),
+                        label: const Text('Report'),
+                        onPressed: () => shareReport(context, record),
+                      ),
+                    ),
+                ],
+              ),
+            ),
             if (scan.error != null)
               Padding(
                 padding: const EdgeInsets.all(16),

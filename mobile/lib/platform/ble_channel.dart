@@ -74,16 +74,20 @@ class BleByteChannel implements ByteChannel {
     yield* ble.scanForDevices(withServices: const [], scanMode: ScanMode.lowLatency);
   }
 
-  static Future<BleByteChannel> connect(DiscoveredDevice device) async {
+  static Future<BleByteChannel> connect(DiscoveredDevice device) => connectTo(device.id, device.name);
+
+  /// Connects to a known adapter by its id (no scan needed), e.g. one saved earlier.
+  static Future<BleByteChannel> connectTo(String id, String name) async {
+    await ensurePermissions();
     final connected = Completer<void>();
     final connection = ble
-        .connectToDevice(id: device.id, connectionTimeout: const Duration(seconds: 10))
+        .connectToDevice(id: id, connectionTimeout: const Duration(seconds: 10))
         .listen(
           (update) {
             if (connected.isCompleted) return;
             if (update.connectionState == DeviceConnectionState.connected) connected.complete();
             if (update.connectionState == DeviceConnectionState.disconnected) {
-              connected.completeError(TransportException('Could not connect to ${device.name}'));
+              connected.completeError(TransportException('Could not connect to $name. Is it plugged in?'));
             }
           },
           onError: (Object e) {
@@ -94,16 +98,16 @@ class BleByteChannel implements ByteChannel {
       await connected.future.timeout(const Duration(seconds: 15));
       if (Platform.isAndroid) {
         try {
-          await ble.requestMtu(deviceId: device.id, mtu: 247);
+          await ble.requestMtu(deviceId: id, mtu: 247);
         } catch (_) {
           // Optional; we write in small chunks anyway.
         }
       }
-      await ble.discoverAllServices(device.id);
-      final services = await ble.getDiscoveredServices(device.id);
+      await ble.discoverAllServices(id);
+      final services = await ble.getDiscoveredServices(id);
       final (notify, write) = _pickCharacteristics(services);
       final withResponse = !write.isWritableWithoutResponse;
-      return BleByteChannel._(device.name.isEmpty ? device.id : device.name, connection, notify, write, withResponse);
+      return BleByteChannel._(name.isEmpty ? id : name, connection, notify, write, withResponse);
     } catch (e) {
       await connection.cancel();
       if (e is CarDiagException) rethrow;

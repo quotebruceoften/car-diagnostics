@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/errors.dart';
 import '../theme.dart';
+import 'skeleton.dart';
 
 String errorText(Object error) => error is CarDiagException ? error.message : '$error';
 
@@ -77,7 +78,9 @@ class _AsyncLoaderState<T> extends State<AsyncLoader<T>> {
   Widget build(BuildContext context) => FutureBuilder<T>(
     future: _future,
     builder: (context, snap) {
-      if (snap.connectionState != ConnectionState.done) return const LoadingView();
+      if (snap.connectionState != ConnectionState.done) {
+        return ListView(padding: const EdgeInsets.only(top: 4), children: const [Skeleton(cards: 4)]);
+      }
       if (snap.hasError) {
         return ListView(
           padding: const EdgeInsets.all(16),

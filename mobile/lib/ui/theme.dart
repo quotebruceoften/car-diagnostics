@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart' show CupertinoPageTransitionsBuilder;
 import 'package:flutter/material.dart';
 
 const _seed = Color(0xFF1F4E8C);
@@ -38,6 +39,12 @@ ThemeData buildTheme(Brightness brightness) {
 
   return base.copyWith(
     scaffoldBackgroundColor: scheme.surface,
+    pageTransitionsTheme: const PageTransitionsTheme(
+      builders: {
+        TargetPlatform.android: FadeForwardsPageTransitionsBuilder(),
+        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+      },
+    ),
     extensions: [brightness == Brightness.light ? StatusColors.light : StatusColors.dark],
     textTheme: text.copyWith(
       headlineMedium: text.headlineMedium?.copyWith(fontWeight: FontWeight.w800, letterSpacing: -0.5),

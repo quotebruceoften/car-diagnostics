@@ -20,6 +20,8 @@ jobs:
   android:
     name: Android app
     runs-on: ubuntu-latest
+    env:
+      HAS_SIGNING_KEY: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
     defaults:
       run:
         working-directory: mobile
@@ -37,9 +39,54 @@ jobs:
       - run: flutter pub get
       - run: flutter analyze
       - run: flutter test
-      - run: flutter build apk --release
+
+      # With the signing secrets set, every build is signed with the same key,
+      # so new versions install over old ones. Without them, the debug key is used.
+      - name: Set up release signing
+        if: env.HAS_SIGNING_KEY == 'true'
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/release.jks
+          cat > android/key.properties <<PROPS
+          storeFile=release.jks
+          storePassword=$KEYSTORE_PASSWORD
+          keyAlias=cardiag
+          keyPassword=$KEYSTORE_PASSWORD
+          PROPS
+
+      - name: Build APK
+        run: |
+          flutter build apk --release --build-number=${{ github.run_number }}
+          cp build/app/outputs/flutter-apk/app-release.apk car-diagnostics.apk
       - uses: actions/upload-artifact@v4
         with:
           name: car-diagnostics-apk
-          path: mobile/build/app/outputs/flutter-apk/app-release.apk
+          path: mobile/car-diagnostics.apk
           retention-days: 30
+
+  release:
+    name: Publish latest build
+    if: github.event_name == 'push'
+    needs: [python, android]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: car-diagnostics-apk
+      # One rolling pre-release, so the download link never changes:
+      # https://github.com/<owner>/<repo>/releases/download/latest-build/car-diagnostics.apk
+      - name: Replace the "Latest build" release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release delete latest-build --cleanup-tag --yes || true
+          gh release create latest-build car-diagnostics.apk \
+            --prerelease \
+            --target "${{ github.sha }}" \
+            --title "Latest build (#${{ github.run_number }})" \
+            --notes "Built from ${{ github.ref_name }} at ${{ github.sha }}. Download car-diagnostics.apk below and open it on your Android phone."

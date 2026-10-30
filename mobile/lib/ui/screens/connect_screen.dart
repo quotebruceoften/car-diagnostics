@@ -5,6 +5,8 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
 import '../../platform/ble_channel.dart';
 import '../session.dart';
+import '../settings.dart';
+import 'settings_screen.dart';
 import '../widgets/common.dart';
 
 class ConnectScreen extends StatefulWidget {
@@ -19,6 +21,29 @@ class _ConnectScreenState extends State<ConnectScreen> {
   bool _wifiOpen = false;
   final _host = TextEditingController(text: '192.168.0.10');
   final _port = TextEditingController(text: '35000');
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final session = SessionScope.read(context);
+    final saved = session.settings.lastAdapter;
+    // Reconnect to the last adapter once per app launch.
+    if (!session.autoReconnectTried && session.settings.autoReconnect && saved != null) {
+      session.autoReconnectTried = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !session.connected && !session.busy) _reconnect(saved);
+      });
+    }
+  }
+
+  Future<void> _reconnect(SavedAdapter a) {
+    final session = SessionScope.read(context);
+    return _run(
+      () => a.isBle
+          ? session.connectChannel(() => BleByteChannel.connectTo(a.id!, a.name), remember: a)
+          : session.connectWifi(a.host!, a.port!),
+    );
+  }
 
   @override
   void dispose() {
@@ -43,7 +68,13 @@ class _ConnectScreenState extends State<ConnectScreen> {
       isScrollControlled: true,
       builder: (_) => const _BleScanSheet(),
     );
-    if (device != null) await _run(() => session.connectChannel(() => BleByteChannel.connect(device)));
+    if (device == null) return;
+    await _run(
+      () => session.connectChannel(
+        () => BleByteChannel.connect(device),
+        remember: SavedAdapter.ble(id: device.id, name: device.name.isEmpty ? 'Bluetooth adapter' : device.name),
+      ),
+    );
   }
 
   @override
@@ -75,7 +106,31 @@ class _ConnectScreenState extends State<ConnectScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                           child: ErrorPanel(error: _error!),
                         ),
-                      const SectionHeader('Connect'),
+                      if (session.settings.lastAdapter case final saved?) ...[
+                        const SectionHeader('Your adapter'),
+                        Card(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                TintedIcon(saved.isBle ? Icons.bluetooth_connected_rounded : Icons.wifi_rounded),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(saved.name, style: theme.textTheme.titleMedium),
+                                      Text(saved.detail, style: theme.textTheme.bodySmall),
+                                    ],
+                                  ),
+                                ),
+                                FilledButton(onPressed: () => _reconnect(saved), child: const Text('Connect')),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                      SectionHeader(session.settings.lastAdapter == null ? 'Connect' : 'Other ways to connect'),
                       _OptionCard(
                         icon: Icons.bluetooth_rounded,
                         title: 'Bluetooth adapter',
@@ -190,13 +245,26 @@ class _Header extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: scheme.onPrimary.withValues(alpha: 0.16),
-                borderRadius: BorderRadius.circular(18),
-              ),
-              child: Icon(Icons.directions_car_filled_rounded, size: 36, color: scheme.onPrimary),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: scheme.onPrimary.withValues(alpha: 0.16),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: Icon(Icons.directions_car_filled_rounded, size: 36, color: scheme.onPrimary),
+                ),
+                const Spacer(),
+                IconButton(
+                  tooltip: 'Settings',
+                  color: scheme.onPrimary,
+                  icon: const Icon(Icons.settings_outlined),
+                  onPressed: () =>
+                      Navigator.push(context, MaterialPageRoute<void>(builder: (_) => const SettingsScreen())),
+                ),
+              ],
             ),
             const SizedBox(height: 20),
             Text('Car Diagnostics', style: theme.textTheme.headlineMedium?.copyWith(color: scheme.onPrimary)),

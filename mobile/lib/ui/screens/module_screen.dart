@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../brands/brand.dart';
 import '../../brands/scanner.dart';
@@ -7,6 +8,7 @@ import '../session.dart';
 import '../widgets/common.dart';
 import '../widgets/dtc_tile.dart';
 import 'coding_screen.dart';
+import 'dtc_screen.dart';
 
 /// One module: identification, fault codes and (where supported) coding.
 class ModuleScreen extends StatefulWidget {
@@ -33,6 +35,7 @@ class _ModuleScreenState extends State<ModuleScreen> {
     if (!ok || !mounted) return;
     try {
       await ModuleScanner(session.transport, session.brand).client(widget.module).clearDtcs();
+      HapticFeedback.mediumImpact();
       if (mounted) showMessage(context, 'Fault memory cleared');
     } catch (e) {
       if (mounted) showMessage(context, errorText(e));
@@ -137,7 +140,11 @@ class _ModuleScreenState extends State<ModuleScreen> {
                           children: [
                             for (final (i, d) in dtcs.indexed) ...[
                               if (i > 0) const Divider(height: 1, indent: 16, endIndent: 16),
-                              DtcTile(dtc: d, description: brand.describeDtc(d)),
+                              DtcTile(
+                                dtc: d,
+                                description: brand.describeDtc(d),
+                                onTap: () => openDtc(context, d, brand.describeDtc(d), source: m.label),
+                              ),
                             ],
                           ],
                         ),

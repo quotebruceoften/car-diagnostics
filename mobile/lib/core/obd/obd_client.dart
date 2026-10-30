@@ -5,6 +5,7 @@ import '../hex.dart';
 import '../transport/transport.dart';
 import 'dtc.dart';
 import 'pids.dart';
+import 'readiness.dart';
 
 const obdEcuNames = {0x7E8: 'Engine', 0x7E9: 'Transmission', 0x7EA: 'ECU #3', 0x7EB: 'ECU #4', 0x7EC: 'Hybrid / EV'};
 
@@ -88,6 +89,13 @@ class ObdClient {
   }
 
   Future<MonitorStatus> monitorStatus() async => (await read(0x01)).value as MonitorStatus;
+
+  /// Emissions readiness monitors, from the engine computer.
+  Future<Readiness> readiness() async {
+    final (_, data) = _first(await query(0x01, [0x01]), 'the readiness request');
+    if (data.length < 4) throw ProtocolException('Short readiness reply');
+    return decodeReadiness(data);
+  }
 
   Future<Map<int, List<Dtc>>> readDtcs([DtcKind kind = DtcKind.stored]) async {
     final mode = switch (kind) {

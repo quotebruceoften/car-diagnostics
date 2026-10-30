@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 import '../brands/brand.dart';
 import '../brands/scanner.dart';
@@ -14,6 +15,9 @@ class ScanState extends ChangeNotifier {
   DateTime? finishedAt;
   int total = 0;
   StreamSubscription<ModuleInfo>? _sub;
+
+  /// Called after a full scan finishes (used to save it to the history).
+  void Function()? onComplete;
 
   bool get hasResults => results.isNotEmpty;
   List<ModuleInfo> get present => results.where((r) => r.present).toList();
@@ -42,6 +46,8 @@ class ScanState extends ChangeNotifier {
         scanning = false;
         finishedAt = DateTime.now();
         notifyListeners();
+        HapticFeedback.mediumImpact();
+        onComplete?.call();
       },
     );
   }

@@ -8,7 +8,14 @@ Planned work, roughly in priority order. Nothing here is scheduled yet.
 - **Coding profiles for real modules.** Add named options for verified VW part numbers, starting with the
   Golf 7 central electrics (09) and instrument cluster (17).
 - **Classic Bluetooth adapters on Android.** Many cheap ELM327 adapters only do classic Bluetooth (SPP).
+- **VW service reminder reset** after an oil change. Needs the verified adaptation channels for each
+  instrument cluster; writing guessed values to a car is not an option.
 - **Adaptations, output tests and basic settings** for VW Group modules.
+- **Languages.** The app is English only; translating means moving every text into translation files.
+- **AI explanations for fault codes not in the built-in list.** Would need an online service and an
+  API key; only the code and car model would be sent.
+- **Google Play.** Internal testing track for automatic updates; needs a Google Play developer
+  account (one-time fee).
 - **3D car view (shelved).** A generated low-poly 3D car with tappable module-health hotspots was built
   and then replaced by the user's own photo or video. The code (`mobile/lib/ui/car3d/`) is in commit
   `d1b740d` and can be restored from git history.

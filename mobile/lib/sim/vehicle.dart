@@ -179,6 +179,9 @@ class ObdEcu extends VirtualEcu {
   final Map<int, LiveValue> live;
   Map<int, List<int>> freeze = {};
   int distanceSinceClear = 1234;
+
+  /// Clearing codes resets the emissions self-tests until the car is driven.
+  bool monitorsIncomplete = false;
   final _start = DateTime.now();
 
   @override
@@ -192,6 +195,7 @@ class ObdEcu extends VirtualEcu {
     pending.clear();
     freeze = {};
     distanceSinceClear = 0;
+    monitorsIncomplete = true;
   }
 
   Set<int> get _supported => {...live.keys, 0x01, 0x31};
@@ -208,7 +212,11 @@ class ObdEcu extends VirtualEcu {
       }
       return [(bits >> 24) & 0xFF, (bits >> 16) & 0xFF, (bits >> 8) & 0xFF, bits & 0xFF];
     }
-    if (pid == 0x01) return [(stored.isNotEmpty ? 0x80 : 0) | stored.length, 0x07, 0x65, 0x00];
+    if (pid == 0x01) {
+      // Petrol engine; catalyst, EVAP, O2 sensor and heater monitors supported.
+      final incomplete = monitorsIncomplete ? 0x25 : 0x00;
+      return [(stored.isNotEmpty ? 0x80 : 0) | stored.length, 0x07, 0x65, incomplete];
+    }
     if (pid == 0x31) return [distanceSinceClear >> 8, distanceSinceClear & 0xFF];
     return live[pid]?.call(_t);
   }

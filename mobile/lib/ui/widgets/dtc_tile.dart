@@ -5,7 +5,7 @@ import 'common.dart';
 
 /// One fault code: code badge, description and status.
 class DtcTile extends StatelessWidget {
-  const DtcTile({super.key, required this.dtc, required this.description, this.tone, this.caption});
+  const DtcTile({super.key, required this.dtc, required this.description, this.tone, this.caption, this.onTap});
 
   final Dtc dtc;
   final String description;
@@ -16,13 +16,16 @@ class DtcTile extends StatelessWidget {
   /// Extra line, e.g. which ECU reported the code.
   final String? caption;
 
+  /// Opens the code's detail page.
+  final VoidCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final effective = tone ?? (dtc.status == null || dtc.active ? Tone.bad : Tone.warn);
     final color = toneColor(context, effective);
     final flags = dtc.statusFlags;
-    return Padding(
+    final tile = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,6 +62,19 @@ class DtcTile extends StatelessWidget {
                 ],
               ],
             ),
+          ),
+        ],
+      ),
+    );
+    if (onTap == null) return tile;
+    return InkWell(
+      onTap: onTap,
+      child: Row(
+        children: [
+          Expanded(child: tile),
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: Icon(Icons.chevron_right_rounded, color: theme.colorScheme.onSurfaceVariant),
           ),
         ],
       ),
