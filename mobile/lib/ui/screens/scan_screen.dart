@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../brands/scanner.dart';
+import '../../core/history.dart';
 import '../scan_state.dart';
 import '../session.dart';
 import '../widgets/common.dart';
@@ -26,6 +27,24 @@ class ScanScreen extends StatefulWidget {
 
 class _ScanScreenState extends State<ScanScreen> {
   bool _started = false;
+  FaultTrends? _trends;
+  DateTime? _trendsFor;
+
+  /// Loads the car's fault history once a scan has been saved.
+  Future<void> _loadTrends(DateTime finished) async {
+    if (_trendsFor == finished) return;
+    _trendsFor = finished;
+    final session = SessionScope.read(context);
+    try {
+      final records = await (await session.historyStore()).list(session.vin ?? '');
+      // The newest scan may still be being saved.
+      final latest = session.lastRecord;
+      if (latest != null && !records.any((r) => r.timestamp.isAtSameMomentAs(latest.timestamp))) records.add(latest);
+      if (mounted && records.length > 1) setState(() => _trends = FaultTrends(records));
+    } catch (_) {
+      // Trends are extra; the results stand on their own.
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -51,6 +70,7 @@ class _ScanScreenState extends State<ScanScreen> {
       builder: (context, _) {
         final scan = session.scan;
         final record = session.lastRecord;
+        if (!scan.scanning && record != null) _loadTrends(record.timestamp);
         return Scaffold(
           appBar: AppBar(
             title: const Text('Scan car'),
@@ -147,10 +167,17 @@ class _ScanScreenState extends State<ScanScreen> {
           child: Column(
             children: [
               for (final d in m.dtcs!)
-                DtcTile(
-                  dtc: d,
-                  description: session.brand.describeDtc(d),
-                  onTap: () => openDtc(context, d, session.brand.describeDtc(d), source: m.def.name),
+                Builder(
+                  builder: (context) {
+                    final t = _trends?.find(m.def.address, m.def.name, d.code);
+                    final trend = t == null ? null : describeTrend(t);
+                    return DtcTile(
+                      dtc: d,
+                      description: session.brand.describeDtc(d),
+                      caption: trend,
+                      onTap: () => openDtc(context, d, session.brand.describeDtc(d), source: m.def.name, trend: trend),
+                    );
+                  },
                 ),
               const Divider(height: 1),
               ListTile(

@@ -6,6 +6,7 @@ import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import '../../platform/ble_channel.dart';
 import '../session.dart';
 import '../settings.dart';
+import 'history_screen.dart';
 import 'service_screen.dart';
 import 'settings_screen.dart';
 import '../widgets/common.dart';
@@ -194,8 +195,8 @@ class _ConnectScreenState extends State<ConnectScreen> {
                         onTap: () => _run(session.connectDemo),
                         onLongPress: () => _run(() => session.connectDemo(throughEmulatedAdapter: true)),
                       ),
+                      const SectionHeader('Without the adapter'),
                       if (session.settings.lastCar case final car?) ...[
-                        const SectionHeader('Without the adapter'),
                         _OptionCard(
                           icon: Icons.build_circle_outlined,
                           title: 'Service log',
@@ -207,7 +208,29 @@ class _ConnectScreenState extends State<ConnectScreen> {
                             ),
                           ),
                         ),
+                        _OptionCard(
+                          icon: Icons.history_rounded,
+                          title: 'Scan history',
+                          subtitle: '${car.name}: past scans and fault trends',
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute<void>(builder: (_) => HistoryScreen(vin: car.vin)),
+                          ),
+                        ),
                       ],
+                      _OptionCard(
+                        icon: Icons.upload_file_rounded,
+                        title: 'Import a VCDS scan',
+                        subtitle: 'Add a VCDS auto-scan log (.txt) to the scan history',
+                        onTap: () async {
+                          final record = await importVcdsScan(context);
+                          if (record == null || !context.mounted) return;
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute<void>(builder: (_) => HistoryScreen(vin: record.vin)),
+                          );
+                        },
+                      ),
                       const SectionHeader('Good to know'),
                       Card(
                         child: Padding(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../brands/registry.dart';
 import '../../core/errors.dart';
 import '../../core/obd/dtc.dart';
 import '../../core/obd/dtc_info.dart';
@@ -17,7 +18,7 @@ Tone severityTone(Severity s) => switch (s) {
 
 /// Everything about one fault code in plain language.
 class DtcScreen extends StatelessWidget {
-  const DtcScreen({super.key, required this.dtc, required this.description, this.source});
+  const DtcScreen({super.key, required this.dtc, required this.description, this.source, this.vin, this.trend});
 
   final Dtc dtc;
 
@@ -26,6 +27,12 @@ class DtcScreen extends StatelessWidget {
 
   /// Which module or ECU reported it.
   final String? source;
+
+  /// The car it belongs to, when not the connected car (e.g. from the history).
+  final String? vin;
+
+  /// How often this fault has appeared in the saved scans.
+  final String? trend;
 
   Future<void> _search(BuildContext context, String car) async {
     final query = Uri.encodeQueryComponent('${dtc.code} $car');
@@ -39,7 +46,10 @@ class DtcScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final session = SessionScope.of(context);
-    final info = session.brand.explainDtc(dtc.code);
+    final otherCar = vin != null && vin != session.vin;
+    final brand = otherCar ? brandForVin(vin) : session.brand;
+    final carName = (otherCar ? brand.identify(vin) : session.identity).name;
+    final info = brand.explainDtc(dtc.code);
     final theme = Theme.of(context);
     final tone = severityTone(info.severity);
     final color = toneColor(context, tone);
@@ -81,6 +91,10 @@ class DtcScreen extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text('Reported by $source', style: theme.textTheme.bodySmall),
                   ],
+                  if (trend != null) ...[
+                    const SizedBox(height: 4),
+                    Text(trend!, style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600)),
+                  ],
                 ],
               ),
             ),
@@ -119,7 +133,7 @@ class DtcScreen extends StatelessWidget {
           ],
           const SectionHeader('Can I drive?'),
           _TextCard(info.driving),
-          if (session.connected && dtc.code.startsWith('P')) _FreezeFrameSection(code: dtc.code),
+          if (session.connected && !otherCar && dtc.code.startsWith('P')) _FreezeFrameSection(code: dtc.code),
           if (dtc.statusFlags.isNotEmpty) ...[
             const SectionHeader('Status reported by the module'),
             Card(
@@ -137,8 +151,8 @@ class DtcScreen extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
             child: OutlinedButton.icon(
               icon: const Icon(Icons.travel_explore_rounded),
-              label: Text('Search "${dtc.code} ${session.identity.name}"'),
-              onPressed: () => _search(context, session.identity.name),
+              label: Text('Search "${dtc.code} $carName"'),
+              onPressed: () => _search(context, carName),
             ),
           ),
           Padding(
@@ -250,9 +264,10 @@ class _TextCard extends StatelessWidget {
 }
 
 /// Opens the detail page for [dtc].
-void openDtc(BuildContext context, Dtc dtc, String description, {String? source}) => Navigator.push(
-  context,
-  MaterialPageRoute<void>(
-    builder: (_) => DtcScreen(dtc: dtc, description: description, source: source),
-  ),
-);
+void openDtc(BuildContext context, Dtc dtc, String description, {String? source, String? vin, String? trend}) =>
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (_) => DtcScreen(dtc: dtc, description: description, source: source, vin: vin, trend: trend),
+      ),
+    );

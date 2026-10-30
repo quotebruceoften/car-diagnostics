@@ -30,10 +30,14 @@ Volkswagen Group cars (VW, Audi, Škoda, SEAT, Cupra).
   engines), distance, average economy and the cost of each drive.
 - **Performance timer:** 0–100 km/h, 80–120 km/h and 100–0 km/h (or mph equivalents), started
   and stopped automatically from the car's speed, with braking distance.
-- **Service log:** record services and get reminders by date or distance. Works without the
-  adapter; cars that report their odometer over OBD update the mileage automatically.
+- **Service log:** record services and get reminders by date or distance, including phone
+  notifications a week before and on the day. Works without the adapter; cars that report their
+  odometer over OBD update the mileage automatically.
 - **Scan history and reports:** every module scan is saved per car, with new and fixed faults
-  compared to the previous scan. Any scan can be shared as a PDF report.
+  compared to the previous scan. Any scan can be shared as a PDF report. **Fault trends** show
+  which faults keep coming back ("in 3 of 4 scans since March") and which have gone.
+- **VCDS import:** add a VCDS auto-scan log (.txt) to the scan history, from the scan history or
+  from the first screen without connecting. Its mileage updates the service log.
 - **Settings:** °C/°F, km/miles, fuel economy unit, fuel price, light/dark/automatic theme,
   automatic reconnect, and **backup and restore** of all app data in one file.
 - **Modules (VW Group):** scan every module (engine, transmission, ABS,

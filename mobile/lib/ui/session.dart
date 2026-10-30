@@ -16,12 +16,14 @@ import '../core/history.dart';
 import '../core/obd/dtc.dart';
 import '../core/obd/obd_client.dart';
 import '../core/obd/pids.dart';
+import '../core/reminder_plan.dart';
 import '../core/service_log.dart';
 import '../core/store.dart';
 import '../core/transport/byte_channel.dart';
 import '../core/transport/elm327.dart';
 import '../core/transport/transport.dart';
 import '../core/uds/uds_client.dart';
+import '../platform/notifications.dart';
 import '../sim/elm_emulator.dart';
 import '../sim/vehicle.dart';
 import 'car_media.dart';
@@ -36,6 +38,7 @@ class DiagSession extends ChangeNotifier {
     CarMediaStore? mediaStore,
     HistoryStore? historyStore,
     DataStore? dataStore,
+    ReminderNotifier? notifier,
     AssetBundle? assets,
     this.demoLatency = const Duration(milliseconds: 15),
   }) : settings = settings ?? AppSettings(),
@@ -43,6 +46,7 @@ class DiagSession extends ChangeNotifier {
        _mediaStore = mediaStore,
        _historyStore = historyStore,
        _dataStore = dataStore,
+       notifier = notifier ?? LocalReminderNotifier(),
        _assets = assets ?? rootBundle {
     scan.onComplete = _saveScan;
     alerts.rules = this.settings.alertRules;
@@ -78,8 +82,25 @@ class DiagSession extends ChangeNotifier {
   Future<ServiceLog> loadServiceLog(String vin) async =>
       ServiceLog.parse(await (await dataStore()).read(ServiceLog.pathFor(vin)));
 
-  Future<void> saveServiceLog(String vin, ServiceLog log) async =>
-      (await dataStore()).write(ServiceLog.pathFor(vin), log.toJsonString());
+  /// Phone notifications for service reminders.
+  final ReminderNotifier notifier;
+
+  Future<void> saveServiceLog(String vin, ServiceLog log) async {
+    await (await dataStore()).write(ServiceLog.pathFor(vin), log.toJsonString());
+    unawaited(syncServiceNotifications(vin, log));
+  }
+
+  /// Schedules (or cancels) the notifications for [vin]'s service reminders.
+  Future<void> syncServiceNotifications(String vin, [ServiceLog? log]) async {
+    if (vin.isEmpty) return;
+    if (!settings.serviceNotifications) {
+      await notifier.sync(vin, const []);
+      return;
+    }
+    final l = log ?? await loadServiceLog(vin);
+    final name = settings.lastCar?.vin == vin ? settings.lastCar!.name : brandForVin(vin).identify(vin).title;
+    await notifier.sync(vin, planServiceNotices(vin, name, l, DateTime.now()));
+  }
 
   /// Last odometer reading from the car this session (km), if it reports one.
   double? odometerKm;

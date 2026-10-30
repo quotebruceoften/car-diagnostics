@@ -124,6 +124,25 @@ class SettingsScreen extends StatelessWidget {
                 ],
               ),
             ),
+            const SectionHeader('Notifications'),
+            Card(
+              child: SwitchListTile(
+                secondary: const Icon(Icons.notifications_active_outlined),
+                title: const Text('Service reminders'),
+                subtitle: const Text('A notification a week before and on the day a service is due'),
+                value: settings.serviceNotifications,
+                onChanged: (v) async {
+                  HapticFeedback.selectionClick();
+                  final session = SessionScope.read(context);
+                  settings.setServiceNotifications(v);
+                  if (!v) {
+                    await session.notifier.cancelAll();
+                  } else if (settings.lastCar case final car?) {
+                    await session.syncServiceNotifications(car.vin);
+                  }
+                },
+              ),
+            ),
             const SectionHeader('Connection'),
             Card(
               child: Column(

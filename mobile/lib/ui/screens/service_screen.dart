@@ -280,7 +280,7 @@ class _ServiceScreenState extends State<ServiceScreen> {
                   padding: const EdgeInsets.fromLTRB(32, 16, 32, 0),
                   child: Text(
                     'Intervals start from typical values; tap a reminder to match your service booklet. '
-                    'Reminders show here and on the Overview.',
+                    'Reminders show here, on the Overview and as phone notifications (Settings > Notifications).',
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodySmall,
                   ),

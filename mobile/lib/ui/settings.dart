@@ -65,6 +65,7 @@ class AppSettings extends ChangeNotifier {
     temp = TempUnit.values.asNameMap()[p.getString('temp')] ?? TempUnit.celsius;
     distance = DistanceUnit.values.asNameMap()[p.getString('distance')] ?? DistanceUnit.km;
     autoReconnect = p.getBool('autoReconnect') ?? true;
+    serviceNotifications = p.getBool('serviceNotifications') ?? true;
     economy = EconomyUnit.values.asNameMap()[p.getString('economy')] ?? EconomyUnit.lPer100km;
     fuelPrice = p.getDouble('fuelPrice');
     currency = p.getString('currency') ?? '';
@@ -91,6 +92,9 @@ class AppSettings extends ChangeNotifier {
   TempUnit temp = TempUnit.celsius;
   DistanceUnit distance = DistanceUnit.km;
   bool autoReconnect = true;
+
+  /// Phone notifications when a service falls due.
+  bool serviceNotifications = true;
   SavedAdapter? lastAdapter;
   SavedCar? lastCar;
   EconomyUnit economy = EconomyUnit.lPer100km;
@@ -111,6 +115,8 @@ class AppSettings extends ChangeNotifier {
     (p) => a == null ? p.remove('lastAdapter') : p.setString('lastAdapter', jsonEncode(a.toJson())),
   );
 
+  void setServiceNotifications(bool v) =>
+      _set(() => serviceNotifications = v, (p) => p.setBool('serviceNotifications', v));
   void setLastCar(SavedCar c) => _set(() => lastCar = c, (p) => p.setString('lastCar', jsonEncode(c.toJson())));
   void setEconomy(EconomyUnit v) => _set(() => economy = v, (p) => p.setString('economy', v.name));
   void setFuelPrice(double? v, String currency) => _set(
@@ -139,6 +145,7 @@ class AppSettings extends ChangeNotifier {
     'distance': distance.name,
     'economy': economy.name,
     'autoReconnect': autoReconnect,
+    'serviceNotifications': serviceNotifications,
     'fuelPrice': fuelPrice,
     'currency': currency,
     'lastCar': lastCar?.toJson(),
@@ -151,6 +158,7 @@ class AppSettings extends ChangeNotifier {
     if (DistanceUnit.values.asNameMap()[j['distance']] case final v?) setDistance(v);
     if (EconomyUnit.values.asNameMap()[j['economy']] case final v?) setEconomy(v);
     if (j['autoReconnect'] case final bool v) setAutoReconnect(v);
+    if (j['serviceNotifications'] case final bool v) setServiceNotifications(v);
     if (j.containsKey('fuelPrice') || j.containsKey('currency')) {
       setFuelPrice((j['fuelPrice'] as num?)?.toDouble(), (j['currency'] ?? currency) as String);
     }

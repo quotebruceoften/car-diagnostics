@@ -58,27 +58,41 @@ class ModuleRecord {
 
 /// The result of one full module scan.
 class ScanRecord {
-  const ScanRecord({required this.timestamp, required this.vin, required this.carName, required this.modules});
+  const ScanRecord({
+    required this.timestamp,
+    required this.vin,
+    required this.carName,
+    required this.modules,
+    this.source = '',
+  });
 
   final DateTime timestamp;
   final String vin;
   final String carName;
+
+  /// Where the scan came from when not this app, e.g. "VCDS".
+  final String source;
 
   /// Modules that answered.
   final List<ModuleRecord> modules;
 
   int get faultCount => modules.fold(0, (n, m) => n + m.faults.length);
 
-  /// "module address|code" keys, for comparing scans.
+  /// Identifies a fault across scans: module address and code, so scans
+  /// from different tools (which name modules differently) line up.
+  static String faultKey(ModuleRecord m, FaultRecord f) =>
+      '${m.address.isEmpty ? m.name : m.address.toUpperCase()}|${f.code.toUpperCase()}';
+
   Set<String> get faultKeys => {
     for (final m in modules)
-      for (final f in m.faults) '${m.address}|${m.name}|${f.display}',
+      for (final f in m.faults) faultKey(m, f),
   };
 
   Map<String, dynamic> toJson() => {
     'timestamp': timestamp.toUtc().toIso8601String(),
     'vin': vin,
     'carName': carName,
+    if (source.isNotEmpty) 'source': source,
     'modules': [for (final m in modules) m.toJson()],
   };
 
@@ -86,6 +100,7 @@ class ScanRecord {
     timestamp: DateTime.parse(j['timestamp'] as String),
     vin: (j['vin'] ?? '') as String,
     carName: (j['carName'] ?? '') as String,
+    source: (j['source'] ?? '') as String,
     modules: [for (final m in (j['modules'] as List? ?? const [])) ModuleRecord.fromJson(m as Map<String, dynamic>)],
   );
 }
@@ -105,8 +120,81 @@ class ScanComparison {
   static List<(String, FaultRecord)> _entries(ScanRecord r, Set<String> keys) => [
     for (final m in r.modules)
       for (final f in m.faults)
-        if (keys.contains('${m.address}|${m.name}|${f.display}')) (m.label, f),
+        if (keys.contains(ScanRecord.faultKey(m, f))) (m.label, f),
   ];
+}
+
+/// How one fault has behaved over the saved scans of a car.
+class FaultTrend {
+  FaultTrend(this.moduleLabel, this.fault, this.first);
+
+  final String moduleLabel;
+
+  /// The fault as last seen.
+  FaultRecord fault;
+
+  /// Scans that contain it, and all scans since it first appeared.
+  int seen = 0;
+  int since = 0;
+  DateTime first;
+  late DateTime last = first;
+
+  /// In the newest scan.
+  bool current = false;
+
+  /// The first scan after [last] that no longer had it.
+  DateTime? goneSince;
+
+  bool get recurring => seen >= 2;
+}
+
+/// Fault history over every saved scan of one car.
+class FaultTrends {
+  /// [records] in any order.
+  FaultTrends(List<ScanRecord> records) : scans = records.length {
+    final sorted = [...records]..sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    for (final (i, r) in sorted.indexed) {
+      final keys = r.faultKeys;
+      for (final m in r.modules) {
+        for (final f in m.faults) {
+          final key = ScanRecord.faultKey(m, f);
+          final t = _byKey.putIfAbsent(key, () => FaultTrend(m.label, f, r.timestamp)..since = sorted.length - i);
+          if (t.seen == 0 || !t.last.isAtSameMomentAs(r.timestamp)) t.seen++;
+          t
+            ..last = r.timestamp
+            ..fault = f
+            ..goneSince = null;
+        }
+      }
+      for (final t in _byKey.entries) {
+        if (!keys.contains(t.key) && t.value.goneSince == null && t.value.last.isBefore(r.timestamp)) {
+          t.value.goneSince = r.timestamp;
+        }
+      }
+    }
+    if (sorted.isNotEmpty) {
+      for (final key in sorted.last.faultKeys) {
+        _byKey[key]?.current = true;
+      }
+    }
+  }
+
+  final int scans;
+  final _byKey = <String, FaultTrend>{};
+
+  FaultTrend? of(ModuleRecord m, FaultRecord f) => _byKey[ScanRecord.faultKey(m, f)];
+
+  /// Lookup for live scan results, by module address (or name) and code.
+  FaultTrend? find(String address, String name, String code) =>
+      _byKey['${address.isEmpty ? name : address.toUpperCase()}|${code.toUpperCase()}'];
+
+  /// Current faults first (most often seen first), then gone ones.
+  List<FaultTrend> get all => _byKey.values.toList()
+    ..sort((a, b) {
+      if (a.current != b.current) return a.current ? -1 : 1;
+      final c = b.seen.compareTo(a.seen);
+      return c != 0 ? c : b.last.compareTo(a.last);
+    });
 }
 
 abstract class HistoryStore {
