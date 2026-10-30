@@ -1,4 +1,6 @@
+import 'package:cardiag_mobile/brands/registry.dart';
 import 'package:cardiag_mobile/core/coding/coder.dart';
+import 'package:cardiag_mobile/core/obd/dtc.dart';
 import 'package:cardiag_mobile/core/obd/dtc_info.dart';
 import 'package:cardiag_mobile/core/obd/readiness.dart';
 import 'package:cardiag_mobile/core/obd/pids.dart';
@@ -32,6 +34,47 @@ void main() {
       expect(misfire.isGeneric, isFalse);
       expect(dtcInfo('P0217').severity, Severity.critical);
       expect(dtcInfo('p0442').severity, Severity.low); // case-insensitive
+    });
+
+    test('VW Group meanings apply only to VW Group cars', () {
+      final vag = brandForVin('WVWZZZAUZDW000000');
+      expect(vag.explainDtc('B1263').title, 'Fuel tank flap control circuit fault');
+      expect(vag.describeDtc(const Dtc('B11F8')), 'Heated exterior mirror: open or short to ground');
+      expect(vag.explainDtc('U1123').severity, Severity.low);
+      // Generic codes still come from the shared table.
+      expect(vag.explainDtc('P0366').title, 'Camshaft position sensor B fault');
+      expect(vag.explainDtc('U0428').title, 'Implausible data from the steering angle sensor');
+      // Other makes don't get VW's body-code meanings.
+      expect(genericBrand.explainDtc('B1263').isGeneric, isTrue);
+    });
+
+    test('VW module list covers the Golf 7 modules', () {
+      final addresses = brandForVin('WVWZZZAUZDW000000').modules.map((m) => m.address);
+      expect(
+        addresses,
+        containsAll([
+          '01',
+          '02',
+          '03',
+          '08',
+          '09',
+          '13',
+          '14',
+          '15',
+          '16',
+          '17',
+          '19',
+          '42',
+          '44',
+          '52',
+          '55',
+          '5F',
+          'A5',
+        ]),
+      );
+      for (final m in brandForVin('WVWZZZAUZDW000000').modules.where((m) => m.txId >= 0x700 && m.txId < 0x7E0)) {
+        expect(m.rxId, m.txId + 0x6A);
+      }
     });
 
     test('unknown codes are explained from their structure', () {

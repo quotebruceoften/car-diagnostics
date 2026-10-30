@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../brands/registry.dart';
 import '../core/history.dart';
 import '../core/obd/dtc_info.dart';
 
@@ -28,6 +29,7 @@ String _date(DateTime t) {
 
 /// A shareable A4 report of [record], with changes since [previous] if given.
 Future<Uint8List> buildScanReport(ScanRecord record, {ScanRecord? previous}) {
+  final brand = brandForVin(record.vin);
   final doc = pw.Document(title: 'Scan report ${record.carName}', author: 'Car Diagnostics');
   final withFaults = record.modules.where((m) => m.faults.isNotEmpty).toList();
   final clean = record.modules.where((m) => m.faults.isEmpty && m.faultsReadable).toList();
@@ -63,7 +65,7 @@ Future<Uint8List> buildScanReport(ScanRecord record, {ScanRecord? previous}) {
   );
 
   pw.Widget fault(FaultRecord f, {PdfColor? colorOverride}) {
-    final info = dtcInfo(f.code);
+    final info = brand.explainDtc(f.code);
     final color = colorOverride ?? _severityColor(info.severity);
     return pw.Container(
       padding: const pw.EdgeInsets.symmetric(vertical: 6),

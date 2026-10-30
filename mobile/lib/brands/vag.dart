@@ -1,7 +1,9 @@
 import '../core/errors.dart';
 import '../core/uds/uds_client.dart';
 import '../core/vin.dart';
+import '../core/obd/dtc_info.dart';
 import 'brand.dart';
+import 'vag_dtcs.dart';
 
 /// Volkswagen Group: VW, Audi, Škoda, SEAT, Cupra.
 ///
@@ -35,13 +37,24 @@ class VagBrand extends Brand {
     _m('03', 'Brakes (ABS/ESC)', 0x713, CarZone.chassis),
     _m('08', 'Climate control', 0x746, CarZone.interior),
     _m('09', 'Central electrics', 0x70E, CarZone.body),
+    _m('13', 'Adaptive cruise control', 0x757, CarZone.chassis),
+    // The CAN addresses of 14, 55 and A5 still need confirming on a real car;
+    // a wrong one only means the module shows as not found.
+    _m('14', 'Adaptive suspension', 0x74C, CarZone.chassis),
     _m('15', 'Airbags', 0x715, CarZone.interior),
     _m('16', 'Steering wheel electronics', 0x70C, CarZone.interior),
     _m('17', 'Instrument cluster', 0x714, CarZone.interior),
     _m('19', 'Gateway', 0x710, CarZone.interior),
+    _m('42', 'Driver door', 0x74A, CarZone.body),
     _m('44', 'Steering assist', 0x712, CarZone.chassis),
+    _m('52', 'Passenger door', 0x74B, CarZone.body),
+    _m('55', 'Headlight range', 0x754, CarZone.body),
     _m('5F', 'Infotainment', 0x773, CarZone.interior),
+    _m('A5', 'Front camera', 0x74F, CarZone.body),
   ];
+
+  @override
+  Map<String, DtcInfo> get dtcExplanations => vagDtcs;
 
   static const _makes = {
     'WVW': 'Volkswagen', 'WV1': 'Volkswagen', 'WV2': 'Volkswagen', 'WVG': 'Volkswagen', //

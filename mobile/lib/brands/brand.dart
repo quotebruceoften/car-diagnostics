@@ -2,6 +2,7 @@ import '../core/coding/coder.dart';
 import '../core/errors.dart';
 import '../core/hex.dart';
 import '../core/obd/dtc.dart';
+import '../core/obd/dtc_info.dart';
 import '../core/uds/uds_client.dart';
 import '../core/vin.dart';
 
@@ -103,7 +104,16 @@ abstract class Brand {
     return wmiPrefixes.any(v.startsWith);
   }
 
-  String describeDtc(Dtc dtc) => describeGenericDtc(dtc.code);
+  String describeDtc(Dtc dtc) {
+    final specific = dtcExplanations[dtc.code.toUpperCase()];
+    return specific?.title ?? describeGenericDtc(dtc.code);
+  }
+
+  /// Make-specific meanings of manufacturer codes, used before the generic table.
+  Map<String, DtcInfo> get dtcExplanations => const {};
+
+  /// Plain-language explanation of a fault code on this make.
+  DtcInfo explainDtc(String code) => dtcInfo(code, specific: dtcExplanations);
 
   /// A make-specific hint for an error, shown under the error message.
   String? explainError(CarDiagException error, {bool writing = false}) {

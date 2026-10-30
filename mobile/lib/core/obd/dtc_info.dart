@@ -235,6 +235,24 @@ final Map<String, DtcInfo> _known = {
     causes: ['Faulty camshaft sensor', 'Damaged wiring or connector', 'Timing problem'],
     driving: 'Starting may be slow or the engine may run poorly. Have it checked soon.',
   ),
+  for (final c in ['P0365', 'P0366', 'P0367', 'P0368'])
+    c: const DtcInfo(
+      title: 'Camshaft position sensor B fault',
+      meaning:
+          'The signal from the second camshaft position sensor (bank 1, usually the exhaust camshaft) is '
+          'missing or does not fit the crankshaft position. Logged once and not confirmed, it is often a loose '
+          'connector or a brief glitch.',
+      severity: Severity.medium,
+      causes: [
+        'Faulty camshaft sensor',
+        'Loose, corroded or oily connector',
+        'Damaged wiring',
+        'Camshaft adjuster or timing chain wear (if it keeps coming back)',
+      ],
+      driving:
+          'Usually fine to drive. If it returns as confirmed, the engine light comes on, or the engine starts '
+          'slowly or idles rough, have the sensor and timing checked.',
+    ),
   'P0016': const DtcInfo(
     title: 'Crankshaft and camshaft out of sync',
     meaning: 'The crankshaft and camshaft positions do not line up as they should.',
@@ -424,6 +442,19 @@ final Map<String, DtcInfo> _known = {
     causes: _commCauses,
     driving: _commDriving,
   ),
+  'U0428': const DtcInfo(
+    title: 'Implausible data from the steering angle sensor',
+    meaning:
+        'A module received steering angle information it did not trust. On many cars this follows battery '
+        'work, a wheel alignment or a brief network glitch.',
+    severity: Severity.low,
+    causes: [
+      'Steering angle sensor needs calibrating (basic setting) after alignment or battery work',
+      'Brief network fault',
+      'Faulty steering angle sensor (if it keeps returning with an ESC warning)',
+    ],
+    driving: 'Fine to drive if no ESC or steering warning lights are on. Clear it and see if it returns.',
+  ),
   'U0155': const DtcInfo(
     title: 'No communication with the instrument cluster',
     meaning: 'A module could not talk to the instrument cluster.',
@@ -465,8 +496,8 @@ const _pSubsystems = {
 
 /// Explanation for [code]: a specific entry if known, otherwise what the
 /// code's structure says about it.
-DtcInfo dtcInfo(String code) {
-  final known = _known[code.toUpperCase()];
+DtcInfo dtcInfo(String code, {Map<String, DtcInfo> specific = const {}}) {
+  final known = specific[code.toUpperCase()] ?? _known[code.toUpperCase()];
   if (known != null) return known;
   final c = code.toUpperCase();
   if (c.length < 4) {

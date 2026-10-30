@@ -39,7 +39,7 @@ class DtcScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final session = SessionScope.of(context);
-    final info = dtcInfo(dtc.code);
+    final info = session.brand.explainDtc(dtc.code);
     final theme = Theme.of(context);
     final tone = severityTone(info.severity);
     final color = toneColor(context, tone);
