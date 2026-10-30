@@ -5,7 +5,7 @@ import '../core/obd/dtc.dart';
 import '../core/uds/uds_client.dart';
 import '../core/vin.dart';
 
-/// Where in the car a module sits, for the 3D car view.
+/// Which area of the car a module belongs to (for the car summary).
 enum CarZone {
   engine('Engine & gearbox', 'Engine'),
   chassis('Brakes & steering', 'Chassis'),
@@ -17,16 +17,13 @@ enum CarZone {
   final String short;
 }
 
-enum BodyStyle { hatchback, sedan, wagon, suv }
-
 /// What the app knows about the connected car from its VIN.
 class VehicleIdentity {
-  const VehicleIdentity({required this.name, this.year, this.bodyStyle = BodyStyle.hatchback});
+  const VehicleIdentity({required this.name, this.year});
 
   /// e.g. "Volkswagen Golf 7"; the make alone when the model is unknown.
   final String name;
   final int? year;
-  final BodyStyle bodyStyle;
 
   String get title => year == null ? name : '$name · $year';
 }
@@ -51,7 +48,7 @@ class ModuleDef {
   /// Overrides [Brand.codingDid] for this module.
   final int? codingDid;
 
-  /// Where the module is shown on the 3D car.
+  /// The area of the car the module belongs to.
   final CarZone zone;
 
   String get label => address.isEmpty ? name : '$address · $name';
@@ -97,7 +94,7 @@ abstract class Brand {
 
   CodingAccess codingAccessFor(ModuleDef module) => const CodingAccess();
 
-  /// Model, year and body style from the VIN. Brands that can decode their
+  /// Model and year from the VIN. Brands that can decode their
   /// model codes override this; the default only knows the make and year.
   VehicleIdentity identify(String? vin) => VehicleIdentity(name: name, year: vin == null ? null : modelYear(vin));
 

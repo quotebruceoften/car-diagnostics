@@ -10,6 +10,12 @@
 	<string>Car Diagnostics</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Bluetooth is used to talk to your OBD adapter.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>The camera is used to take a photo or video of your car.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>The microphone is used when you record a video of your car (the app plays it muted).</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Your photo library is used to pick a photo or video of your car.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>The local network is used to talk to Wi-Fi OBD adapters.</string>
 	<key>CFBundleExecutable</key>

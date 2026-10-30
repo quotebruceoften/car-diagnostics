@@ -54,25 +54,20 @@ class VagBrand extends Brand {
   /// Model codes in VIN positions 7-8, per make.
   static const _models = {
     'Volkswagen': {
-      'AU': ('Golf 7', BodyStyle.hatchback),
-      'CD': ('Golf 8', BodyStyle.hatchback),
-      '1K': ('Golf 5/6', BodyStyle.hatchback),
-      '6R': ('Polo', BodyStyle.hatchback),
-      'AW': ('Polo', BodyStyle.hatchback),
-      '3C': ('Passat', BodyStyle.sedan),
-      '3G': ('Passat', BodyStyle.sedan),
-      '5N': ('Tiguan', BodyStyle.suv),
-      'AD': ('Tiguan', BodyStyle.suv),
-      '7P': ('Touareg', BodyStyle.suv),
+      'AU': 'Golf 7',
+      'CD': 'Golf 8',
+      '1K': 'Golf 5/6',
+      '6R': 'Polo',
+      'AW': 'Polo',
+      '3C': 'Passat',
+      '3G': 'Passat',
+      '5N': 'Tiguan',
+      'AD': 'Tiguan',
+      '7P': 'Touareg',
     },
-    'Audi': {
-      '8V': ('A3', BodyStyle.hatchback),
-      '8K': ('A4', BodyStyle.sedan),
-      '8W': ('A4', BodyStyle.sedan),
-      '4G': ('A6', BodyStyle.sedan),
-    },
-    'Škoda': {'5E': ('Octavia', BodyStyle.sedan)},
-    'SEAT': {'5F': ('Leon', BodyStyle.hatchback)},
+    'Audi': {'8V': 'A3', '8K': 'A4', '8W': 'A4', '4G': 'A6'},
+    'Škoda': {'5E': 'Octavia'},
+    'SEAT': {'5F': 'Leon'},
   };
 
   @override
@@ -80,11 +75,7 @@ class VagBrand extends Brand {
     if (vin == null || vin.length != 17) return VehicleIdentity(name: name);
     final make = _makes[vin.substring(0, 3).toUpperCase()] ?? 'Volkswagen';
     final model = _models[make]?[vin.substring(6, 8).toUpperCase()];
-    return VehicleIdentity(
-      name: model == null ? make : '$make ${model.$1}',
-      year: modelYear(vin),
-      bodyStyle: model?.$2 ?? BodyStyle.hatchback,
-    );
+    return VehicleIdentity(name: model == null ? make : '$make $model', year: modelYear(vin));
   }
 
   @override

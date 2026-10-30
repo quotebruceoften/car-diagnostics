@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
@@ -15,24 +16,19 @@ import '../core/transport/transport.dart';
 import '../core/uds/uds_client.dart';
 import '../sim/elm_emulator.dart';
 import '../sim/vehicle.dart';
+import 'car_media.dart';
 import 'scan_state.dart';
 
 /// The connection to one car, shared by every screen.
-/// Paint colours offered for the 3D car.
-const carPaints = [
-  Color(0xFF2F5D9E), // blue
-  Color(0xFFC3C7CC), // silver
-  Color(0xFF6B717A), // grey
-  Color(0xFF26292D), // black
-  Color(0xFFF2F3F5), // white
-  Color(0xFFB3261E), // red
-  Color(0xFF2E6B4F), // green
-];
-
 class DiagSession extends ChangeNotifier {
-  DiagSession({BackupStore? backupStore, AssetBundle? assets, this.demoLatency = const Duration(milliseconds: 15)})
-    : _backupStore = backupStore,
-      _assets = assets ?? rootBundle;
+  DiagSession({
+    BackupStore? backupStore,
+    CarMediaStore? mediaStore,
+    AssetBundle? assets,
+    this.demoLatency = const Duration(milliseconds: 15),
+  }) : _backupStore = backupStore,
+       _mediaStore = mediaStore,
+       _assets = assets ?? rootBundle;
 
   final AssetBundle _assets;
 
@@ -42,6 +38,10 @@ class DiagSession extends ChangeNotifier {
   /// The simulated car, while connected to the demo.
   Vehicle? demoVehicle;
   BackupStore? _backupStore;
+  CarMediaStore? _mediaStore;
+
+  /// The user's photo or video of the connected car, if they added one.
+  CarMedia? carMedia;
 
   Transport? _transport;
   Brand brand = genericBrand;
@@ -53,21 +53,48 @@ class DiagSession extends ChangeNotifier {
   /// Module scan results, shared by the Modules and Coding tabs.
   final scan = ScanState();
 
-  /// Model, year and body style decoded from the VIN.
+  /// Model and year decoded from the VIN.
   VehicleIdentity get identity => brand.identify(vin);
-
-  /// Paint colour for the 3D car (the car doesn't report it, so the user picks).
-  Color carPaint = carPaints.first;
-
-  void setCarPaint(Color c) {
-    carPaint = c;
-    notifyListeners();
-  }
 
   bool get connected => _transport != null;
   Transport get transport => _transport ?? (throw CarDiagException('Not connected'));
   ObdClient get obd => ObdClient(transport);
   String get adapterDescription => _transport?.description ?? '';
+
+  Future<CarMediaStore> _media() async {
+    final existing = _mediaStore;
+    if (existing != null) return existing;
+    final docs = await getApplicationDocumentsDirectory();
+    return _mediaStore = CarMediaStore(Directory('${docs.path}/car_media'));
+  }
+
+  String get _mediaKey => vin ?? 'unknown';
+
+  /// Loads the car's picture in the background; the card shows a placeholder until then.
+  Future<void> _loadCarMedia() async {
+    final key = _mediaKey;
+    try {
+      final media = await (await _media()).get(key);
+      if (connected && key == _mediaKey) {
+        carMedia = media;
+        notifyListeners();
+      }
+    } catch (_) {
+      // No picture is fine.
+    }
+  }
+
+  /// Stores [sourcePath] (a picked photo or video) as this car's picture.
+  Future<void> setCarMedia(CarMediaType type, String sourcePath) async {
+    carMedia = await (await _media()).save(_mediaKey, type, sourcePath);
+    notifyListeners();
+  }
+
+  Future<void> removeCarMedia() async {
+    await (await _media()).remove(_mediaKey);
+    carMedia = null;
+    notifyListeners();
+  }
 
   Future<BackupStore> backupStore() async {
     final existing = _backupStore;
@@ -127,6 +154,7 @@ class DiagSession extends ChangeNotifier {
       await _loadProfiles();
       // Only now do the screens switch over to the connected car.
       _transport = t;
+      unawaited(_loadCarMedia());
     } catch (e) {
       await t?.close();
       vin = null;
@@ -182,6 +210,7 @@ class DiagSession extends ChangeNotifier {
     _transport = null;
     vin = null;
     demoVehicle = null;
+    carMedia = null;
     scan.reset();
     brand = genericBrand;
     profiles = const [];

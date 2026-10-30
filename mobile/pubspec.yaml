@@ -10,8 +10,10 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_reactive_ble: ^5.6.0
+  image_picker: ^1.2.4
   path_provider: ^2.1.6
   permission_handler: ^13.0.2
+  video_player: ^2.14.1
 
 dev_dependencies:
   flutter_test:
