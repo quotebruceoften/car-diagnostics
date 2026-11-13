@@ -8,6 +8,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../brands/registry.dart';
+import '../brands/vag.dart';
+import '../brands/vag_dtcs.dart';
 import '../core/alerts.dart';
 import '../core/coding/coder.dart';
 import '../core/coding/profile.dart';
@@ -227,6 +229,39 @@ class DiagSession extends ChangeNotifier {
     ],
   );
 
+  /// Teaches the app the names of VW fault numbers: from the demo car, or
+  /// from the VCDS scans imported for the connected car.
+  Future<void> learnFaultNames() async {
+    vagLearnedFaults.clear();
+    final demo = demoVehicle;
+    if (demo != null) {
+      final addresses = {for (final m in brand.modules) m.txId: m.address};
+      for (final ecu in demo.ecus) {
+        for (final (code, ftb, _) in ecu.udsDtcs) {
+          final number = VagBrand.faultNumber(Dtc(code, failureType: ftb));
+          vagLearnedFaults['${addresses[ecu.txId]}|$number'] = VagFault(code, ftb);
+        }
+      }
+      return;
+    }
+    final v = vin;
+    if (v == null) return;
+    try {
+      for (final record in await (await historyStore()).list(v)) {
+        for (final m in record.modules) {
+          for (final f in m.faults) {
+            final number = f.number;
+            if (number == null || f.code == '$number') continue;
+            final ftb = int.tryParse(f.display.split('-').last, radix: 16) ?? 0;
+            vagLearnedFaults['${m.address}|$number'] = VagFault(f.code, ftb, f.description);
+          }
+        }
+      }
+    } catch (_) {
+      // Unnamed faults still show by number.
+    }
+  }
+
   Future<void> _saveScan() async {
     if (!connected || scan.present.isEmpty) return;
     final record = lastRecord = recordFromScan();
@@ -304,6 +339,7 @@ class DiagSession extends ChangeNotifier {
       _transport = t;
       if (remember != null) settings.setLastAdapter(remember);
       if (vin case final v? when demoVehicle == null) settings.setLastCar(SavedCar(vin: v, name: identity.title));
+      unawaited(learnFaultNames());
       unawaited(_loadCarMedia());
       unawaited(_syncOdometer());
     } catch (e) {

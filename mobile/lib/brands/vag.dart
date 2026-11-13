@@ -1,6 +1,7 @@
 import '../core/errors.dart';
 import '../core/uds/uds_client.dart';
 import '../core/vin.dart';
+import '../core/obd/dtc.dart';
 import '../core/obd/dtc_info.dart';
 import 'brand.dart';
 import 'vag_dtcs.dart';
@@ -55,6 +56,42 @@ class VagBrand extends Brand {
 
   @override
   Map<String, DtcInfo> get dtcExplanations => vagDtcs;
+
+  static final _number = RegExp(r'^\d+$');
+
+  /// The VW fault number of a fault read over UDS (its three bytes).
+  static int faultNumber(Dtc d) {
+    final b = encodeDtc(d.code);
+    return (b[0] << 16) | (b[1] << 8) | (d.failureType ?? 0);
+  }
+
+  @override
+  Dtc resolveModuleDtc(ModuleDef module, Dtc dtc) {
+    final int number;
+    try {
+      number = faultNumber(dtc);
+    } on FormatException {
+      return dtc;
+    }
+    final key = '${module.address}|$number';
+    final known = vagLearnedFaults[key] ?? vagFaultNumbers[key];
+    return known == null
+        ? Dtc('$number', status: dtc.status)
+        : Dtc(known.code, status: dtc.status, failureType: known.failureType);
+  }
+
+  @override
+  String describeDtc(Dtc dtc) {
+    if (_number.hasMatch(dtc.code)) return 'VW fault number (name not in the app yet)';
+    if (dtcExplanations.containsKey(dtc.code.toUpperCase())) return super.describeDtc(dtc);
+    for (final f in vagLearnedFaults.values) {
+      if (f.code == dtc.code && f.description.isNotEmpty) return f.description;
+    }
+    return super.describeDtc(dtc);
+  }
+
+  @override
+  DtcInfo explainDtc(String code) => _number.hasMatch(code) ? vagNumberInfo(code) : super.explainDtc(code);
 
   static const _makes = {
     'WVW': 'Volkswagen', 'WV1': 'Volkswagen', 'WV2': 'Volkswagen', 'WVG': 'Volkswagen', //

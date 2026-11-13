@@ -54,7 +54,9 @@ VcdsLog parseVcdsLog(String text, {required String Function(String vin) carName}
   void flushFault({String? code, String? ftb, int? status, String? detail}) {
     final title = pendingTitle;
     if (title == null || faults == null) return;
-    final c = code ?? pendingNumber!;
+    final number = int.tryParse(pendingNumber!);
+    // Without a standard code the fault goes by its VW number, as in the app's own scans.
+    final c = code ?? (number?.toString() ?? pendingNumber!);
     final description = detail == null || detail.isEmpty || detail == '-' ? title : '$title: $detail';
     faults!.add(
       FaultRecord(
@@ -62,6 +64,7 @@ VcdsLog parseVcdsLog(String text, {required String Function(String vin) carName}
         display: code != null && ftb != null ? '$code-$ftb' : c,
         description: description,
         active: status == null ? null : status & 0x01 != 0,
+        number: number,
       ),
     );
     pendingTitle = pendingNumber = null;

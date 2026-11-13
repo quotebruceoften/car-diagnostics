@@ -59,7 +59,7 @@ class ModuleScanner {
     List<Dtc>? dtcs;
     String? error;
     try {
-      dtcs = await uds.readDtcs();
+      dtcs = [for (final d in await uds.readDtcs()) brand.resolveModuleDtc(m, d)];
     } on CarDiagException catch (e) {
       error = e.message;
     }

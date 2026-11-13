@@ -3,22 +3,33 @@ import 'dart:io';
 
 /// One fault code as saved in a scan record.
 class FaultRecord {
-  const FaultRecord({required this.code, required this.display, required this.description, this.active});
+  const FaultRecord({required this.code, required this.display, required this.description, this.active, this.number});
 
   final String code;
+
+  /// The make's own fault number, when the source gave one next to the
+  /// standard code (VCDS does for VW).
+  final int? number;
 
   /// Code with failure type, e.g. "C0035-1F".
   final String display;
   final String description;
   final bool? active;
 
-  Map<String, dynamic> toJson() => {'code': code, 'display': display, 'description': description, 'active': active};
+  Map<String, dynamic> toJson() => {
+    'code': code,
+    'display': display,
+    'description': description,
+    'active': active,
+    if (number != null) 'number': number,
+  };
 
   factory FaultRecord.fromJson(Map<String, dynamic> j) => FaultRecord(
     code: j['code'] as String,
     display: (j['display'] ?? j['code']) as String,
     description: (j['description'] ?? '') as String,
     active: j['active'] as bool?,
+    number: (j['number'] as num?)?.toInt(),
   );
 }
 

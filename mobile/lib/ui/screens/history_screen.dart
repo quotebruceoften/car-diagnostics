@@ -61,6 +61,7 @@ Future<ScanRecord?> importVcdsScan(BuildContext context) async {
     if (session.settings.lastCar == null && record.vin.isNotEmpty) {
       session.settings.setLastCar(SavedCar(vin: record.vin, name: record.carName));
     }
+    if (session.connected) await session.learnFaultNames();
     HapticFeedback.mediumImpact();
     if (context.mounted) {
       final other = session.vin != null && record.vin != session.vin;

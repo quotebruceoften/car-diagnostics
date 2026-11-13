@@ -104,6 +104,10 @@ abstract class Brand {
     return wmiPrefixes.any(v.startsWith);
   }
 
+  /// Turns a fault as read from [module] over UDS into the make's own form.
+  /// Most makes report standard codes; VW Group reports its own numbers.
+  Dtc resolveModuleDtc(ModuleDef module, Dtc dtc) => dtc;
+
   String describeDtc(Dtc dtc) {
     final specific = dtcExplanations[dtc.code.toUpperCase()];
     return specific?.title ?? describeGenericDtc(dtc.code);

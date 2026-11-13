@@ -4,9 +4,11 @@ import 'dart:typed_data';
 import 'package:cardiag_mobile/brands/registry.dart';
 import 'package:cardiag_mobile/brands/scanner.dart';
 import 'package:cardiag_mobile/brands/vag.dart';
+import 'package:cardiag_mobile/brands/vag_dtcs.dart';
 import 'package:cardiag_mobile/core/coding/coder.dart';
 import 'package:cardiag_mobile/core/coding/profile.dart';
 import 'package:cardiag_mobile/core/errors.dart';
+import 'package:cardiag_mobile/core/obd/dtc.dart';
 import 'package:cardiag_mobile/core/uds/uds_client.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -98,6 +100,58 @@ void main() {
     expect(brandForVin(null).id, 'generic');
   });
 
+  group('VW fault numbers', () {
+    const brand = VagBrand();
+    ModuleDef module(String address) => brand.modules.firstWhere((m) => m.address == address);
+    // 197644 = 0x03040C, as a real Golf 7 central electrics module sends it.
+    const raw = Dtc('P0304', failureType: 0x0C, status: 0x09);
+
+    tearDown(vagLearnedFaults.clear);
+
+    test('are translated per module, never read as standard codes', () {
+      expect(VagBrand.faultNumber(raw), 197644);
+      final flap = brand.resolveModuleDtc(module('09'), raw);
+      expect(flap.display, 'B1263-01');
+      expect(flap.status, 0x09);
+      expect(brand.describeDtc(flap), 'Fuel tank flap control circuit fault');
+
+      // The same number in another module is not assumed to mean the same.
+      final other = brand.resolveModuleDtc(module('42'), raw);
+      expect(other.display, '197644');
+      expect(brand.describeDtc(other), contains('VW fault number'));
+      expect(brand.explainDtc(other.code).title, 'VW fault 197644');
+      expect(brand.explainDtc(other.code).isGeneric, isTrue);
+    });
+
+    test('the verified translations cover the faults of the scanned Golf', () {
+      String at(String address, int number) => brand
+          .resolveModuleDtc(
+            module(address),
+            Dtc(decodeDtc([(number >> 16) & 0xFF, (number >> 8) & 0xFF]), failureType: number & 0xFF),
+          )
+          .display;
+      expect(at('01', 4511), 'P0366-00');
+      expect(at('01', 17158), 'U1123-00');
+      expect(at('01', 7150), 'U0428-00');
+      expect(at('42', 65576), 'B11F3-29');
+      expect(at('52', 65558), 'B11F8-14');
+      expect(at('5F', 512), 'B1067-13');
+      expect(at('5F', 527), 'B1065-13');
+      expect(at('03', 297), '297'); // VCDS has no name for it either
+    });
+
+    test('names learned from an imported VCDS scan are used', () {
+      vagLearnedFaults['13|296'] = const VagFault('C1234', 0x05, 'Radar sensor: Blocked');
+      final d = brand.resolveModuleDtc(module('13'), Dtc(decodeDtc([0x00, 0x01]), failureType: 0x28));
+      expect(d.display, 'C1234-05');
+      expect(brand.describeDtc(d), 'Radar sensor: Blocked');
+    });
+
+    test('other makes keep standard codes', () {
+      expect(genericBrand.resolveModuleDtc(module('09'), raw), raw);
+    });
+  });
+
   forEachTransport((name, setup) {
     test('VW module scan', () async {
       final (t, _) = await setup();
@@ -105,7 +159,8 @@ void main() {
       final present = {for (final r in results.where((r) => r.present)) r.def.address: r};
       expect(present.keys.toSet(), {'01', '02', '03', '09', '15', '17', '19'});
       expect(present['09']!.partNumber, '5Q0937DEMO');
-      expect(present['03']!.dtcs!.single.display, 'C0035-1F');
+      // VW modules report VW fault numbers; an untranslated one shows as its number.
+      expect(present['03']!.dtcs!.single.display, '4207903');
       expect(present['15']!.dtcs, isEmpty);
       final full = await ModuleScanner(t, const VagBrand()).probe(present['01']!.def, full: true);
       expect(full.text(0xF197), 'R4 1.4l TFSI');

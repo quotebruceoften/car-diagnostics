@@ -110,8 +110,11 @@ void main() {
       expect(engine.faults[1].description, 'Camshaft Position Sensor B Bank 1 (G300): Implausible Signal');
       expect(engine.faults[1].active, isFalse);
 
-      // A fault without a code keeps VCDS's number.
-      expect(r.modules[1].faults.single.code, '0297');
+      // A fault without a standard code goes by its VW number, as in the app's scans.
+      expect(r.modules[1].faults.single.code, '297');
+      expect(r.modules[1].faults.single.number, 297);
+      // VCDS gives the VW number next to the standard code; the app learns from that.
+      expect(r.modules[2].faults.single.number, 197644);
       expect(r.modules[1].faults.single.description, 'ROD - Unknown Error Code');
       // Subsystem part numbers don't replace the module's own.
       expect(r.modules[2].partNumber, '5Q0 937 085 M');
