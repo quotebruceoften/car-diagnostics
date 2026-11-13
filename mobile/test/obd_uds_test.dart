@@ -158,4 +158,25 @@ void adapterTests() {
       );
     });
   });
+
+  group('real-car behaviour', () {
+    test('modules outside the OBD range answer with long replies through the adapter', () async {
+      final elm = Elm327Emulator();
+      final t = Elm327Transport(elm);
+      await t.initialize();
+      // The part number is longer than one CAN frame, so it needs flow control.
+      final part = await UdsClient(t, 0x713, rxId: 0x77D).readDataByIdentifier(0xF187);
+      expect(String.fromCharCodes(part), '5Q0907379Q');
+      expect(elm.log, containsAllInOrder(['ATSH713', 'ATFCSH713', 'ATFCSD300000', 'ATFCSM1']));
+      // Back to the engine: the adapter's standard flow control again.
+      expect(await ObdClient(t).vin(), 'WVWZZZAUZHW123456');
+      expect(elm.log.last == 'ATFCSM0' || elm.log.contains('ATFCSM0'), isTrue);
+    });
+
+    test('self-tests that have not run are not reported as faults', () async {
+      final uds = UdsClient(SimulatorTransport(Vehicle.demoGolf()), 0x7E0, rxId: 0x7E8);
+      expect([for (final d in await uds.readDtcs()) d.code], ['P0301', 'P0420', 'P0171']);
+      expect(await uds.readDtcs(0xFF), hasLength(5)); // what the module lists in total
+    });
+  });
 }

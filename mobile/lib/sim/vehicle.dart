@@ -378,7 +378,14 @@ class Vehicle {
           0xF18C: ascii('VWX7Z0000123456'),
           0xF190: vinBytes,
         },
-        udsDtcs: [('P0301', 0x00, 0x2B), ('P0420', 0x00, 0x28), ('P0171', 0x00, 0x24)],
+        udsDtcs: [
+          ('P0301', 0x00, 0x2B),
+          ('P0420', 0x00, 0x28),
+          ('P0171', 0x00, 0x24),
+          // Self-tests that have not run yet: reported by real modules, but not faults.
+          ('P0011', 0x00, 0x50),
+          ('P0234', 0x00, 0x10),
+        ],
       ),
       ObdEcu(
         'Transmission',

@@ -50,6 +50,7 @@ class Elm327Transport implements Transport, BatteryVoltageReader {
   int? protocolNumber;
   int _idLen = 3;
   int? _txId;
+  bool _customFlowControl = false;
   int? _rxId = -1; // -1: filter state unknown
 
   @override
@@ -114,6 +115,7 @@ class Elm327Transport implements Transport, BatteryVoltageReader {
       throw TransportException('This car uses OBD protocol $protocolNumber; only CAN (6-9) is supported.');
     }
     _idLen = len;
+    _customFlowControl = false;
     _txId = null;
     _rxId = -1;
   });
@@ -188,11 +190,31 @@ class Elm327Transport implements Transport, BatteryVoltageReader {
         await _expectOk('ATSH${(txId & 0xFFFFFF).toRadixString(16).toUpperCase().padLeft(6, '0')}');
       }
       _txId = txId;
+      if (_idLen == 3) await _setFlowControl(txId);
     }
     if (rxId != _rxId) {
       await _expectOk(rxId == null ? 'ATAR' : 'ATCRA${_idHex(rxId)}');
       _rxId = rxId;
     }
+  }
+
+  /// Long replies arrive in several frames, and the module only sends the
+  /// rest after a "flow control" frame from us. By default the adapter sends
+  /// that to the standard OBD address, which only suits the engine computers;
+  /// other modules need it on their own request address.
+  Future<void> _setFlowControl(int txId) async {
+    final obd = txId == obdBroadcastId || (txId >= 0x7E0 && txId <= 0x7E7);
+    if (obd) {
+      if (_customFlowControl) await _command('ATFCSM0');
+      _customFlowControl = false;
+      return;
+    }
+    for (final cmd in ['ATFCSH${_idHex(txId)}', 'ATFCSD300000', 'ATFCSM1']) {
+      final reply = await _command(cmd);
+      // Very old or cloned adapters lack these commands; short replies still work.
+      if (reply.isEmpty || reply.last.toUpperCase() != 'OK') return;
+    }
+    _customFlowControl = true;
   }
 
   void _parseInto(List<String> lines, Reassembler reasm) {

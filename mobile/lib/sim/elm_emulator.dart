@@ -26,6 +26,16 @@ class Elm327Emulator implements ByteChannel {
   /// Some adapters fail the automatic protocol search (AT SP 0).
   bool autoSearchWorks = true;
   String _sp = '0';
+
+  // Flow control set-up (AT FC SH / SD / SM), as on a real ELM327.
+  int? _fcHeader;
+  bool _fcData = false;
+  bool _fcCustom = false;
+
+  /// Whether a multi-frame reply to the current header gets its flow control:
+  /// by default only for the standard OBD addresses.
+  bool get _flowControlReaches =>
+      _fcCustom ? _fcHeader == _header : _header == obdBroadcastId || (_header >= 0x7E0 && _header <= 0x7E7);
   final _out = StreamController<List<int>>();
   final _in = StringBuffer();
 
@@ -43,6 +53,9 @@ class Elm327Emulator implements ByteChannel {
     _header = obdBroadcastId;
     _rxFilter = null;
     _txPartial = null;
+    _fcHeader = null;
+    _fcData = false;
+    _fcCustom = false;
   }
 
   @override
@@ -112,7 +125,16 @@ class Elm327Emulator implements ByteChannel {
       case 'RV':
         return ['${vehicle.engine.voltage().toStringAsFixed(1)}V'];
       default:
-        if (c.startsWith('SH')) {
+        if (c.startsWith('FCSH')) {
+          _fcHeader = int.parse(c.substring(4), radix: 16);
+        } else if (c.startsWith('FCSD')) {
+          _fcData = true;
+        } else if (c == 'FCSM1') {
+          if (_fcHeader == null || !_fcData) return ['?'];
+          _fcCustom = true;
+        } else if (c == 'FCSM0') {
+          _fcCustom = false;
+        } else if (c.startsWith('SH')) {
           _header = int.parse(c.substring(2), radix: 16);
         } else if (c.startsWith('CRA')) {
           _rxFilter = int.parse(c.substring(3), radix: 16);
@@ -144,7 +166,8 @@ class Elm327Emulator implements ByteChannel {
       if (data.length > 7) return [...searching, '?'];
       framed = [
         for (final (id, p) in vehicle.handle(_header, data))
-          for (final f in segment(p)) (id, f),
+          // Without flow control the module stops after the first frame.
+          for (final f in _flowControlReaches ? segment(p) : segment(p).take(1)) (id, f),
       ];
     } else {
       framed = _rawFrame(data);

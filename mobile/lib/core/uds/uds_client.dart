@@ -110,12 +110,21 @@ class UdsClient {
     await request([0x27, level + 1, ...keyFunction(seed, level)]);
   }
 
-  /// ReadDTCInformation / reportDTCByStatusMask.
-  Future<List<Dtc>> readDtcs([int statusMask = 0xFF]) async {
+  /// Status bits that mean a fault was actually detected: failed now or this
+  /// cycle, pending, confirmed, failed since the memory was cleared, or
+  /// warning lamp on. The other two bits (0x10, 0x40) only say that a
+  /// self-test has not run yet, which modules report for every code they know.
+  static const faultStatusMask = 0xAF;
+
+  /// ReadDTCInformation / reportDTCByStatusMask: the faults the module has
+  /// actually detected.
+  Future<List<Dtc>> readDtcs([int statusMask = faultStatusMask]) async {
     final reply = await request([0x19, 0x02, statusMask]);
     return [
       for (var i = 3; i + 3 < reply.length; i += 4)
-        Dtc(decodeDtc(reply.sublist(i, i + 2)), failureType: reply[i + 2], status: reply[i + 3]),
+        // Some modules ignore the mask, so filter here as well.
+        if (reply[i + 3] & statusMask != 0)
+          Dtc(decodeDtc(reply.sublist(i, i + 2)), failureType: reply[i + 2], status: reply[i + 3]),
     ];
   }
 
