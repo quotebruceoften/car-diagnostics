@@ -4,27 +4,24 @@
   "description": "Fictional layout for the simulator's central electrics module. Real VW long coding layouts differ by part number; add a profile per part number you have verified.",
   "brand": "vag",
   "module": "09",
-  "part_numbers": ["5Q0937DEMO"],
+  "part_numbers": [
+    "5Q0937DEMO"
+  ],
   "tx_id": "0x70E",
   "rx_id": "0x778",
   "session": "0x03",
   "did": "0x0600",
   "length": 30,
   "options": [
-    {"key": "drl", "label": "Daytime running lights", "byte": 0, "bit": 0, "type": "bool"},
-    {"key": "auto_lock", "label": "Auto-lock when driving", "byte": 0, "bit": 1, "width": 2, "type": "enum",
-     "values": {"0": "off", "1": "8 km/h", "2": "15 km/h", "3": "25 km/h"}},
-    {"key": "unlock_mode", "label": "Remote unlock", "byte": 0, "bit": 3, "type": "enum",
-     "values": {"0": "all doors", "1": "driver door first"}},
-    {"key": "seatbelt_chime", "label": "Seatbelt warning chime", "byte": 0, "bit": 4, "type": "bool"},
-    {"key": "mirror_fold", "label": "Fold mirrors on lock", "byte": 0, "bit": 5, "type": "bool"},
-    {"key": "comfort_blinks", "label": "Comfort turn signal flashes", "byte": 1, "bit": 0, "width": 3,
-     "type": "int", "min": 1, "max": 7},
-    {"key": "coming_home", "label": "Coming-home lights duration", "byte": 2, "bit": 0, "width": 8,
-     "type": "int", "min": 0, "max": 240, "unit": "s"},
-    {"key": "region", "label": "Market", "byte": 3, "bit": 0, "width": 2, "type": "enum",
-     "values": {"0": "Europe", "1": "North America", "2": "Rest of world"}},
-    {"key": "cornering_fogs", "label": "Fog lights as cornering lights", "byte": 4, "bit": 1, "type": "bool"},
-    {"key": "tail_drl", "label": "Tail lights with DRL", "byte": 4, "bit": 2, "type": "bool"}
+    {"key": "drl", "label": "Daytime running lights", "byte": 0, "bit": 0, "type": "bool", "description": "Front lights that stay on while driving in daylight."},
+    {"key": "auto_lock", "label": "Auto-lock when driving", "byte": 0, "bit": 1, "width": 2, "type": "enum", "values": {"0": "off", "1": "8 km/h", "2": "15 km/h", "3": "25 km/h"}, "description": "Locks the doors by itself once the car reaches this speed."},
+    {"key": "unlock_mode", "label": "Remote unlock", "byte": 0, "bit": 3, "type": "enum", "values": {"0": "all doors", "1": "driver door first"}, "description": "Which doors open on the first press of the remote."},
+    {"key": "seatbelt_chime", "label": "Seatbelt warning chime", "byte": 0, "bit": 4, "type": "bool", "description": "The warning sound when a seatbelt is not fastened."},
+    {"key": "mirror_fold", "label": "Fold mirrors on lock", "byte": 0, "bit": 5, "type": "bool", "description": "Folds the door mirrors in when you lock the car."},
+    {"key": "comfort_blinks", "label": "Comfort turn signal flashes", "byte": 1, "bit": 0, "width": 3, "type": "int", "min": 1, "max": 7, "description": "How many times the indicator flashes after a light tap on the stalk."},
+    {"key": "coming_home", "label": "Coming-home lights duration", "byte": 2, "bit": 0, "width": 8, "type": "int", "min": 0, "max": 240, "unit": "s", "description": "How long the headlights stay on after you leave the car in the dark."},
+    {"key": "region", "label": "Market", "byte": 3, "bit": 0, "width": 2, "type": "enum", "values": {"0": "Europe", "1": "North America", "2": "Rest of world"}, "description": "The region the car is set up for."},
+    {"key": "cornering_fogs", "label": "Fog lights as cornering lights", "byte": 4, "bit": 1, "type": "bool", "description": "Lights the fog light on the side you are turning towards."},
+    {"key": "tail_drl", "label": "Tail lights with DRL", "byte": 4, "bit": 2, "type": "bool", "description": "Keeps the tail lights on together with the daytime running lights."}
   ]
 }

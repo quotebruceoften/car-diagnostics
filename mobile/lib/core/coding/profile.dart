@@ -17,7 +17,11 @@ class CodingOption {
     this.min = 0,
     int? max,
     this.unit = '',
+    this.description = '',
   }) : max = max ?? (1 << width) - 1;
+
+  /// What the setting does, in plain words (may be empty).
+  final String description;
 
   final String key;
   final String label;
@@ -200,6 +204,7 @@ class CodingProfile {
           min: _int(o['min'] ?? 0),
           max: o['max'] == null ? null : _int(o['max']),
           unit: (o['unit'] ?? '') as String,
+          description: (o['description'] ?? '') as String,
         );
         if (!const {'bool', 'enum', 'int'}.contains(type)) throw CodingException('${opt.key}: unknown type $type');
         if (type == 'bool' && width != 1) throw CodingException('${opt.key}: bool options must be 1 bit');

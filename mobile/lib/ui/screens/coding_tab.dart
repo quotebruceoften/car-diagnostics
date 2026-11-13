@@ -239,8 +239,8 @@ class _CodableRow extends StatelessWidget {
                     runSpacing: 4,
                     children: [
                       hasProfile
-                          ? Pill('Named options', color: toneColor(context, Tone.ok), icon: Icons.check_rounded)
-                          : Pill('Bit editor', color: theme.colorScheme.onSurfaceVariant),
+                          ? Pill('Settings in words', color: toneColor(context, Tone.ok), icon: Icons.check_rounded)
+                          : Pill('No named settings yet', color: theme.colorScheme.onSurfaceVariant),
                       if (backups > 0)
                         Pill(
                           '$backups backup${backups == 1 ? '' : 's'}',

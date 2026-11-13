@@ -60,15 +60,18 @@ void main() {
     expect(tester.widget<SwitchListTile>(drl).value, isTrue);
     await tester.tap(drl);
     await tester.pumpAndSettle();
-    expect(find.text('was on'), findsOneWidget);
+    expect(find.textContaining('Front lights that stay on'), findsOneWidget); // explained in words
+    expect(find.textContaining('was on'), findsOneWidget);
+    expect(find.text('1 change'), findsOneWidget);
+    expect(find.textContaining('Byte'), findsNothing); // raw coding stays out of the way
 
-    await tester.tap(find.text('Write'));
+    await tester.tap(find.text('Apply changes'));
     await tester.pumpAndSettle();
     expect(find.text('• Daytime running lights: on → off'), findsOneWidget);
-    await tester.tap(find.widgetWithText(FilledButton, 'Write').last);
+    await tester.tap(find.widgetWithText(FilledButton, 'Apply').last);
     await tester.pumpAndSettle();
 
-    expect(find.textContaining('written and verified'), findsOneWidget);
+    expect(find.textContaining('applied and checked'), findsOneWidget);
     expect(session.demoVehicle!.ecu(0x70E)!.dids[0x0600]![0], 0x14);
     expect(backups.backups.single.data[0], 0x15);
   });
@@ -86,16 +89,20 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Long coding'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('No option names are known'), findsOneWidget);
+    expect(find.textContaining('settings in plain words yet'), findsOneWidget);
+    // Raw bytes are only reachable through Advanced.
+    expect(find.text('01'), findsNothing);
+    await tester.tap(find.text('Advanced: raw coding'));
+    await tester.pumpAndSettle();
 
     await tester.tap(find.text('01').first);
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(SwitchListTile, 'Bit 0'));
     await tester.tap(find.text('Done'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Write'));
+    await tester.tap(find.text('Apply changes'));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(FilledButton, 'Write').last);
+    await tester.tap(find.widgetWithText(FilledButton, 'Apply').last);
     await tester.pumpAndSettle();
     expect(find.textContaining('security access denied'), findsOneWidget);
     expect(find.textContaining('SFD'), findsOneWidget);
@@ -110,17 +117,21 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('CODABLE MODULES (3)'), findsOneWidget);
-    expect(find.text('Named options'), findsOneWidget); // only the central electrics have a profile
-    expect(find.text('Bit editor'), findsNWidgets(2));
+    expect(find.text('Settings in words'), findsOneWidget); // only the central electrics have a profile
+    expect(find.text('No named settings yet'), findsNWidgets(2));
 
     await tester.tap(find.text('Central electrics'));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(SwitchListTile, 'Fold mirrors on lock'));
+    // Each setting now has a description, so this one starts below the fold.
+    final fold = find.widgetWithText(SwitchListTile, 'Fold mirrors on lock');
+    await tester.ensureVisible(fold);
     await tester.pumpAndSettle();
-    expect(find.text('1 byte changed'), findsOneWidget);
-    await tester.tap(find.text('Write'));
+    await tester.tap(fold);
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(FilledButton, 'Write').last);
+    expect(find.textContaining('was off'), findsOneWidget);
+    await tester.tap(find.text('Apply changes'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Apply').last);
     await tester.pumpAndSettle();
     expect(session.demoVehicle!.ecu(0x70E)!.dids[0x0600]![0], 0x35);
 

@@ -85,23 +85,23 @@ class _CodingScreenState extends State<CodingScreen> {
       for (var i = 0; i < original.length; i++)
         if (original[i] != edited[i]) 'Byte $i: ${bytesToHex([original[i]])} → ${bytesToHex([edited[i]])}',
     ];
+    final rawOnly = optionChanges.isEmpty;
     final ok = await confirm(
       context,
-      title: 'Write new coding?',
-      action: 'Write',
+      title: rawOnly ? 'Apply raw coding changes?' : 'Apply these changes?',
+      action: 'Apply',
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(widget.module.label, style: const TextStyle(fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          for (final c in optionChanges.isEmpty ? byteChanges : optionChanges) Text('• $c'),
-          if (optionChanges.isNotEmpty && byteChanges.length > optionChanges.length)
-            Text('• plus ${byteChanges.length} changed byte(s)'),
+          for (final c in rawOnly ? byteChanges : optionChanges) Text('• $c'),
+          if (!rawOnly && byteChanges.length > optionChanges.length) const Text('• plus changes made in Advanced'),
           const SizedBox(height: 12),
           const Text(
-            'The current coding is backed up first. Keep the ignition on and do not disconnect the '
-            'adapter while writing. A battery charger is recommended.',
+            'The app first saves the current settings as a restore point, so you can go back from Backups. '
+            'Keep the ignition on and do not unplug the adapter until it finishes.',
           ),
         ],
       ),
@@ -122,7 +122,7 @@ class _CodingScreenState extends State<CodingScreen> {
       if (!mounted) return;
       setState(() => _original = edited);
       HapticFeedback.heavyImpact();
-      showMessage(context, 'Coding written and verified. The previous coding was backed up.');
+      showMessage(context, 'Changes applied and checked. A restore point was saved.');
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -147,8 +147,10 @@ class _CodingScreenState extends State<CodingScreen> {
           shrinkWrap: true,
           children: [
             const ListTile(
-              title: Text('Coding backups'),
-              subtitle: Text('Pick one to load it into the editor. Nothing is written until you press Write.'),
+              title: Text('Restore points'),
+              subtitle: Text(
+                'Pick one to load its settings. Nothing changes in the car until you press Apply changes.',
+              ),
             ),
             if (backups.isEmpty) const ListTile(title: Text('No backups yet. One is saved before every write.')),
             for (final b in backups)
@@ -240,7 +242,7 @@ class _CodingScreenState extends State<CodingScreen> {
                   ),
                 _summaryCard(scheme),
                 if (_profile != null) ...[
-                  const SectionHeader('Options'),
+                  const SectionHeader('Settings'),
                   Card(
                     child: Column(
                       children: [
@@ -252,27 +254,33 @@ class _CodingScreenState extends State<CodingScreen> {
                     ),
                   ),
                 ],
-                SectionHeader('Bytes (${_original!.length})'),
+                const SizedBox(height: 8),
                 Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(4, 0, 4, 12),
-                          child: Text(
-                            'Tap a byte to switch its bits. Changed bytes are highlighted.',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
-                          ),
+                  clipBehavior: Clip.antiAlias,
+                  child: ExpansionTile(
+                    leading: const Icon(Icons.memory_rounded),
+                    title: const Text('Advanced: raw coding'),
+                    subtitle: const Text('For experts. Not needed for the settings above.'),
+                    childrenPadding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(4, 0, 4, 12),
+                        child: Text(
+                          'The module stores its settings as ${_original!.length} numbers (bytes). Tap one to switch '
+                          'its individual bits. Only change these if you know exactly what a bit does; a wrong '
+                          'one can turn off a function or set a warning light.',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
                         ),
-                        Wrap(
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Wrap(
                           spacing: 6,
                           runSpacing: 6,
                           children: [for (var i = 0; i < _edited!.length; i++) _byteChip(i, scheme)],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -298,7 +306,7 @@ class _CodingScreenState extends State<CodingScreen> {
                         icon: _writing
                             ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
                             : const Icon(Icons.upload),
-                        label: Text(_writing ? 'Writing...' : 'Write'),
+                        label: Text(_writing ? 'Applying...' : 'Apply changes'),
                         onPressed: _changed && !_writing ? _write : null,
                       ),
                     ),
@@ -315,6 +323,14 @@ class _CodingScreenState extends State<CodingScreen> {
       for (var i = 0; i < _original!.length; i++)
         if (_original![i] != _edited![i]) i,
     ].length;
+    final changedOptions = [
+      for (final o in _profile?.options ?? const <CodingOption>[])
+        if (o.raw(_original!) != o.raw(_edited!)) o,
+    ].length;
+    // In words when the changes are named settings; raw edits count bytes.
+    final changes = changedOptions > 0
+        ? '$changedOptions change${changedOptions == 1 ? '' : 's'}'
+        : '$changedBytes raw change${changedBytes == 1 ? '' : 's'}';
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -337,11 +353,7 @@ class _CodingScreenState extends State<CodingScreen> {
                       const SizedBox(height: 8),
                       changedBytes == 0
                           ? Pill('No changes', color: scheme.onSurfaceVariant)
-                          : Pill(
-                              '$changedBytes byte${changedBytes == 1 ? '' : 's'} changed',
-                              color: toneColor(context, Tone.warn),
-                              icon: Icons.edit_rounded,
-                            ),
+                          : Pill(changes, color: toneColor(context, Tone.warn), icon: Icons.edit_rounded),
                     ],
                   ),
                 ),
@@ -350,8 +362,9 @@ class _CodingScreenState extends State<CodingScreen> {
             const SizedBox(height: 14),
             Text(
               _profile == null
-                  ? 'No option names are known for this module. '
-                        'You can still change individual bits if you know what they do.'
+                  ? 'The app does not have this module\'s settings in plain words yet, so there is nothing to '
+                        'switch here. Each module version stores its settings differently, and the app only '
+                        'offers settings that were verified for the exact part number.'
                   : _profile!.description,
               style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
             ),
@@ -363,7 +376,8 @@ class _CodingScreenState extends State<CodingScreen> {
 
   Widget _optionTile(CodingOption o) {
     final changed = o.raw(_original!) != o.raw(_edited!);
-    final subtitle = changed ? Text('was ${o.display(_original!)}') : null;
+    final lines = [if (o.description.isNotEmpty) o.description, if (changed) 'was ${o.display(_original!)}'];
+    final subtitle = lines.isEmpty ? null : Text(lines.join('\n'));
     final title = Text(o.label, style: changed ? const TextStyle(fontWeight: FontWeight.w600) : null);
     switch (o.type) {
       case 'bool':
