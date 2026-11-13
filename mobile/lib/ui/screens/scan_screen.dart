@@ -171,10 +171,12 @@ class _ScanScreenState extends State<ScanScreen> {
                   builder: (context) {
                     final t = _trends?.find(m.def.address, m.def.name, d.code);
                     final trend = t == null ? null : describeTrend(t);
+                    // The module's full status, to tell real faults from internal entries.
+                    final caption = [if (d.statusFlags.isNotEmpty) d.statusFlags.join(', '), ?trend].join(' · ');
                     return DtcTile(
                       dtc: d,
                       description: session.brand.describeDtc(d),
-                      caption: trend,
+                      caption: caption.isEmpty ? null : caption,
                       onTap: () => openDtc(context, d, session.brand.describeDtc(d), source: m.def.name, trend: trend),
                     );
                   },

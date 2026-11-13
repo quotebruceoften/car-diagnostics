@@ -327,15 +327,17 @@ class ScanRecordScreen extends StatelessWidget {
                 children: [
                   for (final f in m.faults)
                     DtcTile(
-                      dtc: Dtc(f.code),
+                      dtc: Dtc(f.code, status: f.status),
                       description: f.description,
                       caption: [
                         if (f.active != null) f.active! ? 'Active at scan time' : 'Stored',
+                        // The module's full status, to tell real faults from internal entries.
+                        if (f.status != null) Dtc(f.code, status: f.status).statusFlags.join(', '),
                         if (trends?.of(m, f) case final t? when trends!.scans > 1) describeTrend(t),
                       ].join(' · ').emptyAsNull,
                       onTap: () => openDtc(
                         context,
-                        Dtc(f.code),
+                        Dtc(f.code, status: f.status),
                         f.description,
                         source: m.label,
                         vin: record.vin,

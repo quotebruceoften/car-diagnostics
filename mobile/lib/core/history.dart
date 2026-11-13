@@ -3,7 +3,17 @@ import 'dart:io';
 
 /// One fault code as saved in a scan record.
 class FaultRecord {
-  const FaultRecord({required this.code, required this.display, required this.description, this.active, this.number});
+  const FaultRecord({
+    required this.code,
+    required this.display,
+    required this.description,
+    this.active,
+    this.number,
+    this.status,
+  });
+
+  /// The module's status byte for the fault, when known.
+  final int? status;
 
   final String code;
 
@@ -22,6 +32,7 @@ class FaultRecord {
     'description': description,
     'active': active,
     if (number != null) 'number': number,
+    if (status != null) 'status': status,
   };
 
   factory FaultRecord.fromJson(Map<String, dynamic> j) => FaultRecord(
@@ -30,6 +41,7 @@ class FaultRecord {
     description: (j['description'] ?? '') as String,
     active: j['active'] as bool?,
     number: (j['number'] as num?)?.toInt(),
+    status: (j['status'] as num?)?.toInt(),
   );
 }
 

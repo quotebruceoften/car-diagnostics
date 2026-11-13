@@ -65,6 +65,7 @@ VcdsLog parseVcdsLog(String text, {required String Function(String vin) carName}
         description: description,
         active: status == null ? null : status & 0x01 != 0,
         number: number,
+        status: status,
       ),
     );
     pendingTitle = pendingNumber = null;
