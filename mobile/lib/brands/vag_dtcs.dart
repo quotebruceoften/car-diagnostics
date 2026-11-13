@@ -21,7 +21,7 @@ class VagFault {
 /// data for each module. These translations were read from a VCDS scan of a
 /// 2013 Golf 7 and are keyed by "module address|fault number", because small
 /// numbers mean different things in different modules.
-const vagFaultNumbers = <String, VagFault>{
+final vagFaultNumbers = <String, VagFault>{
   '01|17158': VagFault('U1123', 0x00),
   '01|7150': VagFault('U0428', 0x00),
   '01|4511': VagFault('P0366', 0x00),
@@ -30,6 +30,10 @@ const vagFaultNumbers = <String, VagFault>{
   '52|65558': VagFault('B11F8', 0x14),
   '5F|512': VagFault('B1067', 0x13),
   '5F|527': VagFault('B1065', 0x13),
+  // Adaptive cruise control (ACC3, 5Q0 907 567): one entry per missing message.
+  for (var n = 287; n <= 296; n++) '13|$n': VagFault('U1121', 0x00),
+  '17|16777018': VagFault('U1110', 0x00),
+  'A5|327680': VagFault('B1050', 0x00),
 };
 
 /// Translations learned at run time: from the user's imported VCDS scans of
@@ -59,6 +63,41 @@ const vagDtcs = <String, DtcInfo>{
     severity: Severity.low,
     causes: ['A fault stored in another module', 'Low battery voltage during starting'],
     driving: 'Fine to drive. Deal with the other modules\' faults, then clear this one.',
+  ),
+  'U1121': DtcInfo(
+    title: 'Data bus: missing message',
+    meaning:
+        'This module expected a message from another module and did not get it for a moment. Several of '
+        'these stored at the same second usually mean one other module was briefly switched off or busy, for '
+        'example a front camera that shut down from heat or a dip in battery voltage.',
+    severity: Severity.low,
+    causes: [
+      'Another module shut down briefly (overheated camera, low voltage)',
+      'A fault stored in the module that should send the message',
+      'Wiring or connector fault (if it keeps coming back)',
+    ],
+    driving: 'Fine to drive if the function works and no warning is shown. Clear it and see if it returns.',
+  ),
+  'U1110': DtcInfo(
+    title: 'Function restricted: communication interrupted',
+    meaning: 'This module limited one of its functions for a while because it lost contact with another module.',
+    severity: Severity.low,
+    causes: ['A brief network interruption', 'Low battery voltage', 'A fault in the other module'],
+    driving: 'Fine to drive if no warning is shown. Clear it and see if it returns.',
+  ),
+  'B1050': DtcInfo(
+    title: 'Function limited: module too hot',
+    meaning:
+        'The module got too hot and switched off some functions to protect itself. On the front camera '
+        'behind the windscreen this happens when the car has stood in strong sun; lane assist and similar '
+        'functions pause until it cools down.',
+    severity: Severity.low,
+    causes: [
+      'Car parked in direct sun on a hot day',
+      'Blocked ventilation around the camera housing',
+      'Faulty module (only if it happens in cool weather too)',
+    ],
+    driving: 'Safe to drive. The functions return once the module cools. A windscreen sunshade helps.',
   ),
   'B1263': DtcInfo(
     title: 'Fuel tank flap control circuit fault',

@@ -138,6 +138,13 @@ void main() {
       expect(at('5F', 512), 'B1067-13');
       expect(at('5F', 527), 'B1065-13');
       expect(at('03', 297), '297'); // VCDS has no name for it either
+      // From the second VCDS scan: camera overheated, cruise control lost its messages.
+      expect(at('13', 287), 'U1121-00');
+      expect(at('13', 296), 'U1121-00');
+      expect(at('13', 297), '297');
+      expect(at('17', 16777018), 'U1110-00');
+      expect(at('A5', 327680), 'B1050-00');
+      expect(brand.explainDtc('B1050').title, 'Function limited: module too hot');
     });
 
     test('names learned from an imported VCDS scan are used', () {
