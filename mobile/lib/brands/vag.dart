@@ -76,8 +76,8 @@ class VagBrand extends Brand {
     final key = '${module.address}|$number';
     final known = vagLearnedFaults[key] ?? vagFaultNumbers[key];
     return known == null
-        ? Dtc('$number', status: dtc.status)
-        : Dtc(known.code, status: dtc.status, failureType: known.failureType);
+        ? Dtc('$number', status: dtc.status, number: number)
+        : Dtc(known.code, status: dtc.status, failureType: known.failureType, number: number);
   }
 
   @override

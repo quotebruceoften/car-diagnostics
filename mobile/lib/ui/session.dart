@@ -224,6 +224,7 @@ class DiagSession extends ChangeNotifier {
                 description: brand.describeDtc(d),
                 active: d.status == null ? null : d.active,
                 status: d.status,
+                number: d.number,
               ),
           ],
         ),

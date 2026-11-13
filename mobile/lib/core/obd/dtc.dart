@@ -76,7 +76,10 @@ const _statusBits = [
 ];
 
 class Dtc {
-  const Dtc(this.code, {this.status, this.failureType});
+  const Dtc(this.code, {this.status, this.failureType, this.number});
+
+  /// The make's own fault number as the module sent it (VW Group), if any.
+  final int? number;
 
   final String code;
 

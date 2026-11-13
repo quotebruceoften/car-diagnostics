@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +8,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../brands/registry.dart';
 import '../../core/history.dart';
 import '../../core/obd/dtc.dart';
+import '../../core/scan_export.dart';
 import '../../core/vcds_import.dart';
 import '../report_pdf.dart';
 import '../session.dart';
@@ -13,6 +16,7 @@ import '../settings.dart';
 import '../widgets/common.dart';
 import '../widgets/dtc_tile.dart';
 import 'dtc_screen.dart';
+import 'settings_screen.dart' show appVersion;
 
 /// Shares [record] as a PDF report through the system share sheet.
 Future<void> shareReport(BuildContext context, ScanRecord record, {ScanRecord? previous}) async {
@@ -29,6 +33,31 @@ Future<void> shareReport(BuildContext context, ScanRecord record, {ScanRecord? p
     );
   } catch (e) {
     if (context.mounted) showMessage(context, 'Could not create the report: ${errorText(e)}');
+  }
+}
+
+/// Shares a text file with every detail of [record] (modules, part numbers,
+/// faults with raw numbers and status).
+Future<void> shareScanDetails(BuildContext context, ScanRecord record, {List<String> notFound = const []}) async {
+  final session = SessionScope.read(context);
+  try {
+    final text = scanDetailsText(
+      record,
+      notFound: notFound,
+      adapter: session.connected && session.vin == record.vin ? session.adapterDescription : '',
+      appVersion: appVersion,
+    );
+    final stamp = record.timestamp.toLocal().toIso8601String().substring(0, 16).replaceAll(':', '-');
+    final name = 'scan-details-${record.vin.isEmpty ? 'car' : record.vin}-$stamp.txt';
+    await SharePlus.instance.share(
+      ShareParams(
+        files: [XFile.fromData(utf8.encode(text), mimeType: 'text/plain', name: name)],
+        fileNameOverrides: [name],
+        subject: 'Scan details: ${record.carName}',
+      ),
+    );
+  } catch (e) {
+    if (context.mounted) showMessage(context, 'Could not create the file: ${errorText(e)}');
   }
 }
 
@@ -283,6 +312,11 @@ class ScanRecordScreen extends StatelessWidget {
         title: Text(formatTimestamp(record.timestamp)),
         actions: [
           IconButton(
+            tooltip: 'Share details file',
+            icon: const Icon(Icons.description_outlined),
+            onPressed: () => shareScanDetails(context, record),
+          ),
+          IconButton(
             tooltip: 'Share report',
             icon: const Icon(Icons.ios_share_rounded),
             onPressed: () => shareReport(context, record, previous: previous),
@@ -354,6 +388,14 @@ class ScanRecordScreen extends StatelessWidget {
               icon: const Icon(Icons.picture_as_pdf_outlined),
               label: const Text('Share PDF report'),
               onPressed: () => shareReport(context, record, previous: previous),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+            child: OutlinedButton.icon(
+              icon: const Icon(Icons.description_outlined),
+              label: const Text('Share details file (.txt)'),
+              onPressed: () => shareScanDetails(context, record),
             ),
           ),
         ],

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cardiag_mobile/core/coding/coder.dart';
 import 'package:cardiag_mobile/core/history.dart';
+import 'package:cardiag_mobile/core/scan_export.dart';
 import 'package:cardiag_mobile/core/uds/uds_client.dart';
 import 'package:cardiag_mobile/main.dart';
 import 'package:cardiag_mobile/ui/report_pdf.dart';
@@ -95,5 +96,45 @@ void main() {
     expect(find.textContaining('Gone · 03 · Brakes (ABS/ESC)'), findsOneWidget);
     await tester.scrollUntilVisible(find.text('Share PDF report'), 300);
     expect(find.text('Share PDF report'), findsOneWidget);
+  });
+
+  test('details file lists modules, raw fault numbers and status', () {
+    final text = scanDetailsText(
+      ScanRecord(
+        timestamp: DateTime(2026, 11, 13, 12, 21),
+        vin: 'WVWZZZAUZDW000001',
+        carName: 'Volkswagen Golf 7 · 2013',
+        modules: const [
+          ModuleRecord(
+            address: '09',
+            name: 'Central electrics',
+            partNumber: '5Q0937085M',
+            faults: [
+              FaultRecord(
+                code: 'B1263',
+                display: 'B1263-01',
+                description: 'Fuel tank flap control circuit fault',
+                active: true,
+                number: 197644,
+                status: 0x09,
+              ),
+            ],
+          ),
+          ModuleRecord(address: '15', name: 'Airbags', faults: []),
+        ],
+      ),
+      notFound: ['55 Headlight range'],
+      adapter: 'ELM327 v2.3 via IOS-Vlink',
+      appVersion: '0.3.0 (build 20)',
+    );
+    expect(text, contains('VIN: WVWZZZAUZDW000001'));
+    expect(text, contains('Scanned: 2026-11-13 12:21'));
+    expect(text, contains('--- 09 · Central electrics   part 5Q0937085M'));
+    expect(text, contains('B1263-01  Fuel tank flap control circuit fault'));
+    expect(text, contains('number 197644 (0x03040C)   status 0x09: test failed, confirmed'));
+    expect(text, contains('--- 15 · Airbags'));
+    expect(text, contains('no faults'));
+    expect(text, contains('55 Headlight range'));
+    expect(text, contains('Adapter: ELM327 v2.3 via IOS-Vlink'));
   });
 }

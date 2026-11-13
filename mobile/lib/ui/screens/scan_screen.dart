@@ -91,6 +91,16 @@ class _ScanScreenState extends State<ScanScreen> {
                     child: Row(
                       children: [
                         if (record != null) ...[
+                          IconButton.outlined(
+                            tooltip: 'Share details file',
+                            icon: const Icon(Icons.description_outlined),
+                            onPressed: () => shareScanDetails(
+                              context,
+                              record,
+                              notFound: [for (final m in scan.absent) '${m.def.address} ${m.def.name}'],
+                            ),
+                          ),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: OutlinedButton.icon(
                               icon: const Icon(Icons.picture_as_pdf_outlined),
@@ -98,7 +108,7 @@ class _ScanScreenState extends State<ScanScreen> {
                               onPressed: () => shareReport(context, record),
                             ),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 8),
                         ],
                         Expanded(
                           child: FilledButton.icon(
