@@ -67,13 +67,44 @@ class Elm327Transport implements Transport, BatteryVoltageReader {
       );
     }
     version = lines.firstWhere((l) => l.toUpperCase().contains('ELM'), orElse: () => lines.isEmpty ? '' : lines.last);
-    for (final cmd in ['ATE0', 'ATL0', 'ATS0', 'ATH1', 'ATCAF1', 'ATST${_hex2(_st)}', 'ATSP$protocol']) {
+    for (final cmd in ['ATE0', 'ATL0', 'ATS0', 'ATH1', 'ATCAF1', 'ATST${_hex2(_st)}']) {
       await _expectOk(cmd);
     }
     // Any OBD request makes the adapter search for and lock onto the protocol.
-    final probe = await _command('0100', timeout: const Duration(seconds: 15));
-    if (probe.any((l) => l.startsWith('UNABLE TO CONNECT'))) {
-      throw NoResponseException('Adapter could not reach the car. Is the ignition on?');
+    // Automatic search fails on some adapter and car combinations, so the CAN
+    // protocols are then tried one by one (6, CAN 11-bit 500k, is the usual one).
+    final attempts = protocol == '0' ? const ['0', '6', '7', '8', '9', '6'] : [protocol];
+    var reached = false;
+    for (final p in attempts) {
+      await _expectOk('ATSP$p');
+      final List<String> probe;
+      try {
+        probe = await _command('0100', timeout: const Duration(seconds: 15));
+      } on TransportException {
+        continue;
+      }
+      if (probe.any((l) => RegExp(r'^[0-9A-F]{8,}$').hasMatch(l.toUpperCase().replaceAll(' ', '')))) {
+        reached = true;
+        break;
+      }
+    }
+    if (!reached) {
+      double? volts;
+      try {
+        volts = double.tryParse((await _command('ATRV')).last.replaceAll(RegExp('[^0-9.]'), ''));
+      } on TransportException {
+        volts = null;
+      }
+      final adapter = [if (version.isNotEmpty) version, if (volts != null) '${volts.toStringAsFixed(1)} V'].join(', ');
+      if (volts != null && volts < 6) {
+        throw NoResponseException(
+          'The adapter answers ($adapter) but gets almost no power from the car. Push it firmly into the OBD port.',
+        );
+      }
+      throw NoResponseException(
+        'The adapter works${adapter.isEmpty ? '' : ' ($adapter)'} but the car did not answer. Turn the ignition '
+        'fully on (dashboard warning lights lit, not just the radio), then connect again.',
+      );
     }
     final dpn = (await _command('ATDPN')).last.toUpperCase().replaceFirst('A', '');
     protocolNumber = int.tryParse(dpn, radix: 16);

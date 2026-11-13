@@ -6,6 +6,7 @@ import 'package:cardiag_mobile/core/transport/elm327.dart';
 import 'package:cardiag_mobile/core/errors.dart';
 import 'package:cardiag_mobile/core/obd/obd_client.dart';
 import 'package:cardiag_mobile/core/uds/uds_client.dart';
+import 'package:cardiag_mobile/sim/elm_emulator.dart';
 import 'package:cardiag_mobile/sim/vehicle.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -131,5 +132,30 @@ void adapterTests() {
         isA<TransportException>().having((e) => e.message, 'message', contains('does not respond like an ELM327')),
       ),
     );
+  });
+
+  group('connecting through the adapter', () {
+    test('falls back to explicit CAN protocols when automatic search fails', () async {
+      final elm = Elm327Emulator()..autoSearchWorks = false;
+      final t = Elm327Transport(elm);
+      await t.initialize();
+      expect(t.protocolNumber, 6);
+      expect(elm.log, containsAllInOrder(['ATSP0', '0100', 'ATSP6', '0100']));
+      expect(await ObdClient(t).vin(), 'WVWZZZAUZHW123456');
+    });
+
+    test('explains that the ignition is off, with the adapter details', () async {
+      final t = Elm327Transport(Elm327Emulator()..ignitionOn = false);
+      await expectLater(
+        t.initialize(),
+        throwsA(
+          isA<NoResponseException>().having(
+            (e) => e.message,
+            'message',
+            allOf(contains('ELM327 v1.5'), contains(' V)'), contains('ignition')),
+          ),
+        ),
+      );
+    });
   });
 }

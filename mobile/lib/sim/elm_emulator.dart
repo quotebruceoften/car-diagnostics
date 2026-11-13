@@ -19,6 +19,13 @@ class Elm327Emulator implements ByteChannel {
   final Vehicle vehicle;
   final int protocol = 6; // ISO 15765-4 CAN 11-bit 500 kbaud
   final log = <String>[];
+
+  /// With the ignition off the car's diagnostic bus is silent.
+  bool ignitionOn = true;
+
+  /// Some adapters fail the automatic protocol search (AT SP 0).
+  bool autoSearchWorks = true;
+  String _sp = '0';
   final _out = StreamController<List<int>>();
   final _in = StringBuffer();
 
@@ -109,7 +116,10 @@ class Elm327Emulator implements ByteChannel {
           _header = int.parse(c.substring(2), radix: 16);
         } else if (c.startsWith('CRA')) {
           _rxFilter = int.parse(c.substring(3), radix: 16);
-        } else if (!(c.startsWith('L') || c.startsWith('ST') || c.startsWith('SP') || c.startsWith('AT'))) {
+        } else if (c.startsWith('SP')) {
+          _sp = c.substring(2);
+          _connected = false;
+        } else if (!(c.startsWith('L') || c.startsWith('ST') || c.startsWith('AT'))) {
           return ['?'];
         }
     }
@@ -123,7 +133,11 @@ class Elm327Emulator implements ByteChannel {
   }
 
   List<String> _data(Uint8List data) {
-    final searching = _connected ? <String>[] : ['SEARCHING...'];
+    if (!_connected) {
+      if (_sp == '0' && !(ignitionOn && autoSearchWorks)) return ['SEARCHING...', 'UNABLE TO CONNECT'];
+      if (_sp != '0' && !(ignitionOn && _sp == '$protocol')) return ['CAN ERROR'];
+    }
+    final searching = _connected || _sp != '0' ? <String>[] : ['SEARCHING...'];
     _connected = true;
     List<(int, List<int>)> framed;
     if (_caf) {
