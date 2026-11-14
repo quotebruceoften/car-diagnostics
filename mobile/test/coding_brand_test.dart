@@ -8,6 +8,7 @@ import 'package:cardiag_mobile/brands/vag_dtcs.dart';
 import 'package:cardiag_mobile/core/coding/coder.dart';
 import 'package:cardiag_mobile/core/coding/profile.dart';
 import 'package:cardiag_mobile/core/errors.dart';
+import 'package:cardiag_mobile/core/hex.dart';
 import 'package:cardiag_mobile/core/obd/dtc.dart';
 import 'package:cardiag_mobile/core/uds/uds_client.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -54,6 +55,28 @@ void main() {
         expect(() => profile.apply(data, change), throwsA(isA<CodingException>()), reason: '$change');
       }
       expect(() => profile.decode(Uint8List(4)), throwsA(isA<CodingException>()));
+    });
+
+    test('Golf 7 radio profile reads the car\'s real coding', () {
+      final radio = CodingProfile.parse(
+        File('assets/profiles/vag_5f_mib_std1_5g0035832.json').readAsStringSync(),
+        source: 'radio',
+      );
+      // The coding of the scanned car, from VCDS.
+      final coding = hexToBytes('02730000FF00000011330001001000001F0100960100010001');
+      expect(radio.matches(brandId: 'vag', moduleAddress: '5F', partNumber: '5G0 035 832'), isTrue);
+      expect(radio.matches(brandId: 'vag', moduleAddress: '09', partNumber: '5G0 035 832'), isFalse);
+      expect(radio.decode(coding), {'startup_screen': 'Standard', 'ui_skin': 'Highline'});
+      final changed = radio.apply(coding, {'startup_screen': 'GTI'});
+      expect(changed[18], 3);
+      // Nothing else moves.
+      expect(
+        [
+          for (var i = 0; i < 25; i++)
+            if (changed[i] != coding[i]) i,
+        ],
+        [18],
+      );
     });
 
     test('rejects invalid profiles', () {

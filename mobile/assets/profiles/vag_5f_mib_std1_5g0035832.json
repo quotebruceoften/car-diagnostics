@@ -1,0 +1,17 @@
+{
+  "id": "vag_5f_mib_std1_5g0035832",
+  "name": "Radio (MIB Standard, 5G0 035 832)",
+  "description": "Appearance settings of the radio, taken from the VCDS Long Coding Helper for this exact unit. Equipment settings (speakers, camera, Bluetooth, region) are left out on purpose: they describe what is fitted to the car.",
+  "brand": "vag",
+  "module": "5F",
+  "part_numbers": ["5G0035832"],
+  "tx_id": "0x773",
+  "rx_id": "0x7DD",
+  "session": "0x03",
+  "did": "0x0600",
+  "length": 25,
+  "options": [
+    {"key": "startup_screen", "label": "Startup screen", "byte": 18, "bit": 0, "width": 8, "type": "enum", "values": {"0": "Standard", "2": "GTD", "3": "GTI", "6": "R-Line", "9": "Hybrid"}, "description": "The picture the radio shows while it starts up."},
+    {"key": "ui_skin", "label": "Screen style", "byte": 17, "bit": 0, "width": 8, "type": "enum", "values": {"0": "None", "1": "Highline", "2": "Top-Sport (GTI/GTD/R)"}, "description": "The colour scheme of the radio's menus."}
+  ]
+}

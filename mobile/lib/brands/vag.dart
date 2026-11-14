@@ -145,7 +145,10 @@ class VagBrand extends Brand {
   int get codingDid => 0x0600;
 
   @override
-  List<String> get profileAssets => const ['assets/profiles/vag_09_demo.json'];
+  List<String> get profileAssets => const [
+    'assets/profiles/vag_09_demo.json',
+    'assets/profiles/vag_5f_mib_std1_5g0035832.json',
+  ];
 
   @override
   String? explainError(CarDiagException error, {bool writing = false}) {
