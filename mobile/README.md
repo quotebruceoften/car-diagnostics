@@ -24,6 +24,13 @@ Volkswagen Group cars (VW, Audi, Škoda, SEAT, Cupra).
   **Alerts** vibrate and show a red bar when a value crosses a limit you set (for example
   coolant above 110 °C). The **driving dashboard** shows four large dials in landscape and can
   record a drive to a CSV file.
+- **Boost and shift light:** turbo boost (manifold pressure above outside pressure), an estimate
+  of engine power from air flow, peak values and a shift light at an rpm you choose. Alerts can
+  be **spoken** out loud.
+- **Clear all faults:** from the scan screen, clears every module that has faults, scans again
+  and shows which faults came straight back.
+- **Module explorer:** a read-only sweep that lists every data item a module answers, with a
+  shareable results file. Used to find where a car keeps values such as mileage or fuel level.
 - **Battery test:** battery voltage at rest, the dip while the engine starts, and the charging
   voltage, each with a verdict.
 - **Trip computer:** live fuel consumption (from fuel rate, or from air flow on petrol

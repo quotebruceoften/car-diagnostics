@@ -4,12 +4,14 @@ import 'package:cardiag_mobile/core/history.dart';
 import 'package:cardiag_mobile/core/service_log.dart';
 import 'package:cardiag_mobile/core/store.dart';
 import 'package:cardiag_mobile/main.dart';
+import 'package:cardiag_mobile/platform/notifications.dart';
+import 'package:cardiag_mobile/platform/speech.dart';
 import 'package:cardiag_mobile/ui/screens/faults_tab.dart';
 import 'package:cardiag_mobile/ui/session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Future<DiagSession> _connect(WidgetTester tester, {DataStore? store}) async {
+Future<DiagSession> _connect(WidgetTester tester, {DataStore? store, Speaker? speaker}) async {
   tester.view.physicalSize = const Size(1080, 2400);
   tester.view.devicePixelRatio = 2.5;
   addTearDown(tester.view.reset);
@@ -17,6 +19,8 @@ Future<DiagSession> _connect(WidgetTester tester, {DataStore? store}) async {
     backupStore: MemoryBackupStore(),
     historyStore: MemoryHistoryStore(),
     dataStore: store ?? MemoryDataStore(),
+    notifier: NoopReminderNotifier(),
+    speaker: speaker ?? SilentSpeaker(),
     demoLatency: Duration.zero,
   );
   await tester.pumpWidget(CarDiagApp(session: s));
@@ -27,6 +31,9 @@ Future<DiagSession> _connect(WidgetTester tester, {DataStore? store}) async {
 
 Future<void> _openTool(WidgetTester tester, String name) async {
   await tester.scrollUntilVisible(find.text(name), 300, scrollable: find.byType(Scrollable).first);
+  // Clear of the navigation bar.
+  await tester.drag(find.byType(Scrollable).first, const Offset(0, -150));
+  await tester.pumpAndSettle();
   await tester.tap(find.text(name));
   await tester.pumpAndSettle();
 }
@@ -168,6 +175,76 @@ void main() {
     await tester.tap(find.byTooltip('Scan car'));
     await tester.pumpAndSettle();
     expect(find.textContaining('faults in'), findsOneWidget);
+    await _finish(tester);
+  });
+
+  testWidgets('clear all clears every module and shows what came back', (tester) async {
+    final s = await _connect(tester);
+    await tester.tap(find.text('Scan car'));
+    await tester.pumpAndSettle();
+    expect(s.scan.faultCount, 6);
+    await tester.tap(find.byTooltip('Clear all faults'));
+    await tester.pumpAndSettle();
+    expect(find.text('Clear all 6 faults?'), findsOneWidget);
+    expect(find.textContaining('emissions self-tests start again'), findsOneWidget); // engine is included
+    await tester.tap(find.widgetWithText(FilledButton, 'Clear all'));
+    await tester.pumpAndSettle();
+    // The demo's active misfire is still present; the five stored faults are gone.
+    expect(find.text('Cleared 5 · 1 came straight back'), findsOneWidget);
+    expect(s.scan.faultCount, 1);
+    await _finish(tester);
+  });
+
+  testWidgets('the module explorer lists what a module answers', (tester) async {
+    await _connect(tester);
+    await tester.tap(find.text('Scan car'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Instrument cluster'), 300);
+    await tester.drag(find.byType(Scrollable).last, const Offset(0, -200)); // clear of the bottom buttons
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Instrument cluster'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Explore data'));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('It only reads'), findsOneWidget);
+    await tester.tap(find.text('Start'));
+    await tester.pumpAndSettle();
+    // Part number, system name and VIN from the F1xx range, coding from 0600.
+    expect(find.text('ANSWERED (5)'), findsOneWidget);
+    expect(find.text('5G1920741B'), findsOneWidget);
+    expect(find.text('KOMBI'), findsOneWidget);
+    expect(find.text('Run again'), findsOneWidget);
+    await _finish(tester);
+  });
+
+  testWidgets('boost screen shows boost, power and the shift light', (tester) async {
+    final speaker = SilentSpeaker();
+    final s = await _connect(tester, speaker: speaker);
+    s.settings.setShiftRpm(2000); // the demo engine revs to 2600
+    await _openTool(tester, 'Boost & shift light');
+    for (var i = 0; i < 8; i++) {
+      await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 400)));
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    expect(find.text('Peak boost'), findsOneWidget);
+    expect(find.text('Power now (estimate)'), findsOneWidget);
+    expect(find.textContaining('bar ·'), findsOneWidget);
+    await _finish(tester);
+  });
+
+  testWidgets('alerts are spoken once when they start', (tester) async {
+    final speaker = SilentSpeaker();
+    final s = await _connect(tester, speaker: speaker);
+    s.settings.setAlertRules(const [AlertRule(pid: 'coolant_temp', above: -30)]);
+    await tester.tap(find.text('Live'));
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump(const Duration(seconds: 1));
+    expect(speaker.said, hasLength(1));
+    expect(speaker.said.single, matches(RegExp(r'^Warning\. Coolant temperature \d+ degrees$')));
+    s.settings.setSpokenAlerts(false);
+    s.alerts.reset();
+    await tester.pump(const Duration(seconds: 1));
+    expect(speaker.said, hasLength(1));
     await _finish(tester);
   });
 

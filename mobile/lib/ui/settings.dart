@@ -66,6 +66,8 @@ class AppSettings extends ChangeNotifier {
     distance = DistanceUnit.values.asNameMap()[p.getString('distance')] ?? DistanceUnit.km;
     autoReconnect = p.getBool('autoReconnect') ?? true;
     serviceNotifications = p.getBool('serviceNotifications') ?? true;
+    spokenAlerts = p.getBool('spokenAlerts') ?? true;
+    shiftRpm = p.getInt('shiftRpm') ?? 5500;
     economy = EconomyUnit.values.asNameMap()[p.getString('economy')] ?? EconomyUnit.lPer100km;
     fuelPrice = p.getDouble('fuelPrice');
     currency = p.getString('currency') ?? '';
@@ -95,6 +97,12 @@ class AppSettings extends ChangeNotifier {
 
   /// Phone notifications when a service falls due.
   bool serviceNotifications = true;
+
+  /// Say live-data alerts out loud.
+  bool spokenAlerts = true;
+
+  /// Engine speed at which the shift light flashes.
+  int shiftRpm = 5500;
   SavedAdapter? lastAdapter;
   SavedCar? lastCar;
   EconomyUnit economy = EconomyUnit.lPer100km;
@@ -117,6 +125,8 @@ class AppSettings extends ChangeNotifier {
 
   void setServiceNotifications(bool v) =>
       _set(() => serviceNotifications = v, (p) => p.setBool('serviceNotifications', v));
+  void setSpokenAlerts(bool v) => _set(() => spokenAlerts = v, (p) => p.setBool('spokenAlerts', v));
+  void setShiftRpm(int v) => _set(() => shiftRpm = v, (p) => p.setInt('shiftRpm', v));
   void setLastCar(SavedCar c) => _set(() => lastCar = c, (p) => p.setString('lastCar', jsonEncode(c.toJson())));
   void setEconomy(EconomyUnit v) => _set(() => economy = v, (p) => p.setString('economy', v.name));
   void setFuelPrice(double? v, String currency) => _set(
@@ -146,6 +156,8 @@ class AppSettings extends ChangeNotifier {
     'economy': economy.name,
     'autoReconnect': autoReconnect,
     'serviceNotifications': serviceNotifications,
+    'spokenAlerts': spokenAlerts,
+    'shiftRpm': shiftRpm,
     'fuelPrice': fuelPrice,
     'currency': currency,
     'lastCar': lastCar?.toJson(),
@@ -159,6 +171,8 @@ class AppSettings extends ChangeNotifier {
     if (EconomyUnit.values.asNameMap()[j['economy']] case final v?) setEconomy(v);
     if (j['autoReconnect'] case final bool v) setAutoReconnect(v);
     if (j['serviceNotifications'] case final bool v) setServiceNotifications(v);
+    if (j['spokenAlerts'] case final bool v) setSpokenAlerts(v);
+    if (j['shiftRpm'] case final int v) setShiftRpm(v);
     if (j.containsKey('fuelPrice') || j.containsKey('currency')) {
       setFuelPrice((j['fuelPrice'] as num?)?.toDouble(), (j['currency'] ?? currency) as String);
     }

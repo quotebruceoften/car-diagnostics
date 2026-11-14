@@ -9,6 +9,7 @@ import '../../core/service_log.dart';
 import '../widgets/car_card.dart';
 import '../widgets/skeleton.dart';
 import 'battery_screen.dart';
+import 'boost_screen.dart';
 import 'history_screen.dart';
 import 'performance_screen.dart';
 import 'scan_screen.dart';
@@ -220,6 +221,11 @@ class _OverviewTabState extends State<OverviewTab> {
             icon: Icons.timer_outlined,
             label: 'Performance',
             onTap: () => _open(context, const PerformanceScreen()),
+          ),
+          _Shortcut(
+            icon: Icons.rocket_launch_outlined,
+            label: 'Boost & shift light',
+            onTap: () => _open(context, const BoostScreen()),
           ),
           _Shortcut(
             icon: Icons.build_circle_outlined,

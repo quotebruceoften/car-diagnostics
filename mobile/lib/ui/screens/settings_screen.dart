@@ -143,6 +143,21 @@ class SettingsScreen extends StatelessWidget {
                 },
               ),
             ),
+            Card(
+              child: SwitchListTile(
+                secondary: const Icon(Icons.record_voice_over_outlined),
+                title: const Text('Spoken alerts'),
+                subtitle: const Text(
+                  'Say live-data alerts out loud, for example "Warning. Coolant temperature 112 degrees"',
+                ),
+                value: settings.spokenAlerts,
+                onChanged: (v) {
+                  HapticFeedback.selectionClick();
+                  settings.setSpokenAlerts(v);
+                  if (v) SessionScope.read(context).speaker.say('Spoken alerts are on');
+                },
+              ),
+            ),
             const SectionHeader('Connection'),
             Card(
               child: Column(

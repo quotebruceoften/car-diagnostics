@@ -18,6 +18,7 @@ import '../core/history.dart';
 import '../core/obd/dtc.dart';
 import '../core/obd/obd_client.dart';
 import '../core/obd/pids.dart';
+import '../core/performance.dart';
 import '../core/reminder_plan.dart';
 import '../core/service_log.dart';
 import '../core/store.dart';
@@ -26,6 +27,7 @@ import '../core/transport/elm327.dart';
 import '../core/transport/transport.dart';
 import '../core/uds/uds_client.dart';
 import '../platform/notifications.dart';
+import '../platform/speech.dart';
 import '../sim/elm_emulator.dart';
 import '../sim/vehicle.dart';
 import 'car_media.dart';
@@ -41,6 +43,7 @@ class DiagSession extends ChangeNotifier {
     HistoryStore? historyStore,
     DataStore? dataStore,
     ReminderNotifier? notifier,
+    Speaker? speaker,
     AssetBundle? assets,
     this.demoLatency = const Duration(milliseconds: 15),
   }) : settings = settings ?? AppSettings(),
@@ -49,14 +52,27 @@ class DiagSession extends ChangeNotifier {
        _historyStore = historyStore,
        _dataStore = dataStore,
        notifier = notifier ?? LocalReminderNotifier(),
+       speaker = speaker ?? TtsSpeaker(),
        _assets = assets ?? rootBundle {
     scan.onComplete = _saveScan;
+    alerts.onTriggered = _announce;
     alerts.rules = this.settings.alertRules;
     this.settings.addListener(() => alerts.rules = this.settings.alertRules);
   }
 
   /// Live-data alerts (e.g. engine too hot), shared by every live screen.
-  final alerts = AlertWatcher(onTriggered: (_) => HapticFeedback.heavyImpact());
+  final alerts = AlertWatcher();
+
+  /// Says alerts out loud while driving.
+  final Speaker speaker;
+
+  void _announce(ActiveAlert a) {
+    HapticFeedback.heavyImpact();
+    final pid = pidsByName[a.rule.pid];
+    if (!settings.spokenAlerts || pid == null) return;
+    final (value, unit) = settings.convert(pid, a.value);
+    unawaited(speaker.say('Warning. ${spokenValue(pid.description, AppSettings.number(value), unit)}'));
+  }
 
   /// Feeds a live reading to the alerts.
   void observe(Pid pid, Object value) {

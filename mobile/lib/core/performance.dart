@@ -1,5 +1,35 @@
 import 'dart:convert';
 
+/// Turbo boost in bar: intake manifold pressure above the outside air
+/// pressure (both in kPa). Negative values are vacuum.
+double boostBar(double manifoldKpa, double barometricKpa) => (manifoldKpa - barometricKpa) / 100;
+
+/// A rough estimate of engine power in kW from the air it breathes (g/s),
+/// for petrol engines: fuel burnt at 14.7:1, 43.5 MJ/kg, about 31% of it
+/// reaching the crankshaft. Good to perhaps 10-15% near full throttle and
+/// too high at part throttle, where engines are less efficient.
+double estimatedKw(double mafGramsPerSecond) => mafGramsPerSecond / 14.7 * 43.5 * 0.31;
+
+const kwToHp = 1.341;
+const barToPsi = 14.5038;
+
+/// What to say for an alert, e.g. "Coolant temperature 112 degrees".
+String spokenValue(String description, String number, String unit) {
+  final words = switch (unit) {
+    '°C' || '°F' || '°' => 'degrees',
+    'V' => 'volts',
+    '%' => 'percent',
+    'km/h' => 'kilometres per hour',
+    'mph' => 'miles per hour',
+    'rpm' => 'R P M',
+    'kPa' => 'kilopascals',
+    'g/s' => 'grams per second',
+    'L/h' => 'litres per hour',
+    _ => unit,
+  };
+  return '$description $number $words'.trim();
+}
+
 /// A timed speed run, e.g. 0-100 km/h or 100-0 km/h. Speeds in km/h.
 class SpeedRun {
   const SpeedRun(this.from, this.to, this.label);

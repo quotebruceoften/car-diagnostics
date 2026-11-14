@@ -10,6 +10,8 @@ import 'package:cardiag_mobile/core/performance.dart';
 import 'package:cardiag_mobile/core/service_log.dart';
 import 'package:cardiag_mobile/core/store.dart';
 import 'package:cardiag_mobile/core/trip.dart';
+import 'package:cardiag_mobile/core/uds/explorer.dart';
+import 'package:cardiag_mobile/core/uds/uds_client.dart';
 import 'package:cardiag_mobile/ui/settings.dart';
 import 'package:cardiag_mobile/sim/vehicle.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -270,6 +272,66 @@ void main() {
     await store.delete('trips/A.json');
     expect(await store.list('trips'), isEmpty);
     expect(() => store.write('../x.json', ''), throwsArgumentError);
+  });
+
+  group('boost and power', () {
+    test('boost is manifold pressure above outside pressure', () {
+      expect(boostBar(221, 101), closeTo(1.2, 1e-9));
+      expect(boostBar(35, 101), closeTo(-0.66, 1e-9)); // vacuum at idle
+    });
+
+    test('power estimate from air flow', () {
+      // About 100 g/s of air at full throttle is roughly 92 kW (123 hp).
+      expect(estimatedKw(100), closeTo(91.7, 0.5));
+      expect(estimatedKw(100) * kwToHp, closeTo(123, 1));
+    });
+
+    test('alerts are worded for speech', () {
+      expect(spokenValue('Coolant temperature', '112', '°C'), 'Coolant temperature 112 degrees');
+      expect(spokenValue('Control module voltage', '11.6', 'V'), 'Control module voltage 11.6 volts');
+      expect(spokenValue('Engine speed', '6100', 'rpm'), 'Engine speed 6100 R P M');
+    });
+  });
+
+  group('module explorer', () {
+    test('finds readable items and stops when asked', () async {
+      final uds = UdsClient(SimulatorTransport(Vehicle.demoGolf()), 0x70E, rxId: 0x778);
+      final quick = await exploreModule(uds, explorePresets.first.ranges).last;
+      expect(quick.asked, quick.total);
+      // F186 is the active session, which every module answers.
+      expect([for (final i in quick.found) i.id], ['F186', 'F187', 'F189', 'F190', 'F197', '0600']);
+      expect(quick.found[1].text, '5Q0937DEMO');
+      expect(quick.found.last.text, isNull);
+      expect(quick.found.last.data, hasLength(30));
+
+      var asked = 0;
+      final stopped = await exploreModule(uds, const [ExploreRange(0, 0xFFFF)], cancelled: () => ++asked > 100).last;
+      expect(stopped.asked, lessThan(200));
+    });
+
+    test('gives up on a module that does not answer', () async {
+      final uds = UdsClient(SimulatorTransport(Vehicle.demoGolf()), 0x7AA, rxId: 0x7BB);
+      final p = await exploreModule(uds, const [ExploreRange(0, 0xFFFF)]).last;
+      expect(p.stoppedResponding, isTrue);
+      expect(p.asked, lessThan(20));
+    });
+
+    test('results file lists text and numbers', () async {
+      final uds = UdsClient(SimulatorTransport(Vehicle.demoGolf()), 0x7E0, rxId: 0x7E8);
+      final p = await exploreModule(uds, const [ExploreRange(0xF186, 0xF190)]).last;
+      final text = exploreResultText(
+        car: 'Golf',
+        module: '01 · Engine',
+        partNumber: '04E906016DE',
+        preset: 'Quick',
+        progress: p,
+        when: DateTime(2026, 11, 14, 9, 30),
+      );
+      expect(text, contains('Module: 01 · Engine   part 04E906016DE'));
+      expect(text, contains('F186  01    = 1')); // active session
+      expect(text, contains('"04E906016DE"'));
+      expect(text, contains('When: 2026-11-14 09:30'));
+    });
   });
 
   group('backup', () {

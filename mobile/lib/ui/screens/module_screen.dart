@@ -9,6 +9,7 @@ import '../widgets/common.dart';
 import '../widgets/dtc_tile.dart';
 import 'coding_screen.dart';
 import 'dtc_screen.dart';
+import 'explorer_screen.dart';
 
 /// One module: identification, fault codes and (where supported) coding.
 class ModuleScreen extends StatefulWidget {
@@ -95,6 +96,21 @@ class _ModuleScreenState extends State<ModuleScreen> {
                             color: toneColor(context, faults == 0 ? Tone.ok : Tone.bad),
                           ),
                       ],
+                    ),
+                  ),
+                ),
+                Card(
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    leading: const TintedIcon(Icons.travel_explore_rounded, size: 40),
+                    title: const Text('Explore data', style: TextStyle(fontWeight: FontWeight.w600)),
+                    subtitle: const Text('Read-only: list every data item this module offers'),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (_) => ExplorerScreen(module: m, partNumber: info.partNumber),
+                      ),
                     ),
                   ),
                 ),

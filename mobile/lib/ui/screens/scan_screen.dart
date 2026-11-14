@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../brands/scanner.dart';
 import '../../core/history.dart';
@@ -57,6 +58,69 @@ class _ScanScreenState extends State<ScanScreen> {
     }
   }
 
+  /// The scan as it was before "Clear all", to show what came back.
+  ScanRecord? _beforeClear;
+  final _clearFailures = <String>[];
+  bool _clearing = false;
+
+  /// Clears the fault memory of every module that has faults, then scans
+  /// again to show which faults come straight back.
+  Future<void> _clearAll() async {
+    final session = SessionScope.read(context);
+    final withFaults = session.scan.present.where((m) => (m.dtcs ?? const []).isNotEmpty).toList();
+    if (withFaults.isEmpty) return;
+    final total = withFaults.fold(0, (n, m) => n + m.dtcs!.length);
+    final engine = withFaults.any((m) => m.def.address == '01' || m.def.address == '02');
+    final ok = await confirm(
+      context,
+      title: 'Clear all $total faults?',
+      action: 'Clear all',
+      destructive: true,
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Erases the fault memory of ${withFaults.map((m) => m.def.name).join(', ')}.'),
+          const SizedBox(height: 10),
+          const Text(
+            'The car is then scanned again. Faults that are still present come straight back; the rest stay '
+            'away until they happen again. Modules without faults are not touched.',
+          ),
+          if (engine) ...[
+            const SizedBox(height: 10),
+            const Text(
+              'This includes the engine or gearbox: their emissions self-tests start again, so the car can '
+              'fail an emissions test until it has been driven for a while.',
+            ),
+          ],
+          const SizedBox(height: 10),
+          const Text('Ignition on, engine off.'),
+        ],
+      ),
+    );
+    if (!ok || !mounted || !session.connected) return;
+    final before = session.lastRecord ?? session.recordFromScan();
+    setState(() {
+      _clearing = true;
+      _clearFailures.clear();
+    });
+    final scanner = ModuleScanner(session.transport, session.brand);
+    for (final m in withFaults) {
+      try {
+        await scanner.client(m.def).clearDtcs();
+      } catch (e) {
+        _clearFailures.add('${m.def.name}: ${errorText(e)}');
+      }
+    }
+    HapticFeedback.mediumImpact();
+    if (!mounted) return;
+    setState(() {
+      _clearing = false;
+      _beforeClear = before;
+    });
+    _scan();
+  }
+
   void _scan() {
     final session = SessionScope.read(context);
     if (session.connected) session.scan.start(session.transport, session.brand);
@@ -75,6 +139,12 @@ class _ScanScreenState extends State<ScanScreen> {
           appBar: AppBar(
             title: const Text('Scan car'),
             actions: [
+              if (!scan.scanning && !_clearing && scan.faultCount > 0)
+                IconButton(
+                  tooltip: 'Clear all faults',
+                  icon: const Icon(Icons.delete_sweep_outlined),
+                  onPressed: session.connected ? _clearAll : null,
+                ),
               IconButton(
                 tooltip: 'Scan history',
                 icon: const Icon(Icons.history_rounded),
@@ -83,7 +153,7 @@ class _ScanScreenState extends State<ScanScreen> {
               ),
             ],
           ),
-          bottomNavigationBar: scan.scanning
+          bottomNavigationBar: scan.scanning || _clearing
               ? null
               : SafeArea(
                   child: Padding(
@@ -124,7 +194,18 @@ class _ScanScreenState extends State<ScanScreen> {
           body: ListView(
             padding: const EdgeInsets.only(top: 4, bottom: 24),
             children: [
-              if (scan.scanning) _Progress(scan: scan) else if (scan.hasResults) _Summary(scan: scan),
+              if (_clearing)
+                const Card(
+                  child: Padding(
+                    padding: EdgeInsets.all(24),
+                    child: LoadingView(message: 'Clearing fault memories...'),
+                  ),
+                )
+              else if (scan.scanning)
+                _Progress(scan: scan)
+              else if (scan.hasResults)
+                _Summary(scan: scan),
+              if (!scan.scanning && !_clearing) ?_clearResult(record),
               if (scan.error != null)
                 Padding(
                   padding: const EdgeInsets.all(16),
@@ -151,6 +232,23 @@ class _ScanScreenState extends State<ScanScreen> {
           ),
         );
       },
+    );
+  }
+
+  /// What "Clear all" achieved, once the scan after it has finished.
+  Widget? _clearResult(ScanRecord? after) {
+    final before = _beforeClear;
+    if (before == null || after == null || !after.timestamp.isAfter(before.timestamp)) return null;
+    final cleared = ScanComparison(after, before).fixed.length;
+    final back = before.faultKeys.intersection(after.faultKeys).length;
+    return StatusBanner(
+      tone: _clearFailures.isNotEmpty ? Tone.warn : (back == 0 ? Tone.ok : Tone.neutral),
+      icon: Icons.delete_sweep_rounded,
+      title: back == 0 ? 'Cleared $cleared, none came back' : 'Cleared $cleared · $back came straight back',
+      subtitle: [
+        if (back > 0) 'The ones below are still present in the car.',
+        if (_clearFailures.isNotEmpty) 'Could not clear: ${_clearFailures.join('; ')}',
+      ].join(' ').emptyOrNull,
     );
   }
 
@@ -345,4 +443,8 @@ class _ProgressRow extends StatelessWidget {
       trailing: trailing,
     );
   }
+}
+
+extension on String {
+  String? get emptyOrNull => isEmpty ? null : this;
 }
