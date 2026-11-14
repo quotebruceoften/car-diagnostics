@@ -44,6 +44,15 @@ Last updated: 2026-11-14 (app build 23).
     figure, is an estimated power shown (the 1.4 TSI may not report air
     flow), and are alerts spoken.
 
+15. **Explorer results for modules 09 and 17, "Thorough"** (most wanted).
+    The VCDS adaptation lists (docs/golf7-coding/adaptations-*.csv) give
+    each setting's name and current value but not where it lives. Matching
+    them against the explorer results finds the addresses, which is what
+    lets the app show and later change adaptations.
+
+16. **First coding change from the app** (build 25): one harmless cluster
+    setting, then report whether it applied or what the app said.
+
 ## To send from VCDS
 
 6. **Long Coding Helper screenshots.**

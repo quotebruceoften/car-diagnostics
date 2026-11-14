@@ -1,0 +1,1802 @@
+# VCDS adaptation map, module 09, 2013 Golf 7, 2026-11-14 (name, current value, length). Names and values only: no data addresses.
+IDE00002-Transport mode,active ,1
+IDE01058-Country coding,No Response From Subnet Component,1
+IDE01268-ENG115835-Windshield wiper-Adaptives Nachwischen bei SRA,not active ,9
+IDE01268-ENG116609-Windshield wiper-Anzahl Betaetigungen Frontwaschanlage pro SRA Aktivierung,5 ,9
+IDE01268-ENG115836-Windshield wiper-Frontwischer Notlaufprogramm,active ,9
+IDE01268-ENG116614-Windshield wiper-Frontwischer Referenzlauf,active ,9
+IDE01268-ENG116617-Windshield wiper-Geschwindigkeitsabhaengige Wischstufenrueckschaltung,active ,9
+IDE01268-ENG116615-Windshield wiper-Menuesteuerung Frontwischer,not active ,9
+IDE01268-ENG115771-Windshield wiper-Regensensor aktivieren,Deactivating ,9
+IDE01268-ENG115769-Windshield wiper-SRA bei Waschwassermangel,not active ,9
+IDE01268-ENG115767-Windshield wiper-SRA Einweichpausenzeit,2000 ms,9
+IDE01268-ENG115768-Windshield wiper-SRA Nachwaschzeit,320 ms,9
+IDE01268-ENG116611-Windshield wiper-SRA Pausenzeit,0 ms,9
+IDE01268-ENG116610-Windshield wiper-SRA Verzoegerungszeit,0 ms,9
+IDE01268-ENG115766-Windshield wiper-SRA Waschzeit,320 ms,9
+IDE01268-ENG116616-Windshield wiper-Tippwischen mit erhoehter Wischfrequenz,active ,9
+IDE01268-ENG116618-Windshield wiper-Traenenwischen Front Status,not active ,9
+IDE01268-ENG115770-Windshield wiper-Variable Regensensoraktivierung,not active ,9
+IDE01268-ENG116613-Windshield wiper-Wischer abparken bei Oeffnen der Motorhaube,not active ,9
+IDE01268-ENG116612-Windshield wiper-Wischer stop bei KL15 aus,not active ,9
+IDE01268-ENG122185-Windshield wiper-Wischer Stopp bei Oeffnen der Motorhaube,not active ,9
+IDE01550-Service position,170.494336 °,2
+IDE02269-MAS04382-Acknowledgement signals-Optical feedback during locking,DELAY ,2
+IDE02269-ENG116666-Acknowledgement signals-Akustische Rueckmeldung entriegeln,No ,2
+IDE02269-ENG116669-Acknowledgement signals-Akustische Rueckmeldung global,not active ,2
+IDE02269-ENG116670-Acknowledgement signals-Akustische Rueckmeldung Signalhorn,not active ,2
+IDE02269-ENG116667-Acknowledgement signals-Akustische Rueckmeldung verriegeln,No ,2
+IDE02269-ENG122187-Acknowledgement signals-Dauer der Akustischen Rueckmeldung vom Einfachhorn,normal ,2
+IDE02269-ENG122188-Acknowledgement signals-Menuesteuerung akustische Rueckmeldung,not active ,2
+IDE02269-ENG122995-Acknowledgement signals-Optische Rueckmeldung 3.Bremsleuchte,not active ,2
+IDE02269-ENG116668-Acknowledgement signals-Optische Rueckmeldung Komfortschliessen,active ,2
+IDE02332-Deactivate production mode,0 ,3
+IDE02488-Anti-theft system interior monitoring,No Response From Subnet Component,3
+IDE02711-ENG116690-Rear wiper-Automatisches Heckwischen,not active ,3
+IDE02711-ENG114947-Rear wiper-Heckwischer Weiterlauf,not active ,3
+IDE02711-ENG116692-Rear wiper-Kein automatisches Abparken,not active ,3
+IDE02711-ENG114946-Rear wiper-Komfortwischen Heck,active ,3
+IDE02711-ENG116695-Rear wiper-Komofortwischen Heck Intervallpausenzeit Stufe 1,5 s,3
+IDE02711-ENG116696-Rear wiper-Komofortwischen Heck Intervallpausenzeit Stufe 2,3 s,3
+IDE02711-ENG116694-Rear wiper-Komofortwischen Heck Intervallpausenzeit Stufe Automatik,7 s,3
+IDE02711-ENG116693-Rear wiper-Komofortwischen Heck Intervallpausenzeit Stufe Intervall,7 s,3
+IDE02711-ENG116689-Rear wiper-Menuesteuerung Komfortwischen HW,active ,3
+IDE02711-ENG116691-Rear wiper-Traenenwischen Heck,active ,3
+IDE02957-ENG116688-Ambient lighting-Ambientelicht mit raste heckdeckel,not enabled ,4
+IDE02957-ENG115822-Ambient lighting-Defaultwert Ambienteprofil Fussraum,50 %,4
+IDE02957-ENG116685-Ambient lighting-Defaultwert Ambienteprofil Tuer,50 %,4
+IDE02957-ENG115823-Ambient lighting-Defaultwert Ambienteprofil Vorn,50 %,4
+IDE02957-ENG115824-Ambient lighting-Innenlichtinszenierung,Enabled ,4
+IDE02957-ENG116687-Ambient lighting-Tuerinnengriff mit Tuertafel,not installed ,4
+IDE02957-ENG116686-Ambient lighting-Tuerinnengriffbeleuchtung mit I-Tafel,not installed ,4
+IDE03638-IDE04231-Stationary cornering lamp-Steering wheel angle: offset,-63.75 °,13
+IDE03638-ENG116677-Stationary cornering lamp-Abdimmgeschwindigkeit,50.0 %/s,13
+IDE03638-ENG116673-Stationary cornering lamp-bei Rueckwaertsfahrt,both sides ,13
+IDE03638-ENG116675-Stationary cornering lamp-Lower speed threshold,0.0 km/h,13
+IDE03638-ENG116682-Stationary cornering lamp-Maximaltemperatur,100.0 °C,13
+IDE03638-ENG116679-Stationary cornering lamp-obere Grenztemperatur,95.0 °C,13
+IDE03638-ENG116681-Stationary cornering lamp-Oberer Lenkradwinkel,120 °,13
+IDE03638-ENG116680-Stationary cornering lamp-untere Grenztemperatur,80.0 °C,13
+IDE03638-ENG116678-Stationary cornering lamp-Unterer Lenkradwinkel,180 °,13
+IDE03638-ENG116676-Stationary cornering lamp-Upper speed threshold,40.0 km/h,13
+IDE03638-ENG116674-Stationary cornering lamp-Vorschrift,ECE R119 ,13
+IDE04923-ENG116590-Turn signal control-Blinkkontrolleuchte fuer Anhaenger,separate ,3
+IDE04923-ENG115774-Turn signal control-Komfortblinken,active ,3
+IDE04923-ENG116587-Turn signal control-Komfortblinken Blinkzyklen,3 ,3
+IDE04923-ENG116589-Turn signal control-Signalprioritaet fuer Blinker,MFG ,3
+IDE04923-ENG116588-Turn signal control-Sonderfunktionen,not enabled ,3
+IDE04923-ENG115818-Turn signal control-Warnblinken bei Verdeckentriegelung,not active ,3
+IDE04923-ENG115819-Turn signal control-Warnblinktastersuchbeleuchtung Aktivierung,Always active ,3
+IDE04923-ENG115821-Turn signal control-Warnblinktastersuchbeleuchtung Faktor,0.100 %,3
+IDE04923-ENG115820-Turn signal control-Warnblinktastersuchbeleuchtung Grundwert,10.0 %,3
+IDE04924-ENG116705-Driving light and parking light-Allwetterlicht Ausschaltgrenze,0 km/h,14
+IDE04924-ENG116704-Driving light and parking light-Allwetterlicht Einschaltgrenze,0 km/h,14
+IDE04924-ENG115858-Driving light and parking light-Kontrollleuchte fuer Begrenzungslicht,integriert in Suchbeleuchtung ,14
+IDE04924-ENG115861-Driving light and parking light-Lichthupe bei Zuendung aus moeglich,active ,14
+IDE04924-ENG115862-Driving light and parking light-Lichtwarnungsverhalten,klemmenabhaengig ,14
+IDE04924-ENG115863-Driving light and parking light-Menueeinstellung CHO LHO,Menuesteuerung Zeit aktivieren ,14
+IDE04924-ENG115782-Driving light and parking light-Nebelschlusslicht Warngeschwindigkeit,0 km/h,14
+IDE04924-ENG115859-Driving light and parking light-Parklicht ueber LSS aktiviert,One-sided ,14
+IDE04924-ENG115831-Driving light and parking light-Schlusslicht mit Bremslichtfunktion,not active ,14
+IDE04924-ENG148888-Driving light and parking light-Standlicht aus bei LDS=ABL und S-Kontakt aus,active ,14
+IDE04924-ENG115829-Driving light and parking light-Standlichtreduzierung mit beidseitigem Parklicht,active ,14
+IDE04924-ENG122200-Driving light and parking light-Warnung Fahrt mit Standlicht,not active ,14
+IDE04924-ENG115860-Driving light and parking light-Zahl der aktiven Scheinwerfer auf 2 limitieren,not active ,14
+IDE04924-ENG115830-Driving light and parking light-Zeitwert Einschaltzeit Abbiegelicht,15 min,14
+IDE04926-ENG115656-Comfort illumination-Coming Home Leuchten,Low beam ,5
+IDE04926-ENG116601-Comfort illumination-Coming Home Verbaustatus,manual ,5
+IDE04926-ENG116604-Comfort illumination-Coming-home Einschaltereignis,Driver door ,5
+IDE04926-ENG116608-Comfort illumination-Helligkeitsschwelle Forward-Messung,116 ,5
+IDE04926-ENG116605-Comfort illumination-Helligkeitsschwelle Infrarot-Messung,2 ,5
+IDE04926-ENG115657-Comfort illumination-Leaving-Home Verbausstatus,Enabled ,5
+IDE04926-ENG116603-Comfort illumination-Menueeinstellung Cominghome,10 seconds ,5
+IDE04926-ENG116607-Comfort illumination-Menueeinstellung Leaving-home Zeit per BAP,10 seconds ,5
+IDE04926-ENG116602-Comfort illumination-Menuesteuerung Coming Home Werkseinstellung,active ,5
+IDE04926-ENG116606-Comfort illumination-Menuesteuerung Leaving-home Freischaltung per BAP,active ,5
+IDE04927-IDE01446-Window heater-Running time of heated front window,240 s,8
+IDE04927-ENG116709-Window heater-Abschalttemperatur für Frontscheibenheizung,35.0 °C,8
+IDE04927-ENG116708-Window heater-Abschalttemperatur für Heckscheibenheizung,35.0 °C,8
+IDE04927-ENG115736-Window heater-Heckscheibenheizung Zeitwert,600 s,8
+IDE04927-ENG116620-Window heater-Temperaturabhaengige Einschaltzeit FSH,time value ,8
+IDE04927-ENG116619-Window heater-Temperaturabhaengige Einschaltzeit HSH,not active ,8
+IDE04928-ENG115867-Anti-theft protection-Akustischer Alarm Signalhorn,not active ,1
+IDE04928-ENG115864-Anti-theft protection-Alarmsignal,frequency modulated ,1
+IDE04928-ENG115865-Anti-theft protection-DWA Alarmverzoegerung,not active ,1
+IDE04928-ENG115812-Anti-theft protection-DWA Camper Modus,not active ,1
+IDE04928-ENG115866-Anti-theft protection-Sirenen Alarmzahl,1 Alarm ,1
+IDE04928-ENG148904-Anti-theft protection-Überwachung Innenentriegelungshebel,not active ,1
+IDE04928-ENG115868-Anti-theft protection-Verzoegerung Panikalarm,keine verzoegerung ,1
+IDE05142-ENG116628-Access control-Autolock Autounlock wirkt auf Heck,active ,4
+IDE05142-ENG116621-Access control-automatisches Entriegeln,active ,4
+IDE05142-ENG115756-Access control-automatisches Verriegeln bei Geschwindigkeit,not active ,4
+IDE05142-ENG116706-Access control-Autounlock NAR,not active ,4
+IDE05142-ENG116632-Access control-Bewusstes Safe mit 2. Betaetigung der FFB,not active ,4
+IDE05142-ENG116624-Access control-CAN Wecken bei Softtouchbetaetigung,not active ,4
+IDE05142-ENG115759-Access control-Direkter Auswurf des Heckdeckels,active ,4
+IDE05142-ENG115722-Access control-Electrical rear lid,not active ,4
+IDE05142-ENG116707-Access control-Freigabenachlauf Heck nach Einzeloeffnung ueber HDF-Funktaster,not active ,4
+IDE05142-ENG115754-Access control-Funk bei Klemme 15 ein,not active ,4
+IDE05142-ENG116622-Access control-Geschwindigkeitsabhaengige Tankdeckelverriegelung,not active ,4
+IDE05142-ENG116627-Access control-Heckdeckel-Bedienstellen nachCrash temporaer sperren,active ,4
+IDE05142-ENG115763-Access control-Manuelle ZV Variantenprogrammierung,not active ,4
+IDE05142-ENG116633-Access control-Menuesteuerung Tuerentriegelung,active ,4
+IDE05142-ENG116634-Access control-Menuesteuerung ZV Autolock-Unlock,adjustable ,4
+IDE05142-ENG115761-Access control-Nach externer Verriegelung ist Heck noch zeitbegrenzt entriegelt,not active ,4
+IDE05142-ENG115755-Access control-Notschließfunktion,active ,4
+IDE05142-ENG116626-Access control-Oeffnung Heckdeckel bei Wiederentriegelung,not active ,4
+IDE05142-ENG116631-Access control-Schliessung der Schiebetuer bei geoeffneter Tankklappe,not active ,4
+IDE05142-ENG115758-Access control-Valet Parking,not active ,4
+IDE05142-ENG116630-Access control-Wiederholte Heckansteuerung beim Schliessen FT oder BT,not active ,4
+IDE05142-ENG116625-Access control-Wiederoeffnung Elektrische-Schiebetuer,not active ,4
+IDE05142-ENG115760-Access control-ZV entriegelt auch Heckdeckel,active ,4
+IDE05142-ENG116629-Access control-ZV Heck nur direkt auswerfen,not active ,4
+IDE05142-ENG116623-Access control-ZV Tuerentriegelung,Globale Entriegelung ,4
+IDE05142-ENG116635-Access control-ZV-Entriegelung nach Seitencrash,not active ,4
+IDE05144-Read parameter address,00 00 00 ,3
+IDE05145-ENG115874-Light configuration-BAP Bitposition 0,34 ,560
+IDE05145-ENG115893-Light configuration-BAP Bitposition 1,3E ,560
+IDE05145-ENG116063-Light configuration-BAP Bitposition 10,37 ,560
+IDE05145-ENG116082-Light configuration-BAP Bitposition 11,41 ,560
+IDE05145-ENG116101-Light configuration-BAP Bitposition 12,38 ,560
+IDE05145-ENG116120-Light configuration-BAP Bitposition 13,42 ,560
+IDE05145-ENG116139-Light configuration-BAP Bitposition 14,00 ,560
+IDE05145-ENG116158-Light configuration-BAP Bitposition 15,00 ,560
+IDE05145-ENG116177-Light configuration-BAP Bitposition 16,00 ,560
+IDE05145-ENG116196-Light configuration-BAP Bitposition 17,00 ,560
+IDE05145-ENG116215-Light configuration-BAP Bitposition 18,08 ,560
+IDE05145-ENG116234-Light configuration-BAP Bitposition 19,18 ,560
+IDE05145-ENG115911-Light configuration-BAP Bitposition 2,48 ,560
+IDE05145-ENG116253-Light configuration-BAP Bitposition 20,10 ,560
+IDE05145-ENG116272-Light configuration-BAP Bitposition 21,20 ,560
+IDE05145-ENG116291-Light configuration-BAP Bitposition 22,29 ,560
+IDE05145-ENG116310-Light configuration-BAP Bitposition 23,0A ,560
+IDE05145-ENG116329-Light configuration-BAP Bitposition 24,1A ,560
+IDE05145-ENG116348-Light configuration-BAP Bitposition 25,28 ,560
+IDE05145-ENG116367-Light configuration-BAP Bitposition 26,1C ,560
+IDE05145-ENG116386-Light configuration-BAP Bitposition 27,00 ,560
+IDE05145-ENG116405-Light configuration-BAP Bitposition 28,0B ,560
+IDE05145-ENG116424-Light configuration-BAP Bitposition 29,1B ,560
+IDE05145-ENG115930-Light configuration-BAP Bitposition 3,4C ,560
+IDE05145-ENG116443-Light configuration-BAP Bitposition 30,00 ,560
+IDE05145-ENG116462-Light configuration-BAP Bitposition 31,00 ,560
+IDE05145-ENG116481-Light configuration-BAP Bitposition 32,00 ,560
+IDE05145-ENG116500-Light configuration-BAP Bitposition 33,00 ,560
+IDE05145-ENG116519-Light configuration-BAP Bitposition 34,00 ,560
+IDE05145-ENG115949-Light configuration-BAP Bitposition 4,3A ,560
+IDE05145-ENG115968-Light configuration-BAP Bitposition 5,44 ,560
+IDE05145-ENG115987-Light configuration-BAP Bitposition 6,36 ,560
+IDE05145-ENG116006-Light configuration-BAP Bitposition 7,40 ,560
+IDE05145-ENG116025-Light configuration-BAP Bitposition 8,35 ,560
+IDE05145-ENG116044-Light configuration-BAP Bitposition 9,3F ,560
+IDE05145-ENG115883-Light configuration-Dimming Direction CD 0,maximize ,560
+IDE05145-ENG115902-Light configuration-Dimming Direction CD 1,maximize ,560
+IDE05145-ENG116072-Light configuration-Dimming Direction CD 10,maximize ,560
+IDE05145-ENG116091-Light configuration-Dimming Direction CD 11,maximize ,560
+IDE05145-ENG116110-Light configuration-Dimming Direction CD 12,maximize ,560
+IDE05145-ENG116129-Light configuration-Dimming Direction CD 13,maximize ,560
+IDE05145-ENG116148-Light configuration-Dimming Direction CD 14,maximize ,560
+IDE05145-ENG116167-Light configuration-Dimming Direction CD 15,maximize ,560
+IDE05145-ENG116186-Light configuration-Dimming Direction CD 16,maximize ,560
+IDE05145-ENG116205-Light configuration-Dimming Direction CD 17,maximize ,560
+IDE05145-ENG116224-Light configuration-Dimming Direction CD 18,maximize ,560
+IDE05145-ENG116243-Light configuration-Dimming Direction CD 19,maximize ,560
+IDE05145-ENG115920-Light configuration-Dimming Direction CD 2,maximize ,560
+IDE05145-ENG116262-Light configuration-Dimming Direction CD 20,maximize ,560
+IDE05145-ENG116281-Light configuration-Dimming Direction CD 21,maximize ,560
+IDE05145-ENG116300-Light configuration-Dimming Direction CD 22,maximize ,560
+IDE05145-ENG116319-Light configuration-Dimming Direction CD 23,maximize ,560
+IDE05145-ENG116338-Light configuration-Dimming Direction CD 24,maximize ,560
+IDE05145-ENG116357-Light configuration-Dimming Direction CD 25,maximize ,560
+IDE05145-ENG116376-Light configuration-Dimming Direction CD 26,maximize ,560
+IDE05145-ENG116395-Light configuration-Dimming Direction CD 27,maximize ,560
+IDE05145-ENG116414-Light configuration-Dimming Direction CD 28,maximize ,560
+IDE05145-ENG116433-Light configuration-Dimming Direction CD 29,maximize ,560
+IDE05145-ENG115939-Light configuration-Dimming Direction CD 3,maximize ,560
+IDE05145-ENG116452-Light configuration-Dimming Direction CD 30,maximize ,560
+IDE05145-ENG116471-Light configuration-Dimming Direction CD 31,maximize ,560
+IDE05145-ENG116490-Light configuration-Dimming Direction CD 32,maximize ,560
+IDE05145-ENG116509-Light configuration-Dimming Direction CD 33,maximize ,560
+IDE05145-ENG116528-Light configuration-Dimming Direction CD 34,maximize ,560
+IDE05145-ENG115958-Light configuration-Dimming Direction CD 4,maximize ,560
+IDE05145-ENG115977-Light configuration-Dimming Direction CD 5,maximize ,560
+IDE05145-ENG115996-Light configuration-Dimming Direction CD 6,maximize ,560
+IDE05145-ENG116015-Light configuration-Dimming Direction CD 7,maximize ,560
+IDE05145-ENG116034-Light configuration-Dimming Direction CD 8,maximize ,560
+IDE05145-ENG116053-Light configuration-Dimming Direction CD 9,maximize ,560
+IDE05145-ENG115887-Light configuration-Dimming Direction EF 0,maximize ,560
+IDE05145-ENG115906-Light configuration-Dimming Direction EF 1,maximize ,560
+IDE05145-ENG116076-Light configuration-Dimming Direction EF 10,maximize ,560
+IDE05145-ENG116095-Light configuration-Dimming Direction EF 11,maximize ,560
+IDE05145-ENG116114-Light configuration-Dimming Direction EF 12,maximize ,560
+IDE05145-ENG116133-Light configuration-Dimming Direction EF 13,maximize ,560
+IDE05145-ENG116152-Light configuration-Dimming Direction EF 14,maximize ,560
+IDE05145-ENG116171-Light configuration-Dimming Direction EF 15,maximize ,560
+IDE05145-ENG116190-Light configuration-Dimming Direction EF 16,maximize ,560
+IDE05145-ENG116209-Light configuration-Dimming Direction EF 17,maximize ,560
+IDE05145-ENG116228-Light configuration-Dimming Direction EF 18,maximize ,560
+IDE05145-ENG116247-Light configuration-Dimming Direction EF 19,maximize ,560
+IDE05145-ENG115924-Light configuration-Dimming Direction EF 2,maximize ,560
+IDE05145-ENG116266-Light configuration-Dimming Direction EF 20,maximize ,560
+IDE05145-ENG116285-Light configuration-Dimming Direction EF 21,maximize ,560
+IDE05145-ENG116304-Light configuration-Dimming Direction EF 22,maximize ,560
+IDE05145-ENG116323-Light configuration-Dimming Direction EF 23,maximize ,560
+IDE05145-ENG116342-Light configuration-Dimming Direction EF 24,maximize ,560
+IDE05145-ENG116361-Light configuration-Dimming Direction EF 25,maximize ,560
+IDE05145-ENG116380-Light configuration-Dimming Direction EF 26,maximize ,560
+IDE05145-ENG116399-Light configuration-Dimming Direction EF 27,maximize ,560
+IDE05145-ENG116418-Light configuration-Dimming Direction EF 28,maximize ,560
+IDE05145-ENG116437-Light configuration-Dimming Direction EF 29,maximize ,560
+IDE05145-ENG115943-Light configuration-Dimming Direction EF 3,maximize ,560
+IDE05145-ENG116456-Light configuration-Dimming Direction EF 30,maximize ,560
+IDE05145-ENG116475-Light configuration-Dimming Direction EF 31,maximize ,560
+IDE05145-ENG116494-Light configuration-Dimming Direction EF 32,maximize ,560
+IDE05145-ENG116513-Light configuration-Dimming Direction EF 33,maximize ,560
+IDE05145-ENG116532-Light configuration-Dimming Direction EF 34,maximize ,560
+IDE05145-ENG115962-Light configuration-Dimming Direction EF 4,maximize ,560
+IDE05145-ENG115981-Light configuration-Dimming Direction EF 5,maximize ,560
+IDE05145-ENG116000-Light configuration-Dimming Direction EF 6,maximize ,560
+IDE05145-ENG116019-Light configuration-Dimming Direction EF 7,maximize ,560
+IDE05145-ENG116038-Light configuration-Dimming Direction EF 8,maximize ,560
+IDE05145-ENG116057-Light configuration-Dimming Direction EF 9,maximize ,560
+IDE05145-ENG115891-Light configuration-Dimming Direction GH 0,maximize ,560
+IDE05145-ENG115909-Light configuration-Dimming Direction GH 1,maximize ,560
+IDE05145-ENG116080-Light configuration-Dimming Direction GH 10,maximize ,560
+IDE05145-ENG116099-Light configuration-Dimming Direction GH 11,maximize ,560
+IDE05145-ENG116118-Light configuration-Dimming Direction GH 12,maximize ,560
+IDE05145-ENG116137-Light configuration-Dimming Direction GH 13,maximize ,560
+IDE05145-ENG116156-Light configuration-Dimming Direction GH 14,maximize ,560
+IDE05145-ENG116175-Light configuration-Dimming Direction GH 15,maximize ,560
+IDE05145-ENG116194-Light configuration-Dimming Direction GH 16,maximize ,560
+IDE05145-ENG116213-Light configuration-Dimming Direction GH 17,maximize ,560
+IDE05145-ENG116232-Light configuration-Dimming Direction GH 18,maximize ,560
+IDE05145-ENG116251-Light configuration-Dimming Direction GH 19,maximize ,560
+IDE05145-ENG115928-Light configuration-Dimming Direction GH 2,maximize ,560
+IDE05145-ENG116270-Light configuration-Dimming Direction GH 20,maximize ,560
+IDE05145-ENG116289-Light configuration-Dimming Direction GH 21,maximize ,560
+IDE05145-ENG116308-Light configuration-Dimming Direction GH 22,maximize ,560
+IDE05145-ENG116327-Light configuration-Dimming Direction GH 23,maximize ,560
+IDE05145-ENG116346-Light configuration-Dimming Direction GH 24,maximize ,560
+IDE05145-ENG116365-Light configuration-Dimming Direction GH 25,maximize ,560
+IDE05145-ENG116384-Light configuration-Dimming Direction GH 26,maximize ,560
+IDE05145-ENG116403-Light configuration-Dimming Direction GH 27,maximize ,560
+IDE05145-ENG116422-Light configuration-Dimming Direction GH 28,maximize ,560
+IDE05145-ENG116441-Light configuration-Dimming Direction GH 29,maximize ,560
+IDE05145-ENG115947-Light configuration-Dimming Direction GH 3,maximize ,560
+IDE05145-ENG116460-Light configuration-Dimming Direction GH 30,maximize ,560
+IDE05145-ENG116479-Light configuration-Dimming Direction GH 31,maximize ,560
+IDE05145-ENG116498-Light configuration-Dimming Direction GH 32,maximize ,560
+IDE05145-ENG116517-Light configuration-Dimming Direction GH 33,maximize ,560
+IDE05145-ENG116536-Light configuration-Dimming Direction GH 34,maximize ,560
+IDE05145-ENG115966-Light configuration-Dimming Direction GH 4,maximize ,560
+IDE05145-ENG115985-Light configuration-Dimming Direction GH 5,maximize ,560
+IDE05145-ENG116004-Light configuration-Dimming Direction GH 6,maximize ,560
+IDE05145-ENG116023-Light configuration-Dimming Direction GH 7,maximize ,560
+IDE05145-ENG116042-Light configuration-Dimming Direction GH 8,maximize ,560
+IDE05145-ENG116061-Light configuration-Dimming Direction GH 9,maximize ,560
+IDE05145-ENG115878-Light configuration-Dimmwert AB 0,100 ,560
+IDE05145-ENG115897-Light configuration-Dimmwert AB 1,100 ,560
+IDE05145-ENG116067-Light configuration-Dimmwert AB 10,127 ,560
+IDE05145-ENG116086-Light configuration-Dimmwert AB 11,127 ,560
+IDE05145-ENG116105-Light configuration-Dimmwert AB 12,100 ,560
+IDE05145-ENG116124-Light configuration-Dimmwert AB 13,100 ,560
+IDE05145-ENG116143-Light configuration-Dimmwert AB 14,0 ,560
+IDE05145-ENG116162-Light configuration-Dimmwert AB 15,0 ,560
+IDE05145-ENG116181-Light configuration-Dimmwert AB 16,0 ,560
+IDE05145-ENG116200-Light configuration-Dimmwert AB 17,0 ,560
+IDE05145-ENG116219-Light configuration-Dimmwert AB 18,100 ,560
+IDE05145-ENG116238-Light configuration-Dimmwert AB 19,100 ,560
+IDE05145-ENG115915-Light configuration-Dimmwert AB 2,100 ,560
+IDE05145-ENG116257-Light configuration-Dimmwert AB 20,100 ,560
+IDE05145-ENG116276-Light configuration-Dimmwert AB 21,100 ,560
+IDE05145-ENG116295-Light configuration-Dimmwert AB 22,127 ,560
+IDE05145-ENG116314-Light configuration-Dimmwert AB 23,28 ,560
+IDE05145-ENG116333-Light configuration-Dimmwert AB 24,28 ,560
+IDE05145-ENG116352-Light configuration-Dimmwert AB 25,100 ,560
+IDE05145-ENG116371-Light configuration-Dimmwert AB 26,100 ,560
+IDE05145-ENG116390-Light configuration-Dimmwert AB 27,0 ,560
+IDE05145-ENG116409-Light configuration-Dimmwert AB 28,100 ,560
+IDE05145-ENG116428-Light configuration-Dimmwert AB 29,100 ,560
+IDE05145-ENG115934-Light configuration-Dimmwert AB 3,100 ,560
+IDE05145-ENG116447-Light configuration-Dimmwert AB 30,89 ,560
+IDE05145-ENG116466-Light configuration-Dimmwert AB 31,0 ,560
+IDE05145-ENG116485-Light configuration-Dimmwert AB 32,0 ,560
+IDE05145-ENG116504-Light configuration-Dimmwert AB 33,0 ,560
+IDE05145-ENG116523-Light configuration-Dimmwert AB 34,0 ,560
+IDE05145-ENG115953-Light configuration-Dimmwert AB 4,127 ,560
+IDE05145-ENG115972-Light configuration-Dimmwert AB 5,127 ,560
+IDE05145-ENG115991-Light configuration-Dimmwert AB 6,127 ,560
+IDE05145-ENG116010-Light configuration-Dimmwert AB 7,127 ,560
+IDE05145-ENG116029-Light configuration-Dimmwert AB 8,127 ,560
+IDE05145-ENG116048-Light configuration-Dimmwert AB 9,127 ,560
+IDE05145-ENG115882-Light configuration-Dimmwert CD 0,0 ,560
+IDE05145-ENG115901-Light configuration-Dimmwert CD 1,0 ,560
+IDE05145-ENG116071-Light configuration-Dimmwert CD 10,0 ,560
+IDE05145-ENG116090-Light configuration-Dimmwert CD 11,0 ,560
+IDE05145-ENG116109-Light configuration-Dimmwert CD 12,0 ,560
+IDE05145-ENG116128-Light configuration-Dimmwert CD 13,0 ,560
+IDE05145-ENG116147-Light configuration-Dimmwert CD 14,0 ,560
+IDE05145-ENG116166-Light configuration-Dimmwert CD 15,0 ,560
+IDE05145-ENG116185-Light configuration-Dimmwert CD 16,0 ,560
+IDE05145-ENG116204-Light configuration-Dimmwert CD 17,0 ,560
+IDE05145-ENG116223-Light configuration-Dimmwert CD 18,0 ,560
+IDE05145-ENG116242-Light configuration-Dimmwert CD 19,0 ,560
+IDE05145-ENG115919-Light configuration-Dimmwert CD 2,51 ,560
+IDE05145-ENG116261-Light configuration-Dimmwert CD 20,28 ,560
+IDE05145-ENG116280-Light configuration-Dimmwert CD 21,28 ,560
+IDE05145-ENG116299-Light configuration-Dimmwert CD 22,0 ,560
+IDE05145-ENG116318-Light configuration-Dimmwert CD 23,0 ,560
+IDE05145-ENG116337-Light configuration-Dimmwert CD 24,0 ,560
+IDE05145-ENG116356-Light configuration-Dimmwert CD 25,0 ,560
+IDE05145-ENG116375-Light configuration-Dimmwert CD 26,0 ,560
+IDE05145-ENG116394-Light configuration-Dimmwert CD 27,0 ,560
+IDE05145-ENG116413-Light configuration-Dimmwert CD 28,0 ,560
+IDE05145-ENG116432-Light configuration-Dimmwert CD 29,0 ,560
+IDE05145-ENG115938-Light configuration-Dimmwert CD 3,51 ,560
+IDE05145-ENG116451-Light configuration-Dimmwert CD 30,0 ,560
+IDE05145-ENG116470-Light configuration-Dimmwert CD 31,0 ,560
+IDE05145-ENG116489-Light configuration-Dimmwert CD 32,0 ,560
+IDE05145-ENG116508-Light configuration-Dimmwert CD 33,0 ,560
+IDE05145-ENG116527-Light configuration-Dimmwert CD 34,0 ,560
+IDE05145-ENG115957-Light configuration-Dimmwert CD 4,127 ,560
+IDE05145-ENG115976-Light configuration-Dimmwert CD 5,127 ,560
+IDE05145-ENG115995-Light configuration-Dimmwert CD 6,0 ,560
+IDE05145-ENG116014-Light configuration-Dimmwert CD 7,0 ,560
+IDE05145-ENG116033-Light configuration-Dimmwert CD 8,0 ,560
+IDE05145-ENG116052-Light configuration-Dimmwert CD 9,0 ,560
+IDE05145-ENG115886-Light configuration-Dimmwert EF 0,0 ,560
+IDE05145-ENG115905-Light configuration-Dimmwert EF 1,0 ,560
+IDE05145-ENG116075-Light configuration-Dimmwert EF 10,0 ,560
+IDE05145-ENG116094-Light configuration-Dimmwert EF 11,0 ,560
+IDE05145-ENG116113-Light configuration-Dimmwert EF 12,0 ,560
+IDE05145-ENG116132-Light configuration-Dimmwert EF 13,0 ,560
+IDE05145-ENG116151-Light configuration-Dimmwert EF 14,0 ,560
+IDE05145-ENG116170-Light configuration-Dimmwert EF 15,0 ,560
+IDE05145-ENG116189-Light configuration-Dimmwert EF 16,0 ,560
+IDE05145-ENG116208-Light configuration-Dimmwert EF 17,0 ,560
+IDE05145-ENG116227-Light configuration-Dimmwert EF 18,0 ,560
+IDE05145-ENG116246-Light configuration-Dimmwert EF 19,0 ,560
+IDE05145-ENG115923-Light configuration-Dimmwert EF 2,0 ,560
+IDE05145-ENG116265-Light configuration-Dimmwert EF 20,0 ,560
+IDE05145-ENG116284-Light configuration-Dimmwert EF 21,0 ,560
+IDE05145-ENG116303-Light configuration-Dimmwert EF 22,0 ,560
+IDE05145-ENG116322-Light configuration-Dimmwert EF 23,0 ,560
+IDE05145-ENG116341-Light configuration-Dimmwert EF 24,0 ,560
+IDE05145-ENG116360-Light configuration-Dimmwert EF 25,0 ,560
+IDE05145-ENG116379-Light configuration-Dimmwert EF 26,0 ,560
+IDE05145-ENG116398-Light configuration-Dimmwert EF 27,0 ,560
+IDE05145-ENG116417-Light configuration-Dimmwert EF 28,0 ,560
+IDE05145-ENG116436-Light configuration-Dimmwert EF 29,0 ,560
+IDE05145-ENG115942-Light configuration-Dimmwert EF 3,0 ,560
+IDE05145-ENG116455-Light configuration-Dimmwert EF 30,0 ,560
+IDE05145-ENG116474-Light configuration-Dimmwert EF 31,0 ,560
+IDE05145-ENG116493-Light configuration-Dimmwert EF 32,0 ,560
+IDE05145-ENG116512-Light configuration-Dimmwert EF 33,0 ,560
+IDE05145-ENG116531-Light configuration-Dimmwert EF 34,0 ,560
+IDE05145-ENG115961-Light configuration-Dimmwert EF 4,0 ,560
+IDE05145-ENG115980-Light configuration-Dimmwert EF 5,0 ,560
+IDE05145-ENG115999-Light configuration-Dimmwert EF 6,0 ,560
+IDE05145-ENG116018-Light configuration-Dimmwert EF 7,0 ,560
+IDE05145-ENG116037-Light configuration-Dimmwert EF 8,0 ,560
+IDE05145-ENG116056-Light configuration-Dimmwert EF 9,0 ,560
+IDE05145-ENG115890-Light configuration-Dimmwert GH 0,0 ,560
+IDE05145-ENG115908-Light configuration-Dimmwert GH 1,0 ,560
+IDE05145-ENG116079-Light configuration-Dimmwert GH 10,0 ,560
+IDE05145-ENG116098-Light configuration-Dimmwert GH 11,0 ,560
+IDE05145-ENG116117-Light configuration-Dimmwert GH 12,0 ,560
+IDE05145-ENG116136-Light configuration-Dimmwert GH 13,0 ,560
+IDE05145-ENG116155-Light configuration-Dimmwert GH 14,0 ,560
+IDE05145-ENG116174-Light configuration-Dimmwert GH 15,0 ,560
+IDE05145-ENG116193-Light configuration-Dimmwert GH 16,0 ,560
+IDE05145-ENG116212-Light configuration-Dimmwert GH 17,0 ,560
+IDE05145-ENG116231-Light configuration-Dimmwert GH 18,0 ,560
+IDE05145-ENG116250-Light configuration-Dimmwert GH 19,0 ,560
+IDE05145-ENG115927-Light configuration-Dimmwert GH 2,0 ,560
+IDE05145-ENG116269-Light configuration-Dimmwert GH 20,0 ,560
+IDE05145-ENG116288-Light configuration-Dimmwert GH 21,0 ,560
+IDE05145-ENG116307-Light configuration-Dimmwert GH 22,0 ,560
+IDE05145-ENG116326-Light configuration-Dimmwert GH 23,0 ,560
+IDE05145-ENG116345-Light configuration-Dimmwert GH 24,0 ,560
+IDE05145-ENG116364-Light configuration-Dimmwert GH 25,0 ,560
+IDE05145-ENG116383-Light configuration-Dimmwert GH 26,0 ,560
+IDE05145-ENG116402-Light configuration-Dimmwert GH 27,0 ,560
+IDE05145-ENG116421-Light configuration-Dimmwert GH 28,0 ,560
+IDE05145-ENG116440-Light configuration-Dimmwert GH 29,0 ,560
+IDE05145-ENG115946-Light configuration-Dimmwert GH 3,0 ,560
+IDE05145-ENG116459-Light configuration-Dimmwert GH 30,0 ,560
+IDE05145-ENG116478-Light configuration-Dimmwert GH 31,0 ,560
+IDE05145-ENG116497-Light configuration-Dimmwert GH 32,0 ,560
+IDE05145-ENG116516-Light configuration-Dimmwert GH 33,0 ,560
+IDE05145-ENG116535-Light configuration-Dimmwert GH 34,0 ,560
+IDE05145-ENG115965-Light configuration-Dimmwert GH 4,0 ,560
+IDE05145-ENG115984-Light configuration-Dimmwert GH 5,0 ,560
+IDE05145-ENG116003-Light configuration-Dimmwert GH 6,0 ,560
+IDE05145-ENG116022-Light configuration-Dimmwert GH 7,0 ,560
+IDE05145-ENG116041-Light configuration-Dimmwert GH 8,0 ,560
+IDE05145-ENG116060-Light configuration-Dimmwert GH 9,0 ,560
+IDE05145-ENG115875-Light configuration-Fehlerort mittleres Byte DTC-DFCC 0,14 ,560
+IDE05145-ENG115894-Light configuration-Fehlerort mittleres Byte DTC-DFCC 1,15 ,560
+IDE05145-ENG116064-Light configuration-Fehlerort mittleres Byte DTC-DFCC 10,1E ,560
+IDE05145-ENG116083-Light configuration-Fehlerort mittleres Byte DTC-DFCC 11,1F ,560
+IDE05145-ENG116102-Light configuration-Fehlerort mittleres Byte DTC-DFCC 12,22 ,560
+IDE05145-ENG116121-Light configuration-Fehlerort mittleres Byte DTC-DFCC 13,23 ,560
+IDE05145-ENG116140-Light configuration-Fehlerort mittleres Byte DTC-DFCC 14,00 ,560
+IDE05145-ENG116159-Light configuration-Fehlerort mittleres Byte DTC-DFCC 15,00 ,560
+IDE05145-ENG116178-Light configuration-Fehlerort mittleres Byte DTC-DFCC 16,00 ,560
+IDE05145-ENG116197-Light configuration-Fehlerort mittleres Byte DTC-DFCC 17,00 ,560
+IDE05145-ENG116216-Light configuration-Fehlerort mittleres Byte DTC-DFCC 18,16 ,560
+IDE05145-ENG116235-Light configuration-Fehlerort mittleres Byte DTC-DFCC 19,18 ,560
+IDE05145-ENG115912-Light configuration-Fehlerort mittleres Byte DTC-DFCC 2,4A ,560
+IDE05145-ENG116254-Light configuration-Fehlerort mittleres Byte DTC-DFCC 20,39 ,560
+IDE05145-ENG116273-Light configuration-Fehlerort mittleres Byte DTC-DFCC 21,3A ,560
+IDE05145-ENG116292-Light configuration-Fehlerort mittleres Byte DTC-DFCC 22,2C ,560
+IDE05145-ENG116311-Light configuration-Fehlerort mittleres Byte DTC-DFCC 23,29 ,560
+IDE05145-ENG116330-Light configuration-Fehlerort mittleres Byte DTC-DFCC 24,2A ,560
+IDE05145-ENG116349-Light configuration-Fehlerort mittleres Byte DTC-DFCC 25,30 ,560
+IDE05145-ENG116368-Light configuration-Fehlerort mittleres Byte DTC-DFCC 26,2F ,560
+IDE05145-ENG116387-Light configuration-Fehlerort mittleres Byte DTC-DFCC 27,00 ,560
+IDE05145-ENG116406-Light configuration-Fehlerort mittleres Byte DTC-DFCC 28,31 ,560
+IDE05145-ENG116425-Light configuration-Fehlerort mittleres Byte DTC-DFCC 29,32 ,560
+IDE05145-ENG115931-Light configuration-Fehlerort mittleres Byte DTC-DFCC 3,4C ,560
+IDE05145-ENG116444-Light configuration-Fehlerort mittleres Byte DTC-DFCC 30,02 ,560
+IDE05145-ENG116463-Light configuration-Fehlerort mittleres Byte DTC-DFCC 31,00 ,560
+IDE05145-ENG116482-Light configuration-Fehlerort mittleres Byte DTC-DFCC 32,00 ,560
+IDE05145-ENG116501-Light configuration-Fehlerort mittleres Byte DTC-DFCC 33,00 ,560
+IDE05145-ENG116520-Light configuration-Fehlerort mittleres Byte DTC-DFCC 34,00 ,560
+IDE05145-ENG115950-Light configuration-Fehlerort mittleres Byte DTC-DFCC 4,49 ,560
+IDE05145-ENG115969-Light configuration-Fehlerort mittleres Byte DTC-DFCC 5,4B ,560
+IDE05145-ENG115988-Light configuration-Fehlerort mittleres Byte DTC-DFCC 6,1A ,560
+IDE05145-ENG116007-Light configuration-Fehlerort mittleres Byte DTC-DFCC 7,1B ,560
+IDE05145-ENG116026-Light configuration-Fehlerort mittleres Byte DTC-DFCC 8,26 ,560
+IDE05145-ENG116045-Light configuration-Fehlerort mittleres Byte DTC-DFCC 9,27 ,560
+IDE05145-ENG115873-Light configuration-Lasttyp 0,12 - Blinkleuchten ,560
+IDE05145-ENG115892-Light configuration-Lasttyp 1,12 - Blinkleuchten ,560
+IDE05145-ENG116062-Light configuration-Lasttyp 10,2 - Shutter: Diagnosesensierung für 'LED low' ,560
+IDE05145-ENG116081-Light configuration-Lasttyp 11,2 - Shutter: Diagnosesensierung für 'LED low' ,560
+IDE05145-ENG116100-Light configuration-Lasttyp 12,10 - allgemeine Scheinwerfer ,560
+IDE05145-ENG116119-Light configuration-Lasttyp 13,10 - allgemeine Scheinwerfer ,560
+IDE05145-ENG116138-Light configuration-Lasttyp 14,not active ,560
+IDE05145-ENG116157-Light configuration-Lasttyp 15,not active ,560
+IDE05145-ENG116176-Light configuration-Lasttyp 16,not active ,560
+IDE05145-ENG116195-Light configuration-Lasttyp 17,not active ,560
+IDE05145-ENG116214-Light configuration-Lasttyp 18,12 - Blinkleuchten ,560
+IDE05145-ENG116233-Light configuration-Lasttyp 19,12 - Blinkleuchten ,560
+IDE05145-ENG115910-Light configuration-Lasttyp 2,4 - LED Tagfahrlichtmodul Signal ,560
+IDE05145-ENG116252-Light configuration-Lasttyp 20,13 - Bremsleuchten ,560
+IDE05145-ENG116271-Light configuration-Lasttyp 21,13 - Bremsleuchten ,560
+IDE05145-ENG116290-Light configuration-Lasttyp 22,42 - LED dritte Bremsleuchte ,560
+IDE05145-ENG116309-Light configuration-Lasttyp 23,9 - allgemeine Glühlampe 27W: auch H15 ,560
+IDE05145-ENG116328-Light configuration-Lasttyp 24,9 - allgemeine Glühlampe 27W: auch H15 ,560
+IDE05145-ENG116347-Light configuration-Lasttyp 25,18 - 2* 5W ,560
+IDE05145-ENG116366-Light configuration-Lasttyp 26,9 - allgemeine Glühlampe 27W: auch H15 ,560
+IDE05145-ENG116385-Light configuration-Lasttyp 27,not active ,560
+IDE05145-ENG116404-Light configuration-Lasttyp 28,9 - allgemeine Glühlampe 27W: auch H15 ,560
+IDE05145-ENG116423-Light configuration-Lasttyp 29,9 - allgemeine Glühlampe 27W: auch H15 ,560
+IDE05145-ENG115929-Light configuration-Lasttyp 3,4 - LED Tagfahrlichtmodul Signal ,560
+IDE05145-ENG116442-Light configuration-Lasttyp 30,36 - LED Kleinleistung ,560
+IDE05145-ENG116461-Light configuration-Lasttyp 31,not active ,560
+IDE05145-ENG116480-Light configuration-Lasttyp 32,not active ,560
+IDE05145-ENG116499-Light configuration-Lasttyp 33,not active ,560
+IDE05145-ENG116518-Light configuration-Lasttyp 34,not active ,560
+IDE05145-ENG115948-Light configuration-Lasttyp 4,1 - LED Tagfahrlichtmodul Versorgung ,560
+IDE05145-ENG115967-Light configuration-Lasttyp 5,1 - LED Tagfahrlichtmodul Versorgung ,560
+IDE05145-ENG115986-Light configuration-Lasttyp 6,3 - Xenon Abblendlicht ,560
+IDE05145-ENG116005-Light configuration-Lasttyp 7,3 - Xenon Abblendlicht ,560
+IDE05145-ENG116024-Light configuration-Lasttyp 8,36 - LED Kleinleistung ,560
+IDE05145-ENG116043-Light configuration-Lasttyp 9,36 - LED Kleinleistung ,560
+IDE05145-ENG115879-Light configuration-Lichtansteuerung HD AB 0,Always ,560
+IDE05145-ENG115898-Light configuration-Lichtansteuerung HD AB 1,Always ,560
+IDE05145-ENG116068-Light configuration-Lichtansteuerung HD AB 10,Always ,560
+IDE05145-ENG116087-Light configuration-Lichtansteuerung HD AB 11,Always ,560
+IDE05145-ENG116106-Light configuration-Lichtansteuerung HD AB 12,Always ,560
+IDE05145-ENG116125-Light configuration-Lichtansteuerung HD AB 13,Always ,560
+IDE05145-ENG116144-Light configuration-Lichtansteuerung HD AB 14,Always ,560
+IDE05145-ENG116163-Light configuration-Lichtansteuerung HD AB 15,Always ,560
+IDE05145-ENG116182-Light configuration-Lichtansteuerung HD AB 16,Always ,560
+IDE05145-ENG116201-Light configuration-Lichtansteuerung HD AB 17,Always ,560
+IDE05145-ENG116220-Light configuration-Lichtansteuerung HD AB 18,Always ,560
+IDE05145-ENG116239-Light configuration-Lichtansteuerung HD AB 19,Always ,560
+IDE05145-ENG115916-Light configuration-Lichtansteuerung HD AB 2,Always ,560
+IDE05145-ENG116258-Light configuration-Lichtansteuerung HD AB 20,Always ,560
+IDE05145-ENG116277-Light configuration-Lichtansteuerung HD AB 21,Always ,560
+IDE05145-ENG116296-Light configuration-Lichtansteuerung HD AB 22,Always ,560
+IDE05145-ENG116315-Light configuration-Lichtansteuerung HD AB 23,only_if_closed ,560
+IDE05145-ENG116334-Light configuration-Lichtansteuerung HD AB 24,only_if_closed ,560
+IDE05145-ENG116353-Light configuration-Lichtansteuerung HD AB 25,Always ,560
+IDE05145-ENG116372-Light configuration-Lichtansteuerung HD AB 26,only_if_closed ,560
+IDE05145-ENG116391-Light configuration-Lichtansteuerung HD AB 27,Always ,560
+IDE05145-ENG116410-Light configuration-Lichtansteuerung HD AB 28,only_if_closed ,560
+IDE05145-ENG116430-Light configuration-Lichtansteuerung HD AB 29,only_if_closed ,560
+IDE05145-ENG115935-Light configuration-Lichtansteuerung HD AB 3,Always ,560
+IDE05145-ENG116448-Light configuration-Lichtansteuerung HD AB 30,Always ,560
+IDE05145-ENG116467-Light configuration-Lichtansteuerung HD AB 31,Always ,560
+IDE05145-ENG116486-Light configuration-Lichtansteuerung HD AB 32,Always ,560
+IDE05145-ENG116505-Light configuration-Lichtansteuerung HD AB 33,Always ,560
+IDE05145-ENG116524-Light configuration-Lichtansteuerung HD AB 34,Always ,560
+IDE05145-ENG115954-Light configuration-Lichtansteuerung HD AB 4,Always ,560
+IDE05145-ENG115973-Light configuration-Lichtansteuerung HD AB 5,Always ,560
+IDE05145-ENG115992-Light configuration-Lichtansteuerung HD AB 6,Always ,560
+IDE05145-ENG116011-Light configuration-Lichtansteuerung HD AB 7,Always ,560
+IDE05145-ENG116030-Light configuration-Lichtansteuerung HD AB 8,Always ,560
+IDE05145-ENG116049-Light configuration-Lichtansteuerung HD AB 9,Always ,560
+IDE05145-ENG116199-Light configuration-Lichtfunktion  B 17,0 ,560
+IDE05145-ENG116126-Light configuration-Lichtfunktion  C 13,0 ,560
+IDE05145-ENG115876-Light configuration-Lichtfunktion A 0,2 ,560
+IDE05145-ENG115895-Light configuration-Lichtfunktion A 1,4 ,560
+IDE05145-ENG116065-Light configuration-Lichtfunktion A 10,13 ,560
+IDE05145-ENG116084-Light configuration-Lichtfunktion A 11,14 ,560
+IDE05145-ENG116103-Light configuration-Lichtfunktion A 12,18 ,560
+IDE05145-ENG116122-Light configuration-Lichtfunktion A 13,19 ,560
+IDE05145-ENG116141-Light configuration-Lichtfunktion A 14,0 ,560
+IDE05145-ENG116160-Light configuration-Lichtfunktion A 15,0 ,560
+IDE05145-ENG116179-Light configuration-Lichtfunktion A 16,0 ,560
+IDE05145-ENG116198-Light configuration-Lichtfunktion A 17,0 ,560
+IDE05145-ENG116217-Light configuration-Lichtfunktion A 18,2 ,560
+IDE05145-ENG116236-Light configuration-Lichtfunktion A 19,4 ,560
+IDE05145-ENG115913-Light configuration-Lichtfunktion A 2,20 ,560
+IDE05145-ENG116255-Light configuration-Lichtfunktion A 20,24 ,560
+IDE05145-ENG116274-Light configuration-Lichtfunktion A 21,24 ,560
+IDE05145-ENG116293-Light configuration-Lichtfunktion A 22,24 ,560
+IDE05145-ENG116312-Light configuration-Lichtfunktion A 23,8 ,560
+IDE05145-ENG116331-Light configuration-Lichtfunktion A 24,8 ,560
+IDE05145-ENG116350-Light configuration-Lichtfunktion A 25,8 ,560
+IDE05145-ENG116369-Light configuration-Lichtfunktion A 26,28 ,560
+IDE05145-ENG116388-Light configuration-Lichtfunktion A 27,0 ,560
+IDE05145-ENG116407-Light configuration-Lichtfunktion A 28,25 ,560
+IDE05145-ENG116426-Light configuration-Lichtfunktion A 29,25 ,560
+IDE05145-ENG115932-Light configuration-Lichtfunktion A 3,20 ,560
+IDE05145-ENG116445-Light configuration-Lichtfunktion A 30,43 ,560
+IDE05145-ENG116464-Light configuration-Lichtfunktion A 31,0 ,560
+IDE05145-ENG116483-Light configuration-Lichtfunktion A 32,0 ,560
+IDE05145-ENG116502-Light configuration-Lichtfunktion A 33,0 ,560
+IDE05145-ENG116521-Light configuration-Lichtfunktion A 34,0 ,560
+IDE05145-ENG115951-Light configuration-Lichtfunktion A 4,20 ,560
+IDE05145-ENG115970-Light configuration-Lichtfunktion A 5,20 ,560
+IDE05145-ENG115989-Light configuration-Lichtfunktion A 6,11 ,560
+IDE05145-ENG116008-Light configuration-Lichtfunktion A 7,12 ,560
+IDE05145-ENG116027-Light configuration-Lichtfunktion A 8,8 ,560
+IDE05145-ENG116046-Light configuration-Lichtfunktion A 9,8 ,560
+IDE05145-ENG115877-Light configuration-Lichtfunktion B 0,0 ,560
+IDE05145-ENG115896-Light configuration-Lichtfunktion B 1,0 ,560
+IDE05145-ENG116066-Light configuration-Lichtfunktion B 10,15 ,560
+IDE05145-ENG116085-Light configuration-Lichtfunktion B 11,15 ,560
+IDE05145-ENG116104-Light configuration-Lichtfunktion B 12,0 ,560
+IDE05145-ENG116123-Light configuration-Lichtfunktion B 13,0 ,560
+IDE05145-ENG116142-Light configuration-Lichtfunktion B 14,0 ,560
+IDE05145-ENG116161-Light configuration-Lichtfunktion B 15,0 ,560
+IDE05145-ENG116180-Light configuration-Lichtfunktion B 16,0 ,560
+IDE05145-ENG116218-Light configuration-Lichtfunktion B 18,0 ,560
+IDE05145-ENG116237-Light configuration-Lichtfunktion B 19,0 ,560
+IDE05145-ENG115914-Light configuration-Lichtfunktion B 2,0 ,560
+IDE05145-ENG116256-Light configuration-Lichtfunktion B 20,0 ,560
+IDE05145-ENG116275-Light configuration-Lichtfunktion B 21,0 ,560
+IDE05145-ENG116294-Light configuration-Lichtfunktion B 22,0 ,560
+IDE05145-ENG116313-Light configuration-Lichtfunktion B 23,0 ,560
+IDE05145-ENG116332-Light configuration-Lichtfunktion B 24,0 ,560
+IDE05145-ENG116351-Light configuration-Lichtfunktion B 25,0 ,560
+IDE05145-ENG116370-Light configuration-Lichtfunktion B 26,0 ,560
+IDE05145-ENG116389-Light configuration-Lichtfunktion B 27,0 ,560
+IDE05145-ENG116408-Light configuration-Lichtfunktion B 28,0 ,560
+IDE05145-ENG116427-Light configuration-Lichtfunktion B 29,0 ,560
+IDE05145-ENG115933-Light configuration-Lichtfunktion B 3,0 ,560
+IDE05145-ENG116446-Light configuration-Lichtfunktion B 30,0 ,560
+IDE05145-ENG116465-Light configuration-Lichtfunktion B 31,0 ,560
+IDE05145-ENG116484-Light configuration-Lichtfunktion B 32,0 ,560
+IDE05145-ENG116503-Light configuration-Lichtfunktion B 33,0 ,560
+IDE05145-ENG116522-Light configuration-Lichtfunktion B 34,0 ,560
+IDE05145-ENG115952-Light configuration-Lichtfunktion B 4,0 ,560
+IDE05145-ENG115971-Light configuration-Lichtfunktion B 5,0 ,560
+IDE05145-ENG115990-Light configuration-Lichtfunktion B 6,15 ,560
+IDE05145-ENG116009-Light configuration-Lichtfunktion B 7,15 ,560
+IDE05145-ENG116028-Light configuration-Lichtfunktion B 8,9 ,560
+IDE05145-ENG116047-Light configuration-Lichtfunktion B 9,10 ,560
+IDE05145-ENG115880-Light configuration-Lichtfunktion C 0,0 ,560
+IDE05145-ENG115899-Light configuration-Lichtfunktion C 1,0 ,560
+IDE05145-ENG116069-Light configuration-Lichtfunktion C 10,0 ,560
+IDE05145-ENG116088-Light configuration-Lichtfunktion C 11,0 ,560
+IDE05145-ENG116107-Light configuration-Lichtfunktion C 12,0 ,560
+IDE05145-ENG116145-Light configuration-Lichtfunktion C 14,0 ,560
+IDE05145-ENG116164-Light configuration-Lichtfunktion C 15,0 ,560
+IDE05145-ENG116183-Light configuration-Lichtfunktion C 16,0 ,560
+IDE05145-ENG116202-Light configuration-Lichtfunktion C 17,0 ,560
+IDE05145-ENG116221-Light configuration-Lichtfunktion C 18,0 ,560
+IDE05145-ENG116240-Light configuration-Lichtfunktion C 19,0 ,560
+IDE05145-ENG115917-Light configuration-Lichtfunktion C 2,8 ,560
+IDE05145-ENG116259-Light configuration-Lichtfunktion C 20,8 ,560
+IDE05145-ENG116278-Light configuration-Lichtfunktion C 21,8 ,560
+IDE05145-ENG116297-Light configuration-Lichtfunktion C 22,0 ,560
+IDE05145-ENG116316-Light configuration-Lichtfunktion C 23,0 ,560
+IDE05145-ENG116335-Light configuration-Lichtfunktion C 24,0 ,560
+IDE05145-ENG116354-Light configuration-Lichtfunktion C 25,0 ,560
+IDE05145-ENG116373-Light configuration-Lichtfunktion C 26,0 ,560
+IDE05145-ENG116392-Light configuration-Lichtfunktion C 27,0 ,560
+IDE05145-ENG116411-Light configuration-Lichtfunktion C 28,0 ,560
+IDE05145-ENG116429-Light configuration-Lichtfunktion C 29,0 ,560
+IDE05145-ENG115936-Light configuration-Lichtfunktion C 3,8 ,560
+IDE05145-ENG116449-Light configuration-Lichtfunktion C 30,0 ,560
+IDE05145-ENG116468-Light configuration-Lichtfunktion C 31,0 ,560
+IDE05145-ENG116487-Light configuration-Lichtfunktion C 32,0 ,560
+IDE05145-ENG116506-Light configuration-Lichtfunktion C 33,0 ,560
+IDE05145-ENG116525-Light configuration-Lichtfunktion C 34,0 ,560
+IDE05145-ENG115955-Light configuration-Lichtfunktion C 4,8 ,560
+IDE05145-ENG115974-Light configuration-Lichtfunktion C 5,8 ,560
+IDE05145-ENG115993-Light configuration-Lichtfunktion C 6,0 ,560
+IDE05145-ENG116012-Light configuration-Lichtfunktion C 7,0 ,560
+IDE05145-ENG116031-Light configuration-Lichtfunktion C 8,0 ,560
+IDE05145-ENG116050-Light configuration-Lichtfunktion C 9,0 ,560
+IDE05145-ENG115881-Light configuration-Lichtfunktion D 0,0 ,560
+IDE05145-ENG115900-Light configuration-Lichtfunktion D 1,0 ,560
+IDE05145-ENG116070-Light configuration-Lichtfunktion D 10,0 ,560
+IDE05145-ENG116089-Light configuration-Lichtfunktion D 11,0 ,560
+IDE05145-ENG116108-Light configuration-Lichtfunktion D 12,0 ,560
+IDE05145-ENG116127-Light configuration-Lichtfunktion D 13,0 ,560
+IDE05145-ENG116146-Light configuration-Lichtfunktion D 14,0 ,560
+IDE05145-ENG116165-Light configuration-Lichtfunktion D 15,0 ,560
+IDE05145-ENG116184-Light configuration-Lichtfunktion D 16,0 ,560
+IDE05145-ENG116203-Light configuration-Lichtfunktion D 17,0 ,560
+IDE05145-ENG116222-Light configuration-Lichtfunktion D 18,0 ,560
+IDE05145-ENG116241-Light configuration-Lichtfunktion D 19,0 ,560
+IDE05145-ENG115918-Light configuration-Lichtfunktion D 2,9 ,560
+IDE05145-ENG116260-Light configuration-Lichtfunktion D 20,9 ,560
+IDE05145-ENG116279-Light configuration-Lichtfunktion D 21,10 ,560
+IDE05145-ENG116298-Light configuration-Lichtfunktion D 22,0 ,560
+IDE05145-ENG116317-Light configuration-Lichtfunktion D 23,0 ,560
+IDE05145-ENG116336-Light configuration-Lichtfunktion D 24,0 ,560
+IDE05145-ENG116355-Light configuration-Lichtfunktion D 25,0 ,560
+IDE05145-ENG116374-Light configuration-Lichtfunktion D 26,0 ,560
+IDE05145-ENG116393-Light configuration-Lichtfunktion D 27,0 ,560
+IDE05145-ENG116412-Light configuration-Lichtfunktion D 28,0 ,560
+IDE05145-ENG116431-Light configuration-Lichtfunktion D 29,0 ,560
+IDE05145-ENG115937-Light configuration-Lichtfunktion D 3,10 ,560
+IDE05145-ENG116450-Light configuration-Lichtfunktion D 30,0 ,560
+IDE05145-ENG116469-Light configuration-Lichtfunktion D 31,0 ,560
+IDE05145-ENG116488-Light configuration-Lichtfunktion D 32,0 ,560
+IDE05145-ENG116507-Light configuration-Lichtfunktion D 33,0 ,560
+IDE05145-ENG116526-Light configuration-Lichtfunktion D 34,0 ,560
+IDE05145-ENG115956-Light configuration-Lichtfunktion D 4,9 ,560
+IDE05145-ENG115975-Light configuration-Lichtfunktion D 5,10 ,560
+IDE05145-ENG115994-Light configuration-Lichtfunktion D 6,0 ,560
+IDE05145-ENG116013-Light configuration-Lichtfunktion D 7,0 ,560
+IDE05145-ENG116032-Light configuration-Lichtfunktion D 8,0 ,560
+IDE05145-ENG116051-Light configuration-Lichtfunktion D 9,0 ,560
+IDE05145-ENG115884-Light configuration-Lichtfunktion E 0,0 ,560
+IDE05145-ENG115903-Light configuration-Lichtfunktion E 1,0 ,560
+IDE05145-ENG116073-Light configuration-Lichtfunktion E 10,0 ,560
+IDE05145-ENG116092-Light configuration-Lichtfunktion E 11,0 ,560
+IDE05145-ENG116111-Light configuration-Lichtfunktion E 12,0 ,560
+IDE05145-ENG116130-Light configuration-Lichtfunktion E 13,0 ,560
+IDE05145-ENG116149-Light configuration-Lichtfunktion E 14,0 ,560
+IDE05145-ENG116168-Light configuration-Lichtfunktion E 15,0 ,560
+IDE05145-ENG116187-Light configuration-Lichtfunktion E 16,0 ,560
+IDE05145-ENG116206-Light configuration-Lichtfunktion E 17,0 ,560
+IDE05145-ENG116225-Light configuration-Lichtfunktion E 18,0 ,560
+IDE05145-ENG116244-Light configuration-Lichtfunktion E 19,0 ,560
+IDE05145-ENG115921-Light configuration-Lichtfunktion E 2,0 ,560
+IDE05145-ENG116263-Light configuration-Lichtfunktion E 20,0 ,560
+IDE05145-ENG116282-Light configuration-Lichtfunktion E 21,0 ,560
+IDE05145-ENG116301-Light configuration-Lichtfunktion E 22,0 ,560
+IDE05145-ENG116320-Light configuration-Lichtfunktion E 23,0 ,560
+IDE05145-ENG116339-Light configuration-Lichtfunktion E 24,0 ,560
+IDE05145-ENG116358-Light configuration-Lichtfunktion E 25,0 ,560
+IDE05145-ENG116377-Light configuration-Lichtfunktion E 26,0 ,560
+IDE05145-ENG116396-Light configuration-Lichtfunktion E 27,0 ,560
+IDE05145-ENG116415-Light configuration-Lichtfunktion E 28,0 ,560
+IDE05145-ENG116434-Light configuration-Lichtfunktion E 29,0 ,560
+IDE05145-ENG115940-Light configuration-Lichtfunktion E 3,0 ,560
+IDE05145-ENG116453-Light configuration-Lichtfunktion E 30,0 ,560
+IDE05145-ENG116472-Light configuration-Lichtfunktion E 31,0 ,560
+IDE05145-ENG116491-Light configuration-Lichtfunktion E 32,0 ,560
+IDE05145-ENG116510-Light configuration-Lichtfunktion E 33,0 ,560
+IDE05145-ENG116529-Light configuration-Lichtfunktion E 34,0 ,560
+IDE05145-ENG115959-Light configuration-Lichtfunktion E 4,0 ,560
+IDE05145-ENG115978-Light configuration-Lichtfunktion E 5,0 ,560
+IDE05145-ENG115997-Light configuration-Lichtfunktion E 6,0 ,560
+IDE05145-ENG116016-Light configuration-Lichtfunktion E 7,0 ,560
+IDE05145-ENG116035-Light configuration-Lichtfunktion E 8,0 ,560
+IDE05145-ENG116054-Light configuration-Lichtfunktion E 9,0 ,560
+IDE05145-ENG115885-Light configuration-Lichtfunktion F 0,0 ,560
+IDE05145-ENG115904-Light configuration-Lichtfunktion F 1,0 ,560
+IDE05145-ENG116074-Light configuration-Lichtfunktion F 10,0 ,560
+IDE05145-ENG116093-Light configuration-Lichtfunktion F 11,0 ,560
+IDE05145-ENG116112-Light configuration-Lichtfunktion F 12,0 ,560
+IDE05145-ENG116131-Light configuration-Lichtfunktion F 13,0 ,560
+IDE05145-ENG116150-Light configuration-Lichtfunktion F 14,0 ,560
+IDE05145-ENG116169-Light configuration-Lichtfunktion F 15,0 ,560
+IDE05145-ENG116188-Light configuration-Lichtfunktion F 16,0 ,560
+IDE05145-ENG116207-Light configuration-Lichtfunktion F 17,0 ,560
+IDE05145-ENG116226-Light configuration-Lichtfunktion F 18,0 ,560
+IDE05145-ENG116245-Light configuration-Lichtfunktion F 19,0 ,560
+IDE05145-ENG115922-Light configuration-Lichtfunktion F 2,0 ,560
+IDE05145-ENG116264-Light configuration-Lichtfunktion F 20,0 ,560
+IDE05145-ENG116283-Light configuration-Lichtfunktion F 21,0 ,560
+IDE05145-ENG116302-Light configuration-Lichtfunktion F 22,0 ,560
+IDE05145-ENG116321-Light configuration-Lichtfunktion F 23,0 ,560
+IDE05145-ENG116340-Light configuration-Lichtfunktion F 24,0 ,560
+IDE05145-ENG116359-Light configuration-Lichtfunktion F 25,0 ,560
+IDE05145-ENG116378-Light configuration-Lichtfunktion F 26,0 ,560
+IDE05145-ENG116397-Light configuration-Lichtfunktion F 27,0 ,560
+IDE05145-ENG116416-Light configuration-Lichtfunktion F 28,0 ,560
+IDE05145-ENG116435-Light configuration-Lichtfunktion F 29,0 ,560
+IDE05145-ENG116454-Light configuration-Lichtfunktion F 30,0 ,560
+IDE05145-ENG116473-Light configuration-Lichtfunktion F 31,0 ,560
+IDE05145-ENG116492-Light configuration-Lichtfunktion F 32,0 ,560
+IDE05145-ENG116511-Light configuration-Lichtfunktion F 33,0 ,560
+IDE05145-ENG116530-Light configuration-Lichtfunktion F 34,0 ,560
+IDE05145-ENG115960-Light configuration-Lichtfunktion F 4,0 ,560
+IDE05145-ENG115998-Light configuration-Lichtfunktion F 6,0 ,560
+IDE05145-ENG116017-Light configuration-Lichtfunktion F 7,0 ,560
+IDE05145-ENG116036-Light configuration-Lichtfunktion F 8,0 ,560
+IDE05145-ENG116055-Light configuration-Lichtfunktion F 9,0 ,560
+IDE05145-ENG115941-Light configuration-Lichtfunktion F3,0 ,560
+IDE05145-ENG115979-Light configuration-Lichtfunktion F5,0 ,560
+IDE05145-ENG115888-Light configuration-Lichtfunktion G 0,0 ,560
+IDE05145-ENG115907-Light configuration-Lichtfunktion G 1,0 ,560
+IDE05145-ENG116077-Light configuration-Lichtfunktion G 10,0 ,560
+IDE05145-ENG116096-Light configuration-Lichtfunktion G 11,0 ,560
+IDE05145-ENG116115-Light configuration-Lichtfunktion G 12,0 ,560
+IDE05145-ENG116134-Light configuration-Lichtfunktion G 13,0 ,560
+IDE05145-ENG116153-Light configuration-Lichtfunktion G 14,0 ,560
+IDE05145-ENG116172-Light configuration-Lichtfunktion G 15,0 ,560
+IDE05145-ENG116191-Light configuration-Lichtfunktion G 16,0 ,560
+IDE05145-ENG116210-Light configuration-Lichtfunktion G 17,0 ,560
+IDE05145-ENG116229-Light configuration-Lichtfunktion G 18,0 ,560
+IDE05145-ENG116248-Light configuration-Lichtfunktion G 19,0 ,560
+IDE05145-ENG115925-Light configuration-Lichtfunktion G 2,0 ,560
+IDE05145-ENG116267-Light configuration-Lichtfunktion G 20,0 ,560
+IDE05145-ENG116286-Light configuration-Lichtfunktion G 21,0 ,560
+IDE05145-ENG116305-Light configuration-Lichtfunktion G 22,0 ,560
+IDE05145-ENG116324-Light configuration-Lichtfunktion G 23,0 ,560
+IDE05145-ENG116343-Light configuration-Lichtfunktion G 24,0 ,560
+IDE05145-ENG116362-Light configuration-Lichtfunktion G 25,0 ,560
+IDE05145-ENG116381-Light configuration-Lichtfunktion G 26,0 ,560
+IDE05145-ENG116400-Light configuration-Lichtfunktion G 27,0 ,560
+IDE05145-ENG116419-Light configuration-Lichtfunktion G 28,0 ,560
+IDE05145-ENG116438-Light configuration-Lichtfunktion G 29,0 ,560
+IDE05145-ENG115944-Light configuration-Lichtfunktion G 3,0 ,560
+IDE05145-ENG116457-Light configuration-Lichtfunktion G 30,0 ,560
+IDE05145-ENG116476-Light configuration-Lichtfunktion G 31,0 ,560
+IDE05145-ENG116495-Light configuration-Lichtfunktion G 32,0 ,560
+IDE05145-ENG116514-Light configuration-Lichtfunktion G 33,0 ,560
+IDE05145-ENG116533-Light configuration-Lichtfunktion G 34,0 ,560
+IDE05145-ENG115963-Light configuration-Lichtfunktion G 4,0 ,560
+IDE05145-ENG115982-Light configuration-Lichtfunktion G 5,0 ,560
+IDE05145-ENG116001-Light configuration-Lichtfunktion G 6,0 ,560
+IDE05145-ENG116020-Light configuration-Lichtfunktion G 7,0 ,560
+IDE05145-ENG116039-Light configuration-Lichtfunktion G 8,0 ,560
+IDE05145-ENG116058-Light configuration-Lichtfunktion G 9,0 ,560
+IDE05145-ENG115889-Light configuration-Lichtfunktion H 0,0 ,560
+IDE05145-ENG116549-Light configuration-Lichtfunktion H 1,0 ,560
+IDE05145-ENG116078-Light configuration-Lichtfunktion H 10,0 ,560
+IDE05145-ENG116097-Light configuration-Lichtfunktion H 11,0 ,560
+IDE05145-ENG116116-Light configuration-Lichtfunktion H 12,0 ,560
+IDE05145-ENG116135-Light configuration-Lichtfunktion H 13,0 ,560
+IDE05145-ENG116154-Light configuration-Lichtfunktion H 14,0 ,560
+IDE05145-ENG116173-Light configuration-Lichtfunktion H 15,0 ,560
+IDE05145-ENG116192-Light configuration-Lichtfunktion H 16,0 ,560
+IDE05145-ENG116211-Light configuration-Lichtfunktion H 17,0 ,560
+IDE05145-ENG116230-Light configuration-Lichtfunktion H 18,0 ,560
+IDE05145-ENG116249-Light configuration-Lichtfunktion H 19,0 ,560
+IDE05145-ENG115926-Light configuration-Lichtfunktion H 2,0 ,560
+IDE05145-ENG116268-Light configuration-Lichtfunktion H 20,0 ,560
+IDE05145-ENG116287-Light configuration-Lichtfunktion H 21,0 ,560
+IDE05145-ENG116306-Light configuration-Lichtfunktion H 22,0 ,560
+IDE05145-ENG116325-Light configuration-Lichtfunktion H 23,0 ,560
+IDE05145-ENG116344-Light configuration-Lichtfunktion H 24,0 ,560
+IDE05145-ENG116363-Light configuration-Lichtfunktion H 25,0 ,560
+IDE05145-ENG116382-Light configuration-Lichtfunktion H 26,0 ,560
+IDE05145-ENG116401-Light configuration-Lichtfunktion H 27,0 ,560
+IDE05145-ENG116420-Light configuration-Lichtfunktion H 28,0 ,560
+IDE05145-ENG116439-Light configuration-Lichtfunktion H 29,0 ,560
+IDE05145-ENG115945-Light configuration-Lichtfunktion H 3,0 ,560
+IDE05145-ENG116458-Light configuration-Lichtfunktion H 30,0 ,560
+IDE05145-ENG116477-Light configuration-Lichtfunktion H 31,0 ,560
+IDE05145-ENG116496-Light configuration-Lichtfunktion H 32,0 ,560
+IDE05145-ENG116515-Light configuration-Lichtfunktion H 33,0 ,560
+IDE05145-ENG116534-Light configuration-Lichtfunktion H 34,0 ,560
+IDE05145-ENG115964-Light configuration-Lichtfunktion H 4,0 ,560
+IDE05145-ENG115983-Light configuration-Lichtfunktion H 5,0 ,560
+IDE05145-ENG116002-Light configuration-Lichtfunktion H 6,0 ,560
+IDE05145-ENG116021-Light configuration-Lichtfunktion H 7,0 ,560
+IDE05145-ENG116040-Light configuration-Lichtfunktion H 8,0 ,560
+IDE05145-ENG116059-Light configuration-Lichtfunktion H 9,0 ,560
+IDE05145-ENG154438-Light configuration-Reserved 0,0 ,560
+IDE05145-ENG99841-Light configuration-Reserved 1,0 ,560
+IDE05145-ENG154357-Light configuration-Reserved 10,0 ,560
+IDE05145-ENG154352-Light configuration-Reserved 11,0 ,560
+IDE05145-ENG154182-Light configuration-Reserved 12,0 ,560
+IDE05145-ENG154265-Light configuration-Reserved 13,0 ,560
+IDE05145-ENG154334-Light configuration-Reserved 14,0 ,560
+IDE05145-ENG154340-Light configuration-Reserved 15,0 ,560
+IDE05145-ENG154204-Light configuration-Reserved 16,0 ,560
+IDE05145-ENG154344-Light configuration-Reserved 17,0 ,560
+IDE05145-ENG154195-Light configuration-Reserved 18,0 ,560
+IDE05145-ENG154190-Light configuration-Reserved 19,0 ,560
+IDE05145-ENG99862-Light configuration-Reserved 2,0 ,560
+IDE05145-ENG154300-Light configuration-Reserved 20,0 ,560
+IDE05145-ENG154439-Light configuration-Reserved 21,0 ,560
+IDE05145-ENG154440-Light configuration-Reserved 22,0 ,560
+IDE05145-ENG154441-Light configuration-Reserved 23,0 ,560
+IDE05145-ENG154442-Light configuration-Reserved 24,0 ,560
+IDE05145-ENG154443-Light configuration-Reserved 25,0 ,560
+IDE05145-ENG154444-Light configuration-Reserved 26,0 ,560
+IDE05145-ENG154445-Light configuration-Reserved 27,0 ,560
+IDE05145-ENG154446-Light configuration-Reserved 28,0 ,560
+IDE05145-ENG154447-Light configuration-Reserved 29,0 ,560
+IDE05145-ENG101107-Light configuration-Reserved 3,00 ,560
+IDE05145-ENG154448-Light configuration-Reserved 30,0 ,560
+IDE05145-ENG154449-Light configuration-Reserved 31,0 ,560
+IDE05145-ENG154450-Light configuration-Reserved 32,0 ,560
+IDE05145-ENG154451-Light configuration-Reserved 33,0 ,560
+IDE05145-ENG154452-Light configuration-Reserved 34,0 ,560
+IDE05145-ENG154267-Light configuration-Reserved 4,0 ,560
+IDE05145-ENG154291-Light configuration-Reserved 5,0 ,560
+IDE05145-ENG154239-Light configuration-Reserved 6,0 ,560
+IDE05145-ENG154308-Light configuration-Reserved 7,0 ,560
+IDE05145-ENG154184-Light configuration-Reserved 8,0 ,560
+IDE05145-ENG154255-Light configuration-Reserved 9,0 ,560
+IDE05822-Anti-theft alarm system vehicle inclination sensor,No Response From Subnet Component,560
+IDE05823-DWA Interior monitoring parameter set,No Response From Subnet Component,560
+IDE06089-ENG116683-Seat heater level current consumption allocation-Sitzheizung Filterkonstante fuer Waermefluss,10 s,14
+IDE06089-ENG116684-Seat heater level current consumption allocation-Sitzheizung Regeltemperaturkorrektur bei Waermefluss,1.10 °C,14
+IDE06089-ENG115738-Seat heater level current consumption allocation-Sitzheizung Stufe 1 obere Schaltschwelle,24.50 °C,14
+IDE06089-ENG115737-Seat heater level current consumption allocation-Sitzheizung Stufe 1 untere Schaltschwelle,23.50 °C,14
+IDE06089-ENG115740-Seat heater level current consumption allocation-Sitzheizung Stufe 2 obere Schaltschwelle,24.50 °C,14
+IDE06089-ENG115739-Seat heater level current consumption allocation-Sitzheizung Stufe 2 untere Schaltschwelle,23.50 °C,14
+IDE06089-ENG115742-Seat heater level current consumption allocation-Sitzheizung Stufe 3 obere Schaltschwelle,38.00 °C,14
+IDE06089-ENG115741-Seat heater level current consumption allocation-Sitzheizung Stufe 3 untere Schaltschwelle,37.00 °C,14
+IDE06089-ENG115744-Seat heater level current consumption allocation-Sitzheizung Stufe 4 obere Schaltschwelle,38.00 °C,14
+IDE06089-ENG115743-Seat heater level current consumption allocation-Sitzheizung Stufe 4 untere Schaltschwelle,37.00 °C,14
+IDE06089-ENG115746-Seat heater level current consumption allocation-Sitzheizung Stufe 5 obere Schaltschwelle,55.00 °C,14
+IDE06089-ENG115745-Seat heater level current consumption allocation-Sitzheizung Stufe 5 untere Schaltschwelle,54.50 °C,14
+IDE06089-ENG115748-Seat heater level current consumption allocation-Sitzheizung Stufe 6 obere Schaltschwelle,55.00 °C,14
+IDE06089-ENG115747-Seat heater level current consumption allocation-Sitzheizung Stufe 6 untere Schaltschwelle,54.50 °C,14
+IDE06096-ENG116596-Interior lights-Innenlicht bei offenem Heckdeckel einschalten,active ,6
+IDE06096-ENG116597-Interior lights-KL30G ohne PWM,not active ,6
+IDE06096-ENG116598-Interior lights-KL58 Einschalten mit Rampe,not active ,6
+IDE06096-ENG116599-Interior lights-KL58 Verriegelungsausschalten,not active ,6
+IDE06096-ENG116600-Interior lights-Lichtsensor wirkt auf Suchbeleuchtung,active ,6
+IDE06096-ENG116595-Interior lights-Menuesteuerung Ambientebeleuchtung Effektbeleuchtung,active ,6
+IDE06096-ENG115631-Interior lights-Suchbeleuchtung Festwert,100 %,6
+IDE06425-Dynamometer mode: functional,not active ,1
+IDE06864-ENG115833-Daytime running lamps-Fahrlicht bei Tag,not active ,2
+IDE06864-ENG115832-Daytime running lamps-Scheinwerferferreinigungsansteuerung und Abblendlichtanzeige bei Dauerfahrlicht,not active ,2
+IDE06864-ENG116592-Daytime running lamps-Standlicht aktiviert zusaetzlich Tagfahrlicht,not active ,2
+IDE06864-ENG116594-Daytime running lamps-Tagfahrlicht Aktivierung durch BAP oder Bedienfolge moeglich,not active ,2
+IDE06864-ENG122184-Daytime running lamps-Tagfahrlicht Dauerfahrlicht bei Handbremse abschalten,not active ,2
+IDE06864-ENG115734-Daytime running lamps-Tagfahrlicht nur in Schalterstellung AUTO,not active ,2
+IDE06864-ENG116593-Daytime running lamps-Tagfahrlicht-Dauerfahrlicht aktiviert zusaetzlich Standlicht,not active ,2
+IDE06864-ENG115733-Daytime running lamps-Tagfahrlichtkontrollleuchte,not active ,2
+IDE06864-ENG116591-Daytime running lamps-Werkseinstellung fuer Tagfahrlicht Freischaltung BAP / Bedienfolge,not active ,2
+IDE07007-ENG148891-Air conditioning/heating function via remote control-Anzahl zulaessiger Remotestarts,0 ,2
+IDE07007-ENG148876-Air conditioning/heating function via remote control-RemoteStart Betrieb Dauer,0 min,2
+IDE07356-Position during interval mode,31.494474 °,2
+IDE07470-ENG116719-After-run for park light-Bedingungen zur Beendigung des Standlichtnachlaufs,not active ,5
+IDE07470-ENG116720-After-run for park light-Standlicht-Nachlaufzeit,1 min,5
+IDE08542-IDE02021-Access control 2-Comfort closing,active ,6
+IDE08542-IDE02022-Access control 2-Comfort opening,not active ,6
+IDE08542-ENG116663-Access control 2-Fahrertuerbedienung Fensterheber oeffnen,active ,6
+IDE08542-ENG116664-Access control 2-Fahrertuerbedienung Fensterheber schliessen,active ,6
+IDE08542-ENG116662-Access control 2-FH SAD Kl15Aus Freigabezeit,600 s,6
+IDE08542-ENG116648-Access control 2-Freigabenachlauf FH bei Kl 15 aus,active ,6
+IDE08542-ENG122993-Access control 2-Freigabenachlauf FH bei Tueroeffnen abbrechen,active ,6
+IDE08542-ENG116652-Access control 2-Funk Komfort oeffnen,active ,6
+IDE08542-ENG116651-Access control 2-Funk Komfort schliessen,active ,6
+IDE08542-ENG116658-Access control 2-Funk Spiegelanklappen,active ,6
+IDE08542-ENG116665-Access control 2-Funk Spiegelanklappung Modus,by look command via remote control key ,6
+IDE08542-ENG116653-Access control 2-Kessy Komfort oeffnen,No ,6
+IDE08542-ENG116654-Access control 2-Kessy Komfort schliessen,Yes ,6
+IDE08542-ENG116655-Access control 2-Kessy Komfortbedienung Reichweitenbegrenzung,No ,6
+IDE08542-ENG115670-Access control 2-Komfortbedienung global,active ,6
+IDE08542-ENG116642-Access control 2-Komfortoeffnen nur FH Fahrertuer,not active ,6
+IDE08542-ENG116660-Access control 2-Menuesteuerung Funk Spiegel anklappen,active ,6
+IDE08542-ENG122994-Access control 2-Menuesteuerung Komfortbedienung einstellbar,adjustable ,6
+IDE08542-ENG122186-Access control 2-Menuesteuerung Regenschliessen,not active ,6
+IDE08542-ENG116657-Access control 2-Menuesteuerung Spiegelabsenkung,active ,6
+IDE08542-ENG116659-Access control 2-Menuesteuerung synchrone Spiegelverstellung,active ,6
+IDE08542-ENG115671-Access control 2-Regenschließen,not active ,6
+IDE08542-ENG116647-Access control 2-SAD Komfort oeffnen,not active ,6
+IDE08542-ENG116646-Access control 2-SAD Komfort schliessen,not active ,6
+IDE08542-ENG116661-Access control 2-SAD PreCrash Konturschliessen,active ,6
+IDE08542-ENG116645-Access control 2-SAD Richtung Komfortoeffnen,Open ,6
+IDE08542-ENG116643-Access control 2-Schliesszylinder Komfort oeffnen,not active ,6
+IDE08542-ENG116644-Access control 2-Schliesszylinder Komfort schliessen,not active ,6
+IDE08542-ENG116650-Access control 2-Spiegelabsenkung bei Rueckwaertsfahrt,active ,6
+IDE08542-ENG116656-Access control 2-Spiegelverstellung Synchron,active ,6
+IDE08786-ENG116640-Assistance light functions-AFL Zeitverzoegerung,2000 ms,4
+IDE08786-ENG115723-Assistance light functions-Assistenzfahrlicht bei Regen,active ,4
+IDE08786-ENG116639-Assistance light functions-Fernlichtassistent Reset,not active ,4
+IDE08786-ENG116638-Assistance light functions-Fernlichtassistent Zeitverzoegerungswert,0 ms,4
+IDE08786-ENG115724-Assistance light functions-Lichtsensorempfindlichkeit,normal ,4
+IDE08786-ENG116637-Assistance light functions-Menuesteuerung Fernlichtassistent,not installed ,4
+IDE08786-ENG116641-Assistance light functions-Menuesteuerung Fernlichtassistent Werkseinstellung,present ,4
+IDE08786-ENG116636-Assistance light functions-Notbremsanzeige NBA,active ,4
+IDE08787-ENG115810-Auxiliary functions-Klemmenfehler auf CAN ausgeben,active ,1
+IDE08787-ENG148893-Auxiliary functions-Menuesteuerung Garagentoroeffner,not active ,1
+IDE08787-ENG115809-Auxiliary functions-Signalhorn ohne KL15,active ,1
+IDE08787-ENG116672-Auxiliary functions-Spoiler Einfahrunterdrueckung nach manuellem Ausfahren,not active ,1
+IDE08787-ENG116671-Auxiliary functions-Spoiler Komfortsenken des Spoiler ueber Schliesszylinder FT,not active ,1
+IDE08788-ENG122212-Dyn. turn signal modes-ABBA_Blinken,not active ,4
+IDE08788-ENG121966-Dyn. turn signal modes-Crash flashing,not active ,4
+IDE08788-ENG122207-Dyn. turn signal modes-DWA_Alarm_Blinken,not active ,4
+IDE08788-ENG122206-Dyn. turn signal modes-DWA_Schaerfungsquittung,not active ,4
+IDE08788-ENG122208-Dyn. turn signal modes-Multi_kollisions_Blinken,not active ,4
+IDE08788-ENG122209-Dyn. turn signal modes-Notwarn_blinken_NBA_Phase_2,not active ,4
+IDE08788-ENG121967-Dyn. turn signal modes-Panic flashing,not active ,4
+IDE08788-ENG122211-Dyn. turn signal modes-Richtungs_blinken_links,not active ,4
+IDE08788-ENG122210-Dyn. turn signal modes-Richtungs_blinken_rechts,not active ,4
+IDE08788-ENG122201-Dyn. turn signal modes-Schluessel_Anlern_Blinken,not active ,4
+IDE08788-ENG121968-Dyn. turn signal modes-Taxi alarm flashing,not active ,4
+IDE08788-ENG122205-Dyn. turn signal modes-Telematikblinken_STS_Blinken,not active ,4
+IDE08788-ENG122202-Dyn. turn signal modes-UGDO_ Anlern_Blinken,not active ,4
+IDE08788-ENG122214-Dyn. turn signal modes-Warnblinken_Zuendung_AUS,not active ,4
+IDE08788-ENG122213-Dyn. turn signal modes-Warnblinken_Zuendung_EIN,not active ,4
+IDE08788-ENG122204-Dyn. turn signal modes-ZV_Blinken_auf,not active ,4
+IDE08788-ENG122203-Dyn. turn signal modes-ZV_Blinken_zu,not active ,4
+MAS01471-lower stop,31.494474 °,2
+MAS01472-upper stop,170.494336 °,2
+MAS01490-Energy management,active ,1
+MAS05055-lower turn position,7.494498 °,2
+MAS05056-upper turn position,29.494476 °,2
+MAS05934-ENG116716-Convert. top oper.-Doppelpuls nur Verdeck,active ,3
+MAS05934-ENG116718-Convert. top oper.-Heckdeckel sperren bei Verdeckbetrieb,not active ,3
+MAS05934-ENG122193-Convert. top oper.-Heckschloss oeffnen durch Verdeck-SG,not active ,3
+MAS05934-ENG116711-Convert. top oper.-Komfortbedienung Verdeck global,active ,3
+MAS05934-ENG122189-Convert. top oper.-Komfortbedienung Verdeck oeffnen,active ,3
+MAS05934-ENG116712-Convert. top oper.-Komfortbedienung Verdeck schließen,active ,3
+MAS05934-ENG116717-Convert. top oper.-Verdeck mit Schiebedach,not active ,3
+MAS05934-ENG122191-Convert. top oper.-Verdeck oeffnen via Funkfernbedienung,active ,3
+MAS05934-ENG122192-Convert. top oper.-Verdeck oeffnen via Kessy,active ,3
+MAS05934-ENG122190-Convert. top oper.-Verdeck oeffnen via Schliesszylinder,active ,3
+MAS05934-ENG116714-Convert. top oper.-Verdeck schließen via Funkfernbedienung,active ,3
+MAS05934-ENG116715-Convert. top oper.-Verdeck schließen via Kessy,active ,3
+MAS05934-ENG116713-Convert. top oper.-Verdeck schließen via Schließzylinder,active ,3
+ENG148504-ENG101574-Dimmkennlinie Suchbeleuchtung-X1,No Response From Subnet Component,3
+ENG148504-ENG99557-Dimmkennlinie Suchbeleuchtung-X2,No Response From Subnet Component,3
+ENG148504-ENG102140-Dimmkennlinie Suchbeleuchtung-X3,No Response From Subnet Component,3
+ENG148504-ENG99777-Dimmkennlinie Suchbeleuchtung-Y1,No Response From Subnet Component,3
+ENG148504-ENG100480-Dimmkennlinie Suchbeleuchtung-Y2,No Response From Subnet Component,3
+ENG148504-ENG100773-Dimmkennlinie Suchbeleuchtung-Y3,No Response From Subnet Component,3
+ENG99457-ENG117394-Head area heater-blower_speed,1 ,2
+ENG99457-ENG98971-Head area heater-Temperature,-3 ,2
+ENG116836-ENG115658-Innenbeleuchtung Abdimmen-x0,0 ms,22
+ENG116836-ENG101574-Innenbeleuchtung Abdimmen-X1,200 ms,22
+ENG116836-ENG115664-Innenbeleuchtung Abdimmen-x10,2000 ms,22
+ENG116836-ENG99557-Innenbeleuchtung Abdimmen-X2,400 ms,22
+ENG116836-ENG102140-Innenbeleuchtung Abdimmen-X3,600 ms,22
+ENG116836-ENG102936-Innenbeleuchtung Abdimmen-X4,800 ms,22
+ENG116836-ENG103548-Innenbeleuchtung Abdimmen-X5,1000 ms,22
+ENG116836-ENG113992-Innenbeleuchtung Abdimmen-X6,1200 ms,22
+ENG116836-ENG115661-Innenbeleuchtung Abdimmen-x7,1400 ms,22
+ENG116836-ENG115662-Innenbeleuchtung Abdimmen-x8,1600 ms,22
+ENG116836-ENG115663-Innenbeleuchtung Abdimmen-x9,1800 ms,22
+ENG116836-ENG115659-Innenbeleuchtung Abdimmen-y0,100.0 %,22
+ENG116836-ENG99777-Innenbeleuchtung Abdimmen-Y1,72.0 %,22
+ENG116836-ENG115668-Innenbeleuchtung Abdimmen-y10,0.0 %,22
+ENG116836-ENG100480-Innenbeleuchtung Abdimmen-Y2,48.0 %,22
+ENG116836-ENG100773-Innenbeleuchtung Abdimmen-Y3,33.0 %,22
+ENG116836-ENG100631-Innenbeleuchtung Abdimmen-Y4,18.0 %,22
+ENG116836-ENG102174-Innenbeleuchtung Abdimmen-Y5,12.0 %,22
+ENG116836-ENG113993-Innenbeleuchtung Abdimmen-Y6,8.0 %,22
+ENG116836-ENG115665-Innenbeleuchtung Abdimmen-y7,6.0 %,22
+ENG116836-ENG115666-Innenbeleuchtung Abdimmen-y8,4.0 %,22
+ENG116836-ENG115667-Innenbeleuchtung Abdimmen-y9,2.0 %,22
+ENG116831-ENG115658-Innenbeleuchtung Fotosensor-x0,0 ,22
+ENG116831-ENG101574-Innenbeleuchtung Fotosensor-X1,50 ,22
+ENG116831-ENG115664-Innenbeleuchtung Fotosensor-x10,0 ,22
+ENG116831-ENG99557-Innenbeleuchtung Fotosensor-X2,100 ,22
+ENG116831-ENG102140-Innenbeleuchtung Fotosensor-X3,200 ,22
+ENG116831-ENG102936-Innenbeleuchtung Fotosensor-X4,253 ,22
+ENG116831-ENG103548-Innenbeleuchtung Fotosensor-X5,0 ,22
+ENG116831-ENG113992-Innenbeleuchtung Fotosensor-X6,0 ,22
+ENG116831-ENG115661-Innenbeleuchtung Fotosensor-x7,0 ,22
+ENG116831-ENG115662-Innenbeleuchtung Fotosensor-x8,0 ,22
+ENG116831-ENG115663-Innenbeleuchtung Fotosensor-x9,0 ,22
+ENG116831-ENG115659-Innenbeleuchtung Fotosensor-y0,0 lx,22
+ENG116831-ENG99777-Innenbeleuchtung Fotosensor-Y1,50 lx,22
+ENG116831-ENG115668-Innenbeleuchtung Fotosensor-y10,0 lx,22
+ENG116831-ENG100480-Innenbeleuchtung Fotosensor-Y2,100 lx,22
+ENG116831-ENG100773-Innenbeleuchtung Fotosensor-Y3,200 lx,22
+ENG116831-ENG100631-Innenbeleuchtung Fotosensor-Y4,500 lx,22
+ENG116831-ENG102174-Innenbeleuchtung Fotosensor-Y5,0 lx,22
+ENG116831-ENG113993-Innenbeleuchtung Fotosensor-Y6,0 lx,22
+ENG116831-ENG115665-Innenbeleuchtung Fotosensor-y7,0 lx,22
+ENG116831-ENG115666-Innenbeleuchtung Fotosensor-y8,0 lx,22
+ENG116831-ENG115667-Innenbeleuchtung Fotosensor-y9,0 lx,22
+ENG116835-ENG115658-Innenbeleuchtung Hochdimmen-x0,0 ms,22
+ENG116835-ENG101574-Innenbeleuchtung Hochdimmen-X1,200 ms,22
+ENG116835-ENG115664-Innenbeleuchtung Hochdimmen-x10,2000 ms,22
+ENG116835-ENG99557-Innenbeleuchtung Hochdimmen-X2,400 ms,22
+ENG116835-ENG102140-Innenbeleuchtung Hochdimmen-X3,600 ms,22
+ENG116835-ENG102936-Innenbeleuchtung Hochdimmen-X4,800 ms,22
+ENG116835-ENG103548-Innenbeleuchtung Hochdimmen-X5,1000 ms,22
+ENG116835-ENG113992-Innenbeleuchtung Hochdimmen-X6,1200 ms,22
+ENG116835-ENG115661-Innenbeleuchtung Hochdimmen-x7,1400 ms,22
+ENG116835-ENG115662-Innenbeleuchtung Hochdimmen-x8,1600 ms,22
+ENG116835-ENG115663-Innenbeleuchtung Hochdimmen-x9,1800 ms,22
+ENG116835-ENG115659-Innenbeleuchtung Hochdimmen-y0,0.0 %,22
+ENG116835-ENG99777-Innenbeleuchtung Hochdimmen-Y1,1.0 %,22
+ENG116835-ENG115668-Innenbeleuchtung Hochdimmen-y10,100.0 %,22
+ENG116835-ENG100480-Innenbeleuchtung Hochdimmen-Y2,3.0 %,22
+ENG116835-ENG100773-Innenbeleuchtung Hochdimmen-Y3,5.0 %,22
+ENG116835-ENG100631-Innenbeleuchtung Hochdimmen-Y4,11.0 %,22
+ENG116835-ENG102174-Innenbeleuchtung Hochdimmen-Y5,22.0 %,22
+ENG116835-ENG113993-Innenbeleuchtung Hochdimmen-Y6,40.0 %,22
+ENG116835-ENG115665-Innenbeleuchtung Hochdimmen-y7,80.0 %,22
+ENG116835-ENG115666-Innenbeleuchtung Hochdimmen-y8,95.0 %,22
+ENG116835-ENG115667-Innenbeleuchtung Hochdimmen-y9,100.0 %,22
+ENG116975-ENG115658-Innenbeleuchtung KL 58xd log Bus-x0,0.0 %,12
+ENG116975-ENG101574-Innenbeleuchtung KL 58xd log Bus-X1,6.0 %,12
+ENG116975-ENG99557-Innenbeleuchtung KL 58xd log Bus-X2,16.0 %,12
+ENG116975-ENG102140-Innenbeleuchtung KL 58xd log Bus-X3,30.0 %,12
+ENG116975-ENG102936-Innenbeleuchtung KL 58xd log Bus-X4,60.0 %,12
+ENG116975-ENG103548-Innenbeleuchtung KL 58xd log Bus-X5,100.0 %,12
+ENG116975-ENG115659-Innenbeleuchtung KL 58xd log Bus-y0,10 ,12
+ENG116975-ENG99777-Innenbeleuchtung KL 58xd log Bus-Y1,10 ,12
+ENG116975-ENG100480-Innenbeleuchtung KL 58xd log Bus-Y2,100 ,12
+ENG116975-ENG100773-Innenbeleuchtung KL 58xd log Bus-Y3,150 ,12
+ENG116975-ENG100631-Innenbeleuchtung KL 58xd log Bus-Y4,220 ,12
+ENG116975-ENG102174-Innenbeleuchtung KL 58xd log Bus-Y5,253 ,12
+ENG116976-ENG115658-Innenbeleuchtung KL 58xd max-x0,0 lx,10
+ENG116976-ENG101574-Innenbeleuchtung KL 58xd max-X1,8 lx,10
+ENG116976-ENG99557-Innenbeleuchtung KL 58xd max-X2,200 lx,10
+ENG116976-ENG102140-Innenbeleuchtung KL 58xd max-X3,300 lx,10
+ENG116976-ENG102936-Innenbeleuchtung KL 58xd max-X4,500 lx,10
+ENG116976-ENG115659-Innenbeleuchtung KL 58xd max-y0,16.0 %,10
+ENG116976-ENG99777-Innenbeleuchtung KL 58xd max-Y1,16.0 %,10
+ENG116976-ENG100480-Innenbeleuchtung KL 58xd max-Y2,100.0 %,10
+ENG116976-ENG100773-Innenbeleuchtung KL 58xd max-Y3,100.0 %,10
+ENG116976-ENG100631-Innenbeleuchtung KL 58xd max-Y4,100.0 %,10
+ENG116980-ENG115658-Innenbeleuchtung KL 58xd min-x0,0 lx,10
+ENG116980-ENG101574-Innenbeleuchtung KL 58xd min-X1,8 lx,10
+ENG116980-ENG99557-Innenbeleuchtung KL 58xd min-X2,220 lx,10
+ENG116980-ENG102140-Innenbeleuchtung KL 58xd min-X3,300 lx,10
+ENG116980-ENG102936-Innenbeleuchtung KL 58xd min-X4,500 lx,10
+ENG116980-ENG115659-Innenbeleuchtung KL 58xd min-y0,6.0 %,10
+ENG116980-ENG99777-Innenbeleuchtung KL 58xd min-Y1,6.0 %,10
+ENG116980-ENG100480-Innenbeleuchtung KL 58xd min-Y2,100.0 %,10
+ENG116980-ENG100773-Innenbeleuchtung KL 58xd min-Y3,100.0 %,10
+ENG116980-ENG100631-Innenbeleuchtung KL 58xd min-Y4,100.0 %,10
+ENG116979-ENG115658-Innenbeleuchtung KL 58xd PWM-x0,0 ,12
+ENG116979-ENG101574-Innenbeleuchtung KL 58xd PWM-X1,10 ,12
+ENG116979-ENG99557-Innenbeleuchtung KL 58xd PWM-X2,50 ,12
+ENG116979-ENG102140-Innenbeleuchtung KL 58xd PWM-X3,100 ,12
+ENG116979-ENG102936-Innenbeleuchtung KL 58xd PWM-X4,220 ,12
+ENG116979-ENG103548-Innenbeleuchtung KL 58xd PWM-X5,253 ,12
+ENG116979-ENG115659-Innenbeleuchtung KL 58xd PWM-y0,2.0 %,12
+ENG116979-ENG99777-Innenbeleuchtung KL 58xd PWM-Y1,2.0 %,12
+ENG116979-ENG100480-Innenbeleuchtung KL 58xd PWM-Y2,6.0 %,12
+ENG116979-ENG100773-Innenbeleuchtung KL 58xd PWM-Y3,10.0 %,12
+ENG116979-ENG100631-Innenbeleuchtung KL 58xd PWM-Y4,80.0 %,12
+ENG116979-ENG102174-Innenbeleuchtung KL 58xd PWM-Y5,100.0 %,12
+ENG116972-ENG115658-Innenbeleuchtung KL 58xs max-x0,0 lx,8
+ENG116972-ENG101574-Innenbeleuchtung KL 58xs max-X1,8 lx,8
+ENG116972-ENG99557-Innenbeleuchtung KL 58xs max-X2,50 lx,8
+ENG116972-ENG102140-Innenbeleuchtung KL 58xs max-X3,500 lx,8
+ENG116972-ENG115659-Innenbeleuchtung KL 58xs max-y0,100.0 %,8
+ENG116972-ENG99777-Innenbeleuchtung KL 58xs max-Y1,100.0 %,8
+ENG116972-ENG100480-Innenbeleuchtung KL 58xs max-Y2,100.0 %,8
+ENG116972-ENG100773-Innenbeleuchtung KL 58xs max-Y3,100.0 %,8
+ENG116977-ENG115658-Innenbeleuchtung KL 58xs PWM-x0,0.0 %,6
+ENG116977-ENG101574-Innenbeleuchtung KL 58xs PWM-X1,50.0 %,6
+ENG116977-ENG99557-Innenbeleuchtung KL 58xs PWM-X2,100.0 %,6
+ENG116977-ENG115659-Innenbeleuchtung KL 58xs PWM-y0,0.0 %,6
+ENG116977-ENG99777-Innenbeleuchtung KL 58xs PWM-Y1,50.0 %,6
+ENG116977-ENG100480-Innenbeleuchtung KL 58xs PWM-Y2,100.0 %,6
+ENG116974-ENG115658-Innenbeleuchtung KL 58xt max-x0,0 lx,8
+ENG116974-ENG101574-Innenbeleuchtung KL 58xt max-X1,8 lx,8
+ENG116974-ENG99557-Innenbeleuchtung KL 58xt max-X2,50 lx,8
+ENG116974-ENG102140-Innenbeleuchtung KL 58xt max-X3,500 lx,8
+ENG116974-ENG115659-Innenbeleuchtung KL 58xt max-y0,100.0 %,8
+ENG116974-ENG99777-Innenbeleuchtung KL 58xt max-Y1,100.0 %,8
+ENG116974-ENG100480-Innenbeleuchtung KL 58xt max-Y2,100.0 %,8
+ENG116974-ENG100773-Innenbeleuchtung KL 58xt max-Y3,100.0 %,8
+ENG116973-ENG115658-Innenbeleuchtung KL 58xt min-x0,0 lx,8
+ENG116973-ENG101574-Innenbeleuchtung KL 58xt min-X1,8 lx,8
+ENG116973-ENG99557-Innenbeleuchtung KL 58xt min-X2,50 lx,8
+ENG116973-ENG102140-Innenbeleuchtung KL 58xt min-X3,500 lx,8
+ENG116973-ENG115659-Innenbeleuchtung KL 58xt min-y0,6.0 %,8
+ENG116973-ENG99777-Innenbeleuchtung KL 58xt min-Y1,6.0 %,8
+ENG116973-ENG100480-Innenbeleuchtung KL 58xt min-Y2,100.0 %,8
+ENG116973-ENG100773-Innenbeleuchtung KL 58xt min-Y3,100.0 %,8
+ENG116978-ENG115658-Innenbeleuchtung KL 58xt PWM-x0,0.0 %,6
+ENG116978-ENG101574-Innenbeleuchtung KL 58xt PWM-X1,50.0 %,6
+ENG116978-ENG99557-Innenbeleuchtung KL 58xt PWM-X2,100.0 %,6
+ENG116978-ENG115659-Innenbeleuchtung KL 58xt PWM-y0,0.0 %,6
+ENG116978-ENG99777-Innenbeleuchtung KL 58xt PWM-Y1,50.0 %,6
+ENG116978-ENG100480-Innenbeleuchtung KL 58xt PWM-Y2,100.0 %,6
+ENG116834-ENG115633-Innenbeleuchtung Tasterdimmung-Tasterdimmung x0,0 ms,10
+ENG116834-ENG115634-Innenbeleuchtung Tasterdimmung-Tasterdimmung x1,100 ms,10
+ENG116834-ENG115635-Innenbeleuchtung Tasterdimmung-Tasterdimmung x2,160 ms,10
+ENG116834-ENG115636-Innenbeleuchtung Tasterdimmung-Tasterdimmung x3,200 ms,10
+ENG116834-ENG115637-Innenbeleuchtung Tasterdimmung-Tasterdimmung x4,260 ms,10
+ENG116834-ENG115638-Innenbeleuchtung Tasterdimmung-Tasterdimmung y0,1.0 %,10
+ENG116834-ENG115639-Innenbeleuchtung Tasterdimmung-Tasterdimmung y1,5.0 ,10
+ENG116834-ENG115640-Innenbeleuchtung Tasterdimmung-Tasterdimmung y2,15.0 ,10
+ENG116834-ENG115641-Innenbeleuchtung Tasterdimmung-Tasterdimmung y3,10.0 ,10
+ENG116834-ENG115642-Innenbeleuchtung Tasterdimmung-Tasterdimmung y4,100.0 ,10
+ENG148505-ENG115658-InnenbeleuchtungKL 58xs min-x0,0 lx,8
+ENG148505-ENG101574-InnenbeleuchtungKL 58xs min-X1,8 lx,8
+ENG148505-ENG99557-InnenbeleuchtungKL 58xs min-X2,50 lx,8
+ENG148505-ENG102140-InnenbeleuchtungKL 58xs min-X3,500 lx,8
+ENG148505-ENG115659-InnenbeleuchtungKL 58xs min-y0,6.0 %,8
+ENG148505-ENG99777-InnenbeleuchtungKL 58xs min-Y1,6.0 %,8
+ENG148505-ENG100480-InnenbeleuchtungKL 58xs min-Y2,100.0 %,8
+ENG148505-ENG100773-InnenbeleuchtungKL 58xs min-Y3,100.0 %,8
+ENG116936-ENG115883-Leuchte 0 BLK VL B36-Dimming Direction CD 0,maximize ,16
+ENG116936-ENG115887-Leuchte 0 BLK VL B36-Dimming Direction EF 0,maximize ,16
+ENG116936-ENG115891-Leuchte 0 BLK VL B36-Dimming Direction GH 0,maximize ,16
+ENG116936-ENG115878-Leuchte 0 BLK VL B36-Dimmwert AB 0,100 ,16
+ENG116936-ENG115882-Leuchte 0 BLK VL B36-Dimmwert CD 0,0 ,16
+ENG116936-ENG115886-Leuchte 0 BLK VL B36-Dimmwert EF 0,0 ,16
+ENG116936-ENG115890-Leuchte 0 BLK VL B36-Dimmwert GH 0,0 ,16
+ENG116936-ENG115875-Leuchte 0 BLK VL B36-Fehlerort mittleres Byte DTC-DFCC 0,14 ,16
+ENG116936-ENG116547-Leuchte 0 BLK VL B36-Lampendefektbit Position 0,34 ,16
+ENG116936-ENG115873-Leuchte 0 BLK VL B36-Lasttyp 0,12 - Blinkleuchten ,16
+ENG116936-ENG115879-Leuchte 0 BLK VL B36-Lichtansteuerung HD AB 0,Always ,16
+ENG116936-ENG115876-Leuchte 0 BLK VL B36-Lichtfunktion A 0,Blinken links Hellphase ,16
+ENG116936-ENG115877-Leuchte 0 BLK VL B36-Lichtfunktion B 0,not active ,16
+ENG116936-ENG115880-Leuchte 0 BLK VL B36-Lichtfunktion C 0,not active ,16
+ENG116936-ENG115881-Leuchte 0 BLK VL B36-Lichtfunktion D 0,not active ,16
+ENG116936-ENG115884-Leuchte 0 BLK VL B36-Lichtfunktion E 0,not active ,16
+ENG116936-ENG115885-Leuchte 0 BLK VL B36-Lichtfunktion F 0,not active ,16
+ENG116936-ENG115888-Leuchte 0 BLK VL B36-Lichtfunktion G 0,not active ,16
+ENG116936-ENG115889-Leuchte 0 BLK VL B36-Lichtfunktion H 0,not active ,16
+ENG116946-ENG116072-Leuchte10SHUTTER LB23-Dimming Direction CD 10,maximize ,16
+ENG116946-ENG116076-Leuchte10SHUTTER LB23-Dimming Direction EF 10,maximize ,16
+ENG116946-ENG116080-Leuchte10SHUTTER LB23-Dimming Direction GH 10,maximize ,16
+ENG116946-ENG116067-Leuchte10SHUTTER LB23-Dimmwert AB 10,127 ,16
+ENG116946-ENG116071-Leuchte10SHUTTER LB23-Dimmwert CD 10,0 ,16
+ENG116946-ENG116075-Leuchte10SHUTTER LB23-Dimmwert EF 10,0 ,16
+ENG116946-ENG116079-Leuchte10SHUTTER LB23-Dimmwert GH 10,0 ,16
+ENG116946-ENG116064-Leuchte10SHUTTER LB23-Fehlerort mittleres Byte DTC-DFCC 10,1E ,16
+ENG116946-ENG116560-Leuchte10SHUTTER LB23-Lampendefektbitposition 10,37 ,16
+ENG116946-ENG116062-Leuchte10SHUTTER LB23-Lasttyp 10,2 - Shutter: Diagnosesensierung für 'LED low' ,16
+ENG116946-ENG116068-Leuchte10SHUTTER LB23-Lichtansteuerung HD AB 10,Always ,16
+ENG116946-ENG116065-Leuchte10SHUTTER LB23-Lichtfunktion A 10,Left high beam ,16
+ENG116946-ENG116066-Leuchte10SHUTTER LB23-Lichtfunktion B 10,Lichthupe generell ,16
+ENG116946-ENG116069-Leuchte10SHUTTER LB23-Lichtfunktion C 10,not active ,16
+ENG116946-ENG116070-Leuchte10SHUTTER LB23-Lichtfunktion D 10,not active ,16
+ENG116946-ENG116073-Leuchte10SHUTTER LB23-Lichtfunktion E 10,not active ,16
+ENG116946-ENG116074-Leuchte10SHUTTER LB23-Lichtfunktion F 10,not active ,16
+ENG116946-ENG116077-Leuchte10SHUTTER LB23-Lichtfunktion G 10,not active ,16
+ENG116946-ENG116078-Leuchte10SHUTTER LB23-Lichtfunktion H 10,not active ,16
+ENG116947-ENG116091-Leuchte11SHUTTER RB22-Dimming Direction CD 11,maximize ,16
+ENG116947-ENG116095-Leuchte11SHUTTER RB22-Dimming Direction EF 11,maximize ,16
+ENG116947-ENG116099-Leuchte11SHUTTER RB22-Dimming Direction GH 11,maximize ,16
+ENG116947-ENG116086-Leuchte11SHUTTER RB22-Dimmwert AB 11,127 ,16
+ENG116947-ENG116090-Leuchte11SHUTTER RB22-Dimmwert CD 11,0 ,16
+ENG116947-ENG116094-Leuchte11SHUTTER RB22-Dimmwert EF 11,0 ,16
+ENG116947-ENG116098-Leuchte11SHUTTER RB22-Dimmwert GH 11,0 ,16
+ENG116947-ENG116083-Leuchte11SHUTTER RB22-Fehlerort mittleres Byte DTC-DFCC 11,1F ,16
+ENG116947-ENG116561-Leuchte11SHUTTER RB22-Lampendefektbitposition 11,41 ,16
+ENG116947-ENG116081-Leuchte11SHUTTER RB22-Lasttyp 11,2 - Shutter: Diagnosesensierung für 'LED low' ,16
+ENG116947-ENG116087-Leuchte11SHUTTER RB22-Lichtansteuerung HD AB 11,Always ,16
+ENG116947-ENG116084-Leuchte11SHUTTER RB22-Lichtfunktion A 11,Right high beam ,16
+ENG116947-ENG116085-Leuchte11SHUTTER RB22-Lichtfunktion B 11,Lichthupe generell ,16
+ENG116947-ENG116088-Leuchte11SHUTTER RB22-Lichtfunktion C 11,not active ,16
+ENG116947-ENG116089-Leuchte11SHUTTER RB22-Lichtfunktion D 11,not active ,16
+ENG116947-ENG116092-Leuchte11SHUTTER RB22-Lichtfunktion E 11,not active ,16
+ENG116947-ENG116093-Leuchte11SHUTTER RB22-Lichtfunktion F 11,not active ,16
+ENG116947-ENG116096-Leuchte11SHUTTER RB22-Lichtfunktion G 11,not active ,16
+ENG116947-ENG116097-Leuchte11SHUTTER RB22-Lichtfunktion H 11,not active ,16
+ENG116948-ENG116110-Leuchte12NL LB45-Dimming Direction CD 12,maximize ,16
+ENG116948-ENG116114-Leuchte12NL LB45-Dimming Direction EF 12,maximize ,16
+ENG116948-ENG116118-Leuchte12NL LB45-Dimming Direction GH 12,maximize ,16
+ENG116948-ENG116105-Leuchte12NL LB45-Dimmwert AB 12,100 ,16
+ENG116948-ENG116109-Leuchte12NL LB45-Dimmwert CD 12,0 ,16
+ENG116948-ENG116113-Leuchte12NL LB45-Dimmwert EF 12,0 ,16
+ENG116948-ENG116117-Leuchte12NL LB45-Dimmwert GH 12,0 ,16
+ENG116948-ENG116102-Leuchte12NL LB45-Fehlerort mittleres Byte DTC-DFCC 12,22 ,16
+ENG116948-ENG116562-Leuchte12NL LB45-Lampendefektbitposition 12,38 ,16
+ENG116948-ENG116100-Leuchte12NL LB45-Lasttyp 12,10 - allgemeine Scheinwerfer ,16
+ENG116948-ENG116106-Leuchte12NL LB45-Lichtansteuerung HD AB 12,Always ,16
+ENG116948-ENG116103-Leuchte12NL LB45-Lichtfunktion A 12,Nebellicht links ,16
+ENG116948-ENG116104-Leuchte12NL LB45-Lichtfunktion B 12,not active ,16
+ENG116948-ENG116107-Leuchte12NL LB45-Lichtfunktion C 12,not active ,16
+ENG116948-ENG116108-Leuchte12NL LB45-Lichtfunktion D 12,not active ,16
+ENG116948-ENG116111-Leuchte12NL LB45-Lichtfunktion E 12,not active ,16
+ENG116948-ENG116112-Leuchte12NL LB45-Lichtfunktion F 12,not active ,16
+ENG116948-ENG116115-Leuchte12NL LB45-Lichtfunktion G 12,not active ,16
+ENG116948-ENG116116-Leuchte12NL LB45-Lichtfunktion H 12,not active ,16
+ENG116949-ENG116129-Leuchte13NL RB5-Dimming Direction CD 13,maximize ,16
+ENG116949-ENG116133-Leuchte13NL RB5-Dimming Direction EF 13,maximize ,16
+ENG116949-ENG116137-Leuchte13NL RB5-Dimming Direction GH 13,maximize ,16
+ENG116949-ENG116124-Leuchte13NL RB5-Dimmwert AB 13,100 ,16
+ENG116949-ENG116128-Leuchte13NL RB5-Dimmwert CD 13,0 ,16
+ENG116949-ENG116132-Leuchte13NL RB5-Dimmwert EF 13,0 ,16
+ENG116949-ENG116136-Leuchte13NL RB5-Dimmwert GH 13,0 ,16
+ENG116949-ENG116121-Leuchte13NL RB5-Fehlerort mittleres Byte DTC-DFCC 13,23 ,16
+ENG116949-ENG116563-Leuchte13NL RB5-Lampendefektbitposition 13,42 ,16
+ENG116949-ENG116119-Leuchte13NL RB5-Lasttyp 13,10 - allgemeine Scheinwerfer ,16
+ENG116949-ENG116125-Leuchte13NL RB5-Lichtansteuerung HD AB 13,Always ,16
+ENG116949-ENG116122-Leuchte13NL RB5-Lichtfunktion A 13,Nebellicht rechts ,16
+ENG116949-ENG116123-Leuchte13NL RB5-Lichtfunktion B 13,not active ,16
+ENG116949-ENG116564-Leuchte13NL RB5-Lichtfunktion C 13,not active ,16
+ENG116949-ENG116127-Leuchte13NL RB5-Lichtfunktion D 13,not active ,16
+ENG116949-ENG116130-Leuchte13NL RB5-Lichtfunktion E 13,not active ,16
+ENG116949-ENG116131-Leuchte13NL RB5-Lichtfunktion F 13,not active ,16
+ENG116949-ENG116134-Leuchte13NL RB5-Lichtfunktion G 13,not active ,16
+ENG116949-ENG116135-Leuchte13NL RB5-Lichtfunktion H 13,not active ,16
+ENG116951-ENG116167-Leuchte15AL RB44-Dimming Direction CD 15,maximize ,16
+ENG116951-ENG116171-Leuchte15AL RB44-Dimming Direction EF 15,maximize ,16
+ENG116951-ENG116175-Leuchte15AL RB44-Dimming Direction GH 15,maximize ,16
+ENG116951-ENG116162-Leuchte15AL RB44-Dimmwert AB 15,0 ,16
+ENG116951-ENG116166-Leuchte15AL RB44-Dimmwert CD 15,0 ,16
+ENG116951-ENG116170-Leuchte15AL RB44-Dimmwert EF 15,0 ,16
+ENG116951-ENG116174-Leuchte15AL RB44-Dimmwert GH 15,0 ,16
+ENG116951-ENG116159-Leuchte15AL RB44-Fehlerort mittleres Byte DTC-DFCC 15,00 ,16
+ENG116951-ENG116566-Leuchte15AL RB44-Lampendefektbitposition 15,00 ,16
+ENG116951-ENG116157-Leuchte15AL RB44-Lasttyp 15,not active ,16
+ENG116951-ENG116163-Leuchte15AL RB44-Lichtansteuerung HD AB 15,Always ,16
+ENG116951-ENG116160-Leuchte15AL RB44-Lichtfunktion A 15,not active ,16
+ENG116951-ENG116161-Leuchte15AL RB44-Lichtfunktion B 15,not active ,16
+ENG116951-ENG116164-Leuchte15AL RB44-Lichtfunktion C 15,not active ,16
+ENG116951-ENG116165-Leuchte15AL RB44-Lichtfunktion D 15,not active ,16
+ENG116951-ENG116168-Leuchte15AL RB44-Lichtfunktion E 15,not active ,16
+ENG116951-ENG116169-Leuchte15AL RB44-Lichtfunktion F 15,not active ,16
+ENG116951-ENG116172-Leuchte15AL RB44-Lichtfunktion G 15,not active ,16
+ENG116951-ENG116173-Leuchte15AL RB44-Lichtfunktion H 15,not active ,16
+ENG116952-ENG116186-Leuchte16BLK SLB35BLK SL KC9-Dimming Direction CD 16,maximize ,16
+ENG116952-ENG116190-Leuchte16BLK SLB35BLK SL KC9-Dimming Direction EF 16,maximize ,16
+ENG116952-ENG116194-Leuchte16BLK SLB35BLK SL KC9-Dimming Direction GH 16,maximize ,16
+ENG116952-ENG116181-Leuchte16BLK SLB35BLK SL KC9-Dimmwert AB 16,0 ,16
+ENG116952-ENG116185-Leuchte16BLK SLB35BLK SL KC9-Dimmwert CD 16,0 ,16
+ENG116952-ENG116189-Leuchte16BLK SLB35BLK SL KC9-Dimmwert EF 16,0 ,16
+ENG116952-ENG116193-Leuchte16BLK SLB35BLK SL KC9-Dimmwert GH 16,0 ,16
+ENG116952-ENG116178-Leuchte16BLK SLB35BLK SL KC9-Fehlerort mittleres Byte DTC-DFCC 16,00 ,16
+ENG116952-ENG116567-Leuchte16BLK SLB35BLK SL KC9-Lampendefektbitposition 16,00 ,16
+ENG116952-ENG116176-Leuchte16BLK SLB35BLK SL KC9-Lasttyp 16,not active ,16
+ENG116952-ENG116182-Leuchte16BLK SLB35BLK SL KC9-Lichtansteuerung HD AB 16,Always ,16
+ENG116952-ENG116179-Leuchte16BLK SLB35BLK SL KC9-Lichtfunktion A 16,not active ,16
+ENG116952-ENG116180-Leuchte16BLK SLB35BLK SL KC9-Lichtfunktion B 16,not active ,16
+ENG116952-ENG116183-Leuchte16BLK SLB35BLK SL KC9-Lichtfunktion C 16,not active ,16
+ENG116952-ENG116184-Leuchte16BLK SLB35BLK SL KC9-Lichtfunktion D 16,not active ,16
+ENG116952-ENG116187-Leuchte16BLK SLB35BLK SL KC9-Lichtfunktion E 16,not active ,16
+ENG116952-ENG116188-Leuchte16BLK SLB35BLK SL KC9-Lichtfunktion F 16,not active ,16
+ENG116952-ENG116191-Leuchte16BLK SLB35BLK SL KC9-Lichtfunktion G 16,not active ,16
+ENG116952-ENG116192-Leuchte16BLK SLB35BLK SL KC9-Lichtfunktion H 16,not active ,16
+ENG116953-ENG116205-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Dimming Direction CD 17,maximize ,16
+ENG116953-ENG116209-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Dimming Direction EF 17,maximize ,16
+ENG116953-ENG116213-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Dimming Direction GH 17,maximize ,16
+ENG116953-ENG116200-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Dimmwert AB 17,0 ,16
+ENG116953-ENG116204-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Dimmwert CD 17,0 ,16
+ENG116953-ENG116208-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Dimmwert EF 17,0 ,16
+ENG116953-ENG116212-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Dimmwert GH 17,0 ,16
+ENG116953-ENG116197-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Fehlerort mittleres Byte DTC-DFCC 17,00 ,16
+ENG116953-ENG116568-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Lampendefektbitposition 17,00 ,16
+ENG116953-ENG116195-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Lasttyp 17,not active ,16
+ENG116953-ENG116201-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Lichtansteuerung HD AB 17,Always ,16
+ENG116953-ENG116198-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Lichtfunktion A 17,not active ,16
+ENG116953-ENG116569-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Lichtfunktion B 17,not active ,16
+ENG116953-ENG116202-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Lichtfunktion C 17,not active ,16
+ENG116953-ENG116203-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Lichtfunktion D 17,not active ,16
+ENG116953-ENG116206-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Lichtfunktion E 17,not active ,16
+ENG116953-ENG116207-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Lichtfunktion F 17,not active ,16
+ENG116953-ENG116210-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Lichtfunktion G 17,not active ,16
+ENG116953-ENG116211-Leuchte17TFL R BLK SRB3TFL R BLK SR KC3-Lichtfunktion H 17,not active ,16
+ENG116954-ENG116224-Leuchte18BLK HLA60-Dimming Direction CD 18,maximize ,16
+ENG116954-ENG116228-Leuchte18BLK HLA60-Dimming Direction EF 18,maximize ,16
+ENG116954-ENG116232-Leuchte18BLK HLA60-Dimming Direction GH 18,maximize ,16
+ENG116954-ENG116219-Leuchte18BLK HLA60-Dimmwert AB 18,100 ,16
+ENG116954-ENG116223-Leuchte18BLK HLA60-Dimmwert CD 18,0 ,16
+ENG116954-ENG116227-Leuchte18BLK HLA60-Dimmwert EF 18,0 ,16
+ENG116954-ENG116231-Leuchte18BLK HLA60-Dimmwert GH 18,0 ,16
+ENG116954-ENG116216-Leuchte18BLK HLA60-Fehlerort mittleres Byte DTC-DFCC 18,16 ,16
+ENG116954-ENG116570-Leuchte18BLK HLA60-Lampendefektbitposition 18,08 ,16
+ENG116954-ENG116214-Leuchte18BLK HLA60-Lasttyp 18,12 - Blinkleuchten ,16
+ENG116954-ENG116220-Leuchte18BLK HLA60-Lichtansteuerung HD AB 18,Always ,16
+ENG116954-ENG116217-Leuchte18BLK HLA60-Lichtfunktion A 18,Blinken links Hellphase ,16
+ENG116954-ENG116218-Leuchte18BLK HLA60-Lichtfunktion B 18,not active ,16
+ENG116954-ENG116221-Leuchte18BLK HLA60-Lichtfunktion C 18,not active ,16
+ENG116954-ENG116222-Leuchte18BLK HLA60-Lichtfunktion D 18,not active ,16
+ENG116954-ENG116225-Leuchte18BLK HLA60-Lichtfunktion E 18,not active ,16
+ENG116954-ENG116226-Leuchte18BLK HLA60-Lichtfunktion F 18,not active ,16
+ENG116954-ENG116229-Leuchte18BLK HLA60-Lichtfunktion G 18,not active ,16
+ENG116954-ENG116230-Leuchte18BLK HLA60-Lichtfunktion H 18,not active ,16
+ENG116955-ENG116243-Leuchte19BLK HRC31-Dimming Direction CD 19,maximize ,16
+ENG116955-ENG116247-Leuchte19BLK HRC31-Dimming Direction EF 19,maximize ,16
+ENG116955-ENG116251-Leuchte19BLK HRC31-Dimming Direction GH 19,maximize ,16
+ENG116955-ENG116238-Leuchte19BLK HRC31-Dimmwert AB 19,100 ,16
+ENG116955-ENG116242-Leuchte19BLK HRC31-Dimmwert CD 19,0 ,16
+ENG116955-ENG116246-Leuchte19BLK HRC31-Dimmwert EF 19,0 ,16
+ENG116955-ENG116250-Leuchte19BLK HRC31-Dimmwert GH 19,0 ,16
+ENG116955-ENG116235-Leuchte19BLK HRC31-Fehlerort mittleres Byte DTC-DFCC 19,18 ,16
+ENG116955-ENG116571-Leuchte19BLK HRC31-Lampendefektbitposition 19,18 ,16
+ENG116955-ENG116233-Leuchte19BLK HRC31-Lasttyp 19,12 - Blinkleuchten ,16
+ENG116955-ENG116239-Leuchte19BLK HRC31-Lichtansteuerung HD AB 19,Always ,16
+ENG116955-ENG116236-Leuchte19BLK HRC31-Lichtfunktion A 19,Blinken rechts Hellphase ,16
+ENG116955-ENG116237-Leuchte19BLK HRC31-Lichtfunktion B 19,not active ,16
+ENG116955-ENG116240-Leuchte19BLK HRC31-Lichtfunktion C 19,not active ,16
+ENG116955-ENG116241-Leuchte19BLK HRC31-Lichtfunktion D 19,not active ,16
+ENG116955-ENG116244-Leuchte19BLK HRC31-Lichtfunktion E 19,not active ,16
+ENG116955-ENG116245-Leuchte19BLK HRC31-Lichtfunktion F 19,not active ,16
+ENG116955-ENG116248-Leuchte19BLK HRC31-Lichtfunktion G 19,not active ,16
+ENG116955-ENG116249-Leuchte19BLK HRC31-Lichtfunktion H 19,not active ,16
+ENG116937-ENG115902-Leuchte1BLK VRB20-Dimming Direction CD 1,maximize ,16
+ENG116937-ENG115906-Leuchte1BLK VRB20-Dimming Direction EF 1,maximize ,16
+ENG116937-ENG115909-Leuchte1BLK VRB20-Dimming Direction GH 1,maximize ,16
+ENG116937-ENG115897-Leuchte1BLK VRB20-Dimmwert AB 1,100 ,16
+ENG116937-ENG115901-Leuchte1BLK VRB20-Dimmwert CD 1,0 ,16
+ENG116937-ENG115905-Leuchte1BLK VRB20-Dimmwert EF 1,0 ,16
+ENG116937-ENG115908-Leuchte1BLK VRB20-Dimmwert GH 1,0 ,16
+ENG116937-ENG115894-Leuchte1BLK VRB20-Fehlerort mittleres Byte DTC-DFCC 1,15 ,16
+ENG116937-ENG116548-Leuchte1BLK VRB20-Lampendefektbitposition 1,3E ,16
+ENG116937-ENG115892-Leuchte1BLK VRB20-Lasttyp 1,12 - Blinkleuchten ,16
+ENG116937-ENG115898-Leuchte1BLK VRB20-Lichtansteuerung HD AB 1,Always ,16
+ENG116937-ENG115895-Leuchte1BLK VRB20-Lichtfunktion A 1,Blinken rechts Hellphase ,16
+ENG116937-ENG115896-Leuchte1BLK VRB20-Lichtfunktion B 1,not active ,16
+ENG116937-ENG115899-Leuchte1BLK VRB20-Lichtfunktion C 1,not active ,16
+ENG116937-ENG115900-Leuchte1BLK VRB20-Lichtfunktion D 1,not active ,16
+ENG116937-ENG115903-Leuchte1BLK VRB20-Lichtfunktion E 1,not active ,16
+ENG116937-ENG115904-Leuchte1BLK VRB20-Lichtfunktion F 1,not active ,16
+ENG116937-ENG115907-Leuchte1BLK VRB20-Lichtfunktion G 1,not active ,16
+ENG116937-ENG116549-Leuchte1BLK VRB20-Lichtfunktion H 1,not active ,16
+ENG116956-ENG116262-Leuchte20BR LA71-Dimming Direction CD 20,maximize ,16
+ENG116956-ENG116266-Leuchte20BR LA71-Dimming Direction EF 20,maximize ,16
+ENG116956-ENG116270-Leuchte20BR LA71-Dimming Direction GH 20,maximize ,16
+ENG116956-ENG116257-Leuchte20BR LA71-Dimmwert AB 20,100 ,16
+ENG116956-ENG116261-Leuchte20BR LA71-Dimmwert CD 20,28 ,16
+ENG116956-ENG116265-Leuchte20BR LA71-Dimmwert EF 20,0 ,16
+ENG116956-ENG116269-Leuchte20BR LA71-Dimmwert GH 20,0 ,16
+ENG116956-ENG116254-Leuchte20BR LA71-Fehlerort mittleres Byte DTC-DFCC 20,39 ,16
+ENG116956-ENG116572-Leuchte20BR LA71-Lampendefektbitposition 20,10 ,16
+ENG116956-ENG116252-Leuchte20BR LA71-Lasttyp 20,13 - Bremsleuchten ,16
+ENG116956-ENG116258-Leuchte20BR LA71-Lichtansteuerung HD AB 20,Always ,16
+ENG116956-ENG116255-Leuchte20BR LA71-Lichtfunktion A 20,Brake lamp ,16
+ENG116956-ENG116256-Leuchte20BR LA71-Lichtfunktion B 20,not active ,16
+ENG116956-ENG116259-Leuchte20BR LA71-Lichtfunktion C 20,Standlicht allgemein (Schlusslicht: Positionslicht: Begrenzungslicht) ,16
+ENG116956-ENG116260-Leuchte20BR LA71-Lichtfunktion D 20,Parklicht links (beidseitiges Parklicht aktiviert li & re) ,16
+ENG116956-ENG116263-Leuchte20BR LA71-Lichtfunktion E 20,not active ,16
+ENG116956-ENG116264-Leuchte20BR LA71-Lichtfunktion F 20,not active ,16
+ENG116956-ENG116267-Leuchte20BR LA71-Lichtfunktion G 20,not active ,16
+ENG116956-ENG116268-Leuchte20BR LA71-Lichtfunktion H 20,not active ,16
+ENG116957-ENG116281-Leuchte21BR RC8-Dimming Direction CD 21,maximize ,16
+ENG116957-ENG116285-Leuchte21BR RC8-Dimming Direction EF 21,maximize ,16
+ENG116957-ENG116289-Leuchte21BR RC8-Dimming Direction GH 21,maximize ,16
+ENG116957-ENG116276-Leuchte21BR RC8-Dimmwert AB 21,100 ,16
+ENG116957-ENG116280-Leuchte21BR RC8-Dimmwert CD 21,28 ,16
+ENG116957-ENG116284-Leuchte21BR RC8-Dimmwert EF 21,0 ,16
+ENG116957-ENG116288-Leuchte21BR RC8-Dimmwert GH 21,0 ,16
+ENG116957-ENG116273-Leuchte21BR RC8-Fehlerort mittleres Byte DTC-DFCC 21,3A ,16
+ENG116957-ENG116573-Leuchte21BR RC8-Lampendefektbitposition 21,20 ,16
+ENG116957-ENG116271-Leuchte21BR RC8-Lasttyp 21,13 - Bremsleuchten ,16
+ENG116957-ENG116277-Leuchte21BR RC8-Lichtansteuerung HD AB 21,Always ,16
+ENG116957-ENG116274-Leuchte21BR RC8-Lichtfunktion A 21,Brake lamp ,16
+ENG116957-ENG116275-Leuchte21BR RC8-Lichtfunktion B 21,not active ,16
+ENG116957-ENG116278-Leuchte21BR RC8-Lichtfunktion C 21,Standlicht allgemein (Schlusslicht: Positionslicht: Begrenzungslicht) ,16
+ENG116957-ENG116279-Leuchte21BR RC8-Lichtfunktion D 21,Parking light right ,16
+ENG116957-ENG116282-Leuchte21BR RC8-Lichtfunktion E 21,not active ,16
+ENG116957-ENG116283-Leuchte21BR RC8-Lichtfunktion F 21,not active ,16
+ENG116957-ENG116286-Leuchte21BR RC8-Lichtfunktion G 21,not active ,16
+ENG116957-ENG116287-Leuchte21BR RC8-Lichtfunktion H 21,not active ,16
+ENG116958-ENG116300-Leuchte22BR MA57-Dimming Direction CD 22,maximize ,16
+ENG116958-ENG116304-Leuchte22BR MA57-Dimming Direction EF 22,maximize ,16
+ENG116958-ENG116308-Leuchte22BR MA57-Dimming Direction GH 22,maximize ,16
+ENG116958-ENG116295-Leuchte22BR MA57-Dimmwert AB 22,127 ,16
+ENG116958-ENG116299-Leuchte22BR MA57-Dimmwert CD 22,0 ,16
+ENG116958-ENG116303-Leuchte22BR MA57-Dimmwert EF 22,0 ,16
+ENG116958-ENG116307-Leuchte22BR MA57-Dimmwert GH 22,0 ,16
+ENG116958-ENG116292-Leuchte22BR MA57-Fehlerort mittleres Byte DTC-DFCC 22,2C ,16
+ENG116958-ENG116574-Leuchte22BR MA57-Lampendefektbitposition 22,29 ,16
+ENG116958-ENG116290-Leuchte22BR MA57-Lasttyp 22,42 - LED dritte Bremsleuchte ,16
+ENG116958-ENG116296-Leuchte22BR MA57-Lichtansteuerung HD AB 22,Always ,16
+ENG116958-ENG116293-Leuchte22BR MA57-Lichtfunktion A 22,Brake lamp ,16
+ENG116958-ENG116294-Leuchte22BR MA57-Lichtfunktion B 22,not active ,16
+ENG116958-ENG116297-Leuchte22BR MA57-Lichtfunktion C 22,not active ,16
+ENG116958-ENG116298-Leuchte22BR MA57-Lichtfunktion D 22,not active ,16
+ENG116958-ENG116301-Leuchte22BR MA57-Lichtfunktion E 22,not active ,16
+ENG116958-ENG116302-Leuchte22BR MA57-Lichtfunktion F 22,not active ,16
+ENG116958-ENG116305-Leuchte22BR MA57-Lichtfunktion G 22,not active ,16
+ENG116958-ENG116306-Leuchte22BR MA57-Lichtfunktion H 22,not active ,16
+ENG116959-ENG116319-Leuchte23SL HLC10-Dimming Direction CD 23,maximize ,16
+ENG116959-ENG116323-Leuchte23SL HLC10-Dimming Direction EF 23,maximize ,16
+ENG116959-ENG116327-Leuchte23SL HLC10-Dimming Direction GH 23,maximize ,16
+ENG116959-ENG116314-Leuchte23SL HLC10-Dimmwert AB 23,28 ,16
+ENG116959-ENG116318-Leuchte23SL HLC10-Dimmwert CD 23,0 ,16
+ENG116959-ENG116322-Leuchte23SL HLC10-Dimmwert EF 23,0 ,16
+ENG116959-ENG116326-Leuchte23SL HLC10-Dimmwert GH 23,0 ,16
+ENG116959-ENG116311-Leuchte23SL HLC10-Fehlerort mittleres Byte DTC-DFCC 23,29 ,16
+ENG116959-ENG116575-Leuchte23SL HLC10-Lampendefektbitposition 23,0A ,16
+ENG116959-ENG116309-Leuchte23SL HLC10-Lasttyp 23,9 - allgemeine Glühlampe 27W: auch H15 ,16
+ENG116959-ENG116315-Leuchte23SL HLC10-Lichtansteuerung HD AB 23,only_if_closed ,16
+ENG116959-ENG116312-Leuchte23SL HLC10-Lichtfunktion A 23,Standlicht allgemein (Schlusslicht: Positionslicht: Begrenzungslicht) ,16
+ENG116959-ENG116313-Leuchte23SL HLC10-Lichtfunktion B 23,not active ,16
+ENG116959-ENG116316-Leuchte23SL HLC10-Lichtfunktion C 23,not active ,16
+ENG116959-ENG116317-Leuchte23SL HLC10-Lichtfunktion D 23,not active ,16
+ENG116959-ENG116320-Leuchte23SL HLC10-Lichtfunktion E 23,not active ,16
+ENG116959-ENG116321-Leuchte23SL HLC10-Lichtfunktion F 23,not active ,16
+ENG116959-ENG116324-Leuchte23SL HLC10-Lichtfunktion G 23,not active ,16
+ENG116959-ENG116325-Leuchte23SL HLC10-Lichtfunktion H 23,not active ,16
+ENG116960-ENG116338-Leuchte24SL HRA65-Dimming Direction CD 24,maximize ,16
+ENG116960-ENG116342-Leuchte24SL HRA65-Dimming Direction EF 24,maximize ,16
+ENG116960-ENG116346-Leuchte24SL HRA65-Dimming Direction GH 24,maximize ,16
+ENG116960-ENG116333-Leuchte24SL HRA65-Dimmwert AB 24,28 ,16
+ENG116960-ENG116337-Leuchte24SL HRA65-Dimmwert CD 24,0 ,16
+ENG116960-ENG116341-Leuchte24SL HRA65-Dimmwert EF 24,0 ,16
+ENG116960-ENG116345-Leuchte24SL HRA65-Dimmwert GH 24,0 ,16
+ENG116960-ENG116330-Leuchte24SL HRA65-Fehlerort mittleres Byte DTC-DFCC 24,2A ,16
+ENG116960-ENG116576-Leuchte24SL HRA65-Lampendefektbitposition 24,1A ,16
+ENG116960-ENG116328-Leuchte24SL HRA65-Lasttyp 24,9 - allgemeine Glühlampe 27W: auch H15 ,16
+ENG116960-ENG116334-Leuchte24SL HRA65-Lichtansteuerung HD AB 24,only_if_closed ,16
+ENG116960-ENG116331-Leuchte24SL HRA65-Lichtfunktion A 24,Standlicht allgemein (Schlusslicht: Positionslicht: Begrenzungslicht) ,16
+ENG116960-ENG116332-Leuchte24SL HRA65-Lichtfunktion B 24,not active ,16
+ENG116960-ENG116335-Leuchte24SL HRA65-Lichtfunktion C 24,not active ,16
+ENG116960-ENG116336-Leuchte24SL HRA65-Lichtfunktion D 24,not active ,16
+ENG116960-ENG116339-Leuchte24SL HRA65-Lichtfunktion E 24,not active ,16
+ENG116960-ENG116340-Leuchte24SL HRA65-Lichtfunktion F 24,not active ,16
+ENG116960-ENG116343-Leuchte24SL HRA65-Lichtfunktion G 24,not active ,16
+ENG116960-ENG116344-Leuchte24SL HRA65-Lichtfunktion H 24,not active ,16
+ENG116961-ENG116357-Leuchte25KZL HA59-Dimming Direction CD 25,maximize ,16
+ENG116961-ENG116361-Leuchte25KZL HA59-Dimming Direction EF 25,maximize ,16
+ENG116961-ENG116365-Leuchte25KZL HA59-Dimming Direction GH 25,maximize ,16
+ENG116961-ENG116352-Leuchte25KZL HA59-Dimmwert AB 25,100 ,16
+ENG116961-ENG116356-Leuchte25KZL HA59-Dimmwert CD 25,0 ,16
+ENG116961-ENG116360-Leuchte25KZL HA59-Dimmwert EF 25,0 ,16
+ENG116961-ENG116364-Leuchte25KZL HA59-Dimmwert GH 25,0 ,16
+ENG116961-ENG116349-Leuchte25KZL HA59-Fehlerort mittleres Byte DTC-DFCC 25,30 ,16
+ENG116961-ENG116577-Leuchte25KZL HA59-Lampendefektbitposition 25,28 ,16
+ENG116961-ENG116347-Leuchte25KZL HA59-Lasttyp 25,18 - 2* 5W ,16
+ENG116961-ENG116353-Leuchte25KZL HA59-Lichtansteuerung HD AB 25,Always ,16
+ENG116961-ENG116350-Leuchte25KZL HA59-Lichtfunktion A 25,Standlicht allgemein (Schlusslicht: Positionslicht: Begrenzungslicht) ,16
+ENG116961-ENG116351-Leuchte25KZL HA59-Lichtfunktion B 25,not active ,16
+ENG116961-ENG116354-Leuchte25KZL HA59-Lichtfunktion C 25,not active ,16
+ENG116961-ENG116355-Leuchte25KZL HA59-Lichtfunktion D 25,not active ,16
+ENG116961-ENG116358-Leuchte25KZL HA59-Lichtfunktion E 25,not active ,16
+ENG116961-ENG116359-Leuchte25KZL HA59-Lichtfunktion F 25,not active ,16
+ENG116961-ENG116362-Leuchte25KZL HA59-Lichtfunktion G 25,not active ,16
+ENG116961-ENG116363-Leuchte25KZL HA59-Lichtfunktion H 25,not active ,16
+ENG116962-ENG116376-Leuchte26NSL LA72-Dimming Direction CD 26,maximize ,16
+ENG116962-ENG116380-Leuchte26NSL LA72-Dimming Direction EF 26,maximize ,16
+ENG116962-ENG116384-Leuchte26NSL LA72-Dimming Direction GH 26,maximize ,16
+ENG116962-ENG116371-Leuchte26NSL LA72-Dimmwert AB 26,100 ,16
+ENG116962-ENG116375-Leuchte26NSL LA72-Dimmwert CD 26,0 ,16
+ENG116962-ENG116379-Leuchte26NSL LA72-Dimmwert EF 26,0 ,16
+ENG116962-ENG116383-Leuchte26NSL LA72-Dimmwert GH 26,0 ,16
+ENG116962-ENG116368-Leuchte26NSL LA72-Fehlerort mittleres Byte DTC-DFCC 26,2F ,16
+ENG116962-ENG116578-Leuchte26NSL LA72-Lampendefektbitposition 26,1C ,16
+ENG116962-ENG116366-Leuchte26NSL LA72-Lasttyp 26,9 - allgemeine Glühlampe 27W: auch H15 ,16
+ENG116962-ENG116372-Leuchte26NSL LA72-Lichtansteuerung HD AB 26,only_if_closed ,16
+ENG116962-ENG116369-Leuchte26NSL LA72-Lichtfunktion A 26,Nebelschlusslicht wenn kein Anhaenger gesteckt und Linksverkehr ,16
+ENG116962-ENG116370-Leuchte26NSL LA72-Lichtfunktion B 26,not active ,16
+ENG116962-ENG116373-Leuchte26NSL LA72-Lichtfunktion C 26,not active ,16
+ENG116962-ENG116374-Leuchte26NSL LA72-Lichtfunktion D 26,not active ,16
+ENG116962-ENG116377-Leuchte26NSL LA72-Lichtfunktion E 26,not active ,16
+ENG116962-ENG116378-Leuchte26NSL LA72-Lichtfunktion F 26,not active ,16
+ENG116962-ENG116381-Leuchte26NSL LA72-Lichtfunktion G 26,not active ,16
+ENG116962-ENG116382-Leuchte26NSL LA72-Lichtfunktion H 26,not active ,16
+ENG116963-ENG116395-Leuchte27NSL RC6-Dimming Direction CD 27,maximize ,16
+ENG116963-ENG116399-Leuchte27NSL RC6-Dimming Direction EF 27,maximize ,16
+ENG116963-ENG116403-Leuchte27NSL RC6-Dimming Direction GH 27,maximize ,16
+ENG116963-ENG116390-Leuchte27NSL RC6-Dimmwert AB 27,0 ,16
+ENG116963-ENG116394-Leuchte27NSL RC6-Dimmwert CD 27,0 ,16
+ENG116963-ENG116398-Leuchte27NSL RC6-Dimmwert EF 27,0 ,16
+ENG116963-ENG116402-Leuchte27NSL RC6-Dimmwert GH 27,0 ,16
+ENG116963-ENG116387-Leuchte27NSL RC6-Fehlerort mittleres Byte DTC-DFCC 27,00 ,16
+ENG116963-ENG116579-Leuchte27NSL RC6-Lampendefektbitposition 27,00 ,16
+ENG116963-ENG116385-Leuchte27NSL RC6-Lasttyp 27,not active ,16
+ENG116963-ENG116391-Leuchte27NSL RC6-Lichtansteuerung HD AB 27,Always ,16
+ENG116963-ENG116388-Leuchte27NSL RC6-Lichtfunktion A 27,not active ,16
+ENG116963-ENG116389-Leuchte27NSL RC6-Lichtfunktion B 27,not active ,16
+ENG116963-ENG116392-Leuchte27NSL RC6-Lichtfunktion C 27,not active ,16
+ENG116963-ENG116393-Leuchte27NSL RC6-Lichtfunktion D 27,not active ,16
+ENG116963-ENG116396-Leuchte27NSL RC6-Lichtfunktion E 27,not active ,16
+ENG116963-ENG116397-Leuchte27NSL RC6-Lichtfunktion F 27,not active ,16
+ENG116963-ENG116400-Leuchte27NSL RC6-Lichtfunktion G 27,not active ,16
+ENG116963-ENG116401-Leuchte27NSL RC6-Lichtfunktion H 27,not active ,16
+ENG116964-ENG116414-Leuchte28RFL LC11-Dimming Direction CD 28,maximize ,16
+ENG116964-ENG116418-Leuchte28RFL LC11-Dimming Direction EF 28,maximize ,16
+ENG116964-ENG116422-Leuchte28RFL LC11-Dimming Direction GH 28,maximize ,16
+ENG116964-ENG116409-Leuchte28RFL LC11-Dimmwert AB 28,100 ,16
+ENG116964-ENG116413-Leuchte28RFL LC11-Dimmwert CD 28,0 ,16
+ENG116964-ENG116417-Leuchte28RFL LC11-Dimmwert EF 28,0 ,16
+ENG116964-ENG116421-Leuchte28RFL LC11-Dimmwert GH 28,0 ,16
+ENG116964-ENG116406-Leuchte28RFL LC11-Fehlerort mittleres Byte DTC-DFCC 28,31 ,16
+ENG116964-ENG116580-Leuchte28RFL LC11-Lampendefektbitposition 28,0B ,16
+ENG116964-ENG116404-Leuchte28RFL LC11-Lasttyp 28,9 - allgemeine Glühlampe 27W: auch H15 ,16
+ENG116964-ENG116410-Leuchte28RFL LC11-Lichtansteuerung HD AB 28,only_if_closed ,16
+ENG116964-ENG116407-Leuchte28RFL LC11-Lichtfunktion A 28,Rueckfahrlicht ,16
+ENG116964-ENG116408-Leuchte28RFL LC11-Lichtfunktion B 28,not active ,16
+ENG116964-ENG116411-Leuchte28RFL LC11-Lichtfunktion C 28,not active ,16
+ENG116964-ENG116412-Leuchte28RFL LC11-Lichtfunktion D 28,not active ,16
+ENG116964-ENG116415-Leuchte28RFL LC11-Lichtfunktion E 28,not active ,16
+ENG116964-ENG116416-Leuchte28RFL LC11-Lichtfunktion F 28,not active ,16
+ENG116964-ENG116419-Leuchte28RFL LC11-Lichtfunktion G 28,not active ,16
+ENG116964-ENG116420-Leuchte28RFL LC11-Lichtfunktion H 28,not active ,16
+ENG116965-ENG116433-Leuchte29RFL RA64-Dimming Direction CD 29,maximize ,16
+ENG116965-ENG116437-Leuchte29RFL RA64-Dimming Direction EF 29,maximize ,16
+ENG116965-ENG116441-Leuchte29RFL RA64-Dimming Direction GH 29,maximize ,16
+ENG116965-ENG116428-Leuchte29RFL RA64-Dimmwert AB 29,100 ,16
+ENG116965-ENG116432-Leuchte29RFL RA64-Dimmwert CD 29,0 ,16
+ENG116965-ENG116436-Leuchte29RFL RA64-Dimmwert EF 29,0 ,16
+ENG116965-ENG116440-Leuchte29RFL RA64-Dimmwert GH 29,0 ,16
+ENG116965-ENG116425-Leuchte29RFL RA64-Fehlerort mittleres Byte DTC-DFCC 29,32 ,16
+ENG116965-ENG116581-Leuchte29RFL RA64-Lampendefektbitposition 29,1B ,16
+ENG116965-ENG116423-Leuchte29RFL RA64-Lasttyp 29,9 - allgemeine Glühlampe 27W: auch H15 ,16
+ENG116965-ENG116430-Leuchte29RFL RA64-Lichtansteuerung HD AB 29,only_if_closed ,16
+ENG116965-ENG116426-Leuchte29RFL RA64-Lichtfunktion A 29,Rueckfahrlicht ,16
+ENG116965-ENG116427-Leuchte29RFL RA64-Lichtfunktion B 29,not active ,16
+ENG116965-ENG116429-Leuchte29RFL RA64-Lichtfunktion C 29,not active ,16
+ENG116965-ENG116431-Leuchte29RFL RA64-Lichtfunktion D 29,not active ,16
+ENG116965-ENG116434-Leuchte29RFL RA64-Lichtfunktion E 29,not active ,16
+ENG116965-ENG116435-Leuchte29RFL RA64-Lichtfunktion F 29,not active ,16
+ENG116965-ENG116438-Leuchte29RFL RA64-Lichtfunktion G 29,not active ,16
+ENG116965-ENG116439-Leuchte29RFL RA64-Lichtfunktion H 29,not active ,16
+ENG116938-ENG115920-Leuchte2SL VLB10-Dimming Direction CD 2,maximize ,16
+ENG116938-ENG115924-Leuchte2SL VLB10-Dimming Direction EF 2,maximize ,16
+ENG116938-ENG115928-Leuchte2SL VLB10-Dimming Direction GH 2,maximize ,16
+ENG116938-ENG115915-Leuchte2SL VLB10-Dimmwert AB 2,100 ,16
+ENG116938-ENG115919-Leuchte2SL VLB10-Dimmwert CD 2,51 ,16
+ENG116938-ENG115923-Leuchte2SL VLB10-Dimmwert EF 2,0 ,16
+ENG116938-ENG115927-Leuchte2SL VLB10-Dimmwert GH 2,0 ,16
+ENG116938-ENG115912-Leuchte2SL VLB10-Fehlerort mittleres Byte DTC-DFCC 2,4A ,16
+ENG116938-ENG116550-Leuchte2SL VLB10-Lampendefektbitposition 2,48 ,16
+ENG116938-ENG115910-Leuchte2SL VLB10-Lasttyp 2,4 - LED Tagfahrlichtmodul Signal ,16
+ENG116938-ENG115916-Leuchte2SL VLB10-Lichtansteuerung HD AB 2,Always ,16
+ENG116938-ENG115913-Leuchte2SL VLB10-Lichtfunktion A 2,Daytime running lamps ,16
+ENG116938-ENG115914-Leuchte2SL VLB10-Lichtfunktion B 2,not active ,16
+ENG116938-ENG115917-Leuchte2SL VLB10-Lichtfunktion C 2,Standlicht allgemein (Schlusslicht: Positionslicht: Begrenzungslicht) ,16
+ENG116938-ENG115918-Leuchte2SL VLB10-Lichtfunktion D 2,Parklicht links (beidseitiges Parklicht aktiviert li & re) ,16
+ENG116938-ENG115921-Leuchte2SL VLB10-Lichtfunktion E 2,not active ,16
+ENG116938-ENG115922-Leuchte2SL VLB10-Lichtfunktion F 2,not active ,16
+ENG116938-ENG115925-Leuchte2SL VLB10-Lichtfunktion G 2,not active ,16
+ENG116938-ENG115926-Leuchte2SL VLB10-Lichtfunktion H 2,not active ,16
+ENG116966-ENG116452-Leuchte30FR LC72-Dimming Direction CD 30,maximize ,16
+ENG116966-ENG116456-Leuchte30FR LC72-Dimming Direction EF 30,maximize ,16
+ENG116966-ENG116460-Leuchte30FR LC72-Dimming Direction GH 30,maximize ,16
+ENG116966-ENG116447-Leuchte30FR LC72-Dimmwert AB 30,89 ,16
+ENG116966-ENG116451-Leuchte30FR LC72-Dimmwert CD 30,0 ,16
+ENG116966-ENG116455-Leuchte30FR LC72-Dimmwert EF 30,0 ,16
+ENG116966-ENG116459-Leuchte30FR LC72-Dimmwert GH 30,0 ,16
+ENG116966-ENG116444-Leuchte30FR LC72-Fehlerort mittleres Byte DTC-DFCC 30,02 ,16
+ENG116966-ENG116582-Leuchte30FR LC72-Lampendefektbitposition 30,00 ,16
+ENG116966-ENG116442-Leuchte30FR LC72-Lasttyp 30,36 - LED Kleinleistung ,16
+ENG116966-ENG116448-Leuchte30FR LC72-Lichtansteuerung HD AB 30,Always ,16
+ENG116966-ENG116445-Leuchte30FR LC72-Lichtfunktion A 30,Footwell lamp ,16
+ENG116966-ENG116446-Leuchte30FR LC72-Lichtfunktion B 30,not active ,16
+ENG116966-ENG116449-Leuchte30FR LC72-Lichtfunktion C 30,not active ,16
+ENG116966-ENG116450-Leuchte30FR LC72-Lichtfunktion D 30,not active ,16
+ENG116966-ENG116453-Leuchte30FR LC72-Lichtfunktion E 30,not active ,16
+ENG116966-ENG116454-Leuchte30FR LC72-Lichtfunktion F 30,not active ,16
+ENG116966-ENG116457-Leuchte30FR LC72-Lichtfunktion G 30,not active ,16
+ENG116966-ENG116458-Leuchte30FR LC72-Lichtfunktion H 30,not active ,16
+ENG116967-ENG116471-Leuchte31AMBL 1C61-Dimming Direction CD 31,maximize ,16
+ENG116967-ENG116475-Leuchte31AMBL 1C61-Dimming Direction EF 31,maximize ,16
+ENG116967-ENG116479-Leuchte31AMBL 1C61-Dimming Direction GH 31,maximize ,16
+ENG116967-ENG116466-Leuchte31AMBL 1C61-Dimmwert AB 31,0 ,16
+ENG116967-ENG116470-Leuchte31AMBL 1C61-Dimmwert CD 31,0 ,16
+ENG116967-ENG116474-Leuchte31AMBL 1C61-Dimmwert EF 31,0 ,16
+ENG116967-ENG116478-Leuchte31AMBL 1C61-Dimmwert GH 31,0 ,16
+ENG116967-ENG116463-Leuchte31AMBL 1C61-Fehlerort mittleres Byte DTC-DFCC 31,00 ,16
+ENG116967-ENG116583-Leuchte31AMBL 1C61-Lampendefektbitposition 31,00 ,16
+ENG116967-ENG116461-Leuchte31AMBL 1C61-Lasttyp 31,not active ,16
+ENG116967-ENG116467-Leuchte31AMBL 1C61-Lichtansteuerung HD AB 31,Always ,16
+ENG116967-ENG116464-Leuchte31AMBL 1C61-Lichtfunktion A 31,not active ,16
+ENG116967-ENG116465-Leuchte31AMBL 1C61-Lichtfunktion B 31,not active ,16
+ENG116967-ENG116468-Leuchte31AMBL 1C61-Lichtfunktion C 31,not active ,16
+ENG116967-ENG116469-Leuchte31AMBL 1C61-Lichtfunktion D 31,not active ,16
+ENG116967-ENG116472-Leuchte31AMBL 1C61-Lichtfunktion E 31,not active ,16
+ENG116967-ENG116473-Leuchte31AMBL 1C61-Lichtfunktion F 31,not active ,16
+ENG116967-ENG116476-Leuchte31AMBL 1C61-Lichtfunktion G 31,not active ,16
+ENG116967-ENG116477-Leuchte31AMBL 1C61-Lichtfunktion H 31,not active ,16
+ENG116968-ENG116490-Leuchte32AMBL 2C35-Dimming Direction CD 32,maximize ,16
+ENG116968-ENG116494-Leuchte32AMBL 2C35-Dimming Direction EF 32,maximize ,16
+ENG116968-ENG116498-Leuchte32AMBL 2C35-Dimming Direction GH 32,maximize ,16
+ENG116968-ENG116485-Leuchte32AMBL 2C35-Dimmwert AB 32,0 ,16
+ENG116968-ENG116489-Leuchte32AMBL 2C35-Dimmwert CD 32,0 ,16
+ENG116968-ENG116493-Leuchte32AMBL 2C35-Dimmwert EF 32,0 ,16
+ENG116968-ENG116497-Leuchte32AMBL 2C35-Dimmwert GH 32,0 ,16
+ENG116968-ENG116482-Leuchte32AMBL 2C35-Fehlerort mittleres Byte DTC-DFCC 32,00 ,16
+ENG116968-ENG116584-Leuchte32AMBL 2C35-Lampendefektbitposition 32,00 ,16
+ENG116968-ENG116480-Leuchte32AMBL 2C35-Lasttyp 32,not active ,16
+ENG116968-ENG116486-Leuchte32AMBL 2C35-Lichtansteuerung HD AB 32,Always ,16
+ENG116968-ENG116483-Leuchte32AMBL 2C35-Lichtfunktion A 32,not active ,16
+ENG116968-ENG116484-Leuchte32AMBL 2C35-Lichtfunktion B 32,not active ,16
+ENG116968-ENG116487-Leuchte32AMBL 2C35-Lichtfunktion C 32,not active ,16
+ENG116968-ENG116488-Leuchte32AMBL 2C35-Lichtfunktion D 32,not active ,16
+ENG116968-ENG116491-Leuchte32AMBL 2C35-Lichtfunktion E 32,not active ,16
+ENG116968-ENG116492-Leuchte32AMBL 2C35-Lichtfunktion F 32,not active ,16
+ENG116968-ENG116495-Leuchte32AMBL 2C35-Lichtfunktion G 32,not active ,16
+ENG116968-ENG116496-Leuchte32AMBL 2C35-Lichtfunktion H 32,not active ,16
+ENG116969-ENG116509-Leuchte33AMBL 3C36-Dimming Direction CD 33,maximize ,16
+ENG116969-ENG116513-Leuchte33AMBL 3C36-Dimming Direction EF 33,maximize ,16
+ENG116969-ENG116517-Leuchte33AMBL 3C36-Dimming Direction GH 33,maximize ,16
+ENG116969-ENG116504-Leuchte33AMBL 3C36-Dimmwert AB 33,0 ,16
+ENG116969-ENG116508-Leuchte33AMBL 3C36-Dimmwert CD 33,0 ,16
+ENG116969-ENG116512-Leuchte33AMBL 3C36-Dimmwert EF 33,0 ,16
+ENG116969-ENG116516-Leuchte33AMBL 3C36-Dimmwert GH 33,0 ,16
+ENG116969-ENG116501-Leuchte33AMBL 3C36-Fehlerort mittleres Byte DTC-DFCC 33,00 ,16
+ENG116969-ENG116585-Leuchte33AMBL 3C36-Lampendefektbitposition 33,00 ,16
+ENG116969-ENG116499-Leuchte33AMBL 3C36-Lasttyp 33,not active ,16
+ENG116969-ENG116505-Leuchte33AMBL 3C36-Lichtansteuerung HD AB 33,Always ,16
+ENG116969-ENG116502-Leuchte33AMBL 3C36-Lichtfunktion A 33,not active ,16
+ENG116969-ENG116503-Leuchte33AMBL 3C36-Lichtfunktion B 33,not active ,16
+ENG116969-ENG116506-Leuchte33AMBL 3C36-Lichtfunktion C 33,not active ,16
+ENG116969-ENG116507-Leuchte33AMBL 3C36-Lichtfunktion D 33,not active ,16
+ENG116969-ENG116510-Leuchte33AMBL 3C36-Lichtfunktion E 33,not active ,16
+ENG116969-ENG116511-Leuchte33AMBL 3C36-Lichtfunktion F 33,not active ,16
+ENG116969-ENG116514-Leuchte33AMBL 3C36-Lichtfunktion G 33,not active ,16
+ENG116969-ENG116515-Leuchte33AMBL 3C36-Lichtfunktion H 33,not active ,16
+ENG116970-ENG116528-Leuchte34AMBL 4C37-Dimming Direction CD 34,maximize ,16
+ENG116970-ENG116532-Leuchte34AMBL 4C37-Dimming Direction EF 34,maximize ,16
+ENG116970-ENG116536-Leuchte34AMBL 4C37-Dimming Direction GH 34,maximize ,16
+ENG116970-ENG116523-Leuchte34AMBL 4C37-Dimmwert AB 34,0 ,16
+ENG116970-ENG116527-Leuchte34AMBL 4C37-Dimmwert CD 34,0 ,16
+ENG116970-ENG116531-Leuchte34AMBL 4C37-Dimmwert EF 34,0 ,16
+ENG116970-ENG116535-Leuchte34AMBL 4C37-Dimmwert GH 34,0 ,16
+ENG116970-ENG116520-Leuchte34AMBL 4C37-Fehlerort mittleres Byte DTC-DFCC 34,00 ,16
+ENG116970-ENG116586-Leuchte34AMBL 4C37-Lampendefektbitposition 34,00 ,16
+ENG116970-ENG116518-Leuchte34AMBL 4C37-Lasttyp 34,not active ,16
+ENG116970-ENG116524-Leuchte34AMBL 4C37-Lichtansteuerung HD AB 34,Always ,16
+ENG116970-ENG116521-Leuchte34AMBL 4C37-Lichtfunktion A 34,not active ,16
+ENG116970-ENG116522-Leuchte34AMBL 4C37-Lichtfunktion B 34,not active ,16
+ENG116970-ENG116525-Leuchte34AMBL 4C37-Lichtfunktion C 34,not active ,16
+ENG116970-ENG116526-Leuchte34AMBL 4C37-Lichtfunktion D 34,not active ,16
+ENG116970-ENG116529-Leuchte34AMBL 4C37-Lichtfunktion E 34,not active ,16
+ENG116970-ENG116530-Leuchte34AMBL 4C37-Lichtfunktion F 34,not active ,16
+ENG116970-ENG116533-Leuchte34AMBL 4C37-Lichtfunktion G 34,not active ,16
+ENG116970-ENG116534-Leuchte34AMBL 4C37-Lichtfunktion H 34,not active ,16
+ENG116939-ENG115939-Leuchte3SL VRB21-Dimming Direction CD 3,maximize ,16
+ENG116939-ENG115943-Leuchte3SL VRB21-Dimming Direction EF 3,maximize ,16
+ENG116939-ENG115947-Leuchte3SL VRB21-Dimming Direction GH 3,maximize ,16
+ENG116939-ENG115934-Leuchte3SL VRB21-Dimmwert AB 3,100 ,16
+ENG116939-ENG115938-Leuchte3SL VRB21-Dimmwert CD 3,51 ,16
+ENG116939-ENG115942-Leuchte3SL VRB21-Dimmwert EF 3,0 ,16
+ENG116939-ENG115946-Leuchte3SL VRB21-Dimmwert GH 3,0 ,16
+ENG116939-ENG115931-Leuchte3SL VRB21-Fehlerort mittleres Byte DTC-DFCC 3,4C ,16
+ENG116939-ENG116551-Leuchte3SL VRB21-Lampendefektbitposition 3,4C ,16
+ENG116939-ENG115929-Leuchte3SL VRB21-Lasttyp 3,4 - LED Tagfahrlichtmodul Signal ,16
+ENG116939-ENG115935-Leuchte3SL VRB21-Lichtansteuerung HD AB 3,Always ,16
+ENG116939-ENG115932-Leuchte3SL VRB21-Lichtfunktion A 3,Daytime running lamps ,16
+ENG116939-ENG115933-Leuchte3SL VRB21-Lichtfunktion B 3,not active ,16
+ENG116939-ENG115936-Leuchte3SL VRB21-Lichtfunktion C 3,Standlicht allgemein (Schlusslicht: Positionslicht: Begrenzungslicht) ,16
+ENG116939-ENG115937-Leuchte3SL VRB21-Lichtfunktion D 3,Parking light right ,16
+ENG116939-ENG115940-Leuchte3SL VRB21-Lichtfunktion E 3,not active ,16
+ENG116939-ENG116552-Leuchte3SL VRB21-Lichtfunktion F 3,not active ,16
+ENG116939-ENG115944-Leuchte3SL VRB21-Lichtfunktion G 3,not active ,16
+ENG116939-ENG115945-Leuchte3SL VRB21-Lichtfunktion H 3,not active ,16
+ENG116940-ENG115958-Leuchte4TFL LB4-Dimming Direction CD 4,maximize ,16
+ENG116940-ENG115962-Leuchte4TFL LB4-Dimming Direction EF 4,maximize ,16
+ENG116940-ENG115966-Leuchte4TFL LB4-Dimming Direction GH 4,maximize ,16
+ENG116940-ENG115953-Leuchte4TFL LB4-Dimmwert AB 4,127 ,16
+ENG116940-ENG115957-Leuchte4TFL LB4-Dimmwert CD 4,127 ,16
+ENG116940-ENG115961-Leuchte4TFL LB4-Dimmwert EF 4,0 ,16
+ENG116940-ENG115965-Leuchte4TFL LB4-Dimmwert GH 4,0 ,16
+ENG116940-ENG115950-Leuchte4TFL LB4-Fehlerort mittleres Byte DTC-DFCC 4,49 ,16
+ENG116940-ENG116553-Leuchte4TFL LB4-Lampendefektbitposition 4,3A ,16
+ENG116940-ENG115948-Leuchte4TFL LB4-Lasttyp 4,1 - LED Tagfahrlichtmodul Versorgung ,16
+ENG116940-ENG115954-Leuchte4TFL LB4-Lichtansteuerung HD AB 4,Always ,16
+ENG116940-ENG115951-Leuchte4TFL LB4-Lichtfunktion A 4,Daytime running lamps ,16
+ENG116940-ENG115952-Leuchte4TFL LB4-Lichtfunktion B 4,not active ,16
+ENG116940-ENG115955-Leuchte4TFL LB4-Lichtfunktion C 4,Standlicht allgemein (Schlusslicht: Positionslicht: Begrenzungslicht) ,16
+ENG116940-ENG115956-Leuchte4TFL LB4-Lichtfunktion D 4,Parklicht links (beidseitiges Parklicht aktiviert li & re) ,16
+ENG116940-ENG115959-Leuchte4TFL LB4-Lichtfunktion E 4,not active ,16
+ENG116940-ENG115960-Leuchte4TFL LB4-Lichtfunktion F 4,not active ,16
+ENG116940-ENG115963-Leuchte4TFL LB4-Lichtfunktion G 4,not active ,16
+ENG116940-ENG115964-Leuchte4TFL LB4-Lichtfunktion H 4,not active ,16
+ENG116941-ENG115977-Leuchte5 TFL RB32-Dimming Direction CD 5,maximize ,16
+ENG116941-ENG115981-Leuchte5 TFL RB32-Dimming Direction EF 5,maximize ,16
+ENG116941-ENG115985-Leuchte5 TFL RB32-Dimming Direction GH 5,maximize ,16
+ENG116941-ENG115972-Leuchte5 TFL RB32-Dimmwert AB 5,127 ,16
+ENG116941-ENG115976-Leuchte5 TFL RB32-Dimmwert CD 5,127 ,16
+ENG116941-ENG115980-Leuchte5 TFL RB32-Dimmwert EF 5,0 ,16
+ENG116941-ENG115984-Leuchte5 TFL RB32-Dimmwert GH 5,0 ,16
+ENG116941-ENG115969-Leuchte5 TFL RB32-Fehlerort mittleres Byte DTC-DFCC 5,4B ,16
+ENG116941-ENG116554-Leuchte5 TFL RB32-Lampendefektbitposition 5,44 ,16
+ENG116941-ENG115967-Leuchte5 TFL RB32-Lasttyp 5,1 - LED Tagfahrlichtmodul Versorgung ,16
+ENG116941-ENG115973-Leuchte5 TFL RB32-Lichtansteuerung HD AB 5,Always ,16
+ENG116941-ENG115970-Leuchte5 TFL RB32-Lichtfunktion A 5,Daytime running lamps ,16
+ENG116941-ENG115971-Leuchte5 TFL RB32-Lichtfunktion B 5,not active ,16
+ENG116941-ENG115974-Leuchte5 TFL RB32-Lichtfunktion C 5,Standlicht allgemein (Schlusslicht: Positionslicht: Begrenzungslicht) ,16
+ENG116941-ENG115975-Leuchte5 TFL RB32-Lichtfunktion D 5,Parking light right ,16
+ENG116941-ENG115978-Leuchte5 TFL RB32-Lichtfunktion E 5,not active ,16
+ENG116941-ENG116555-Leuchte5 TFL RB32-Lichtfunktion F 5,not active ,16
+ENG116941-ENG115982-Leuchte5 TFL RB32-Lichtfunktion G 5,not active ,16
+ENG116941-ENG115983-Leuchte5 TFL RB32-Lichtfunktion H 5,not active ,16
+ENG116942-ENG115996-Leuchte6ABL LC5-Dimming Direction CD 6,maximize ,16
+ENG116942-ENG116000-Leuchte6ABL LC5-Dimming Direction EF 6,maximize ,16
+ENG116942-ENG116004-Leuchte6ABL LC5-Dimming Direction GH 6,maximize ,16
+ENG116942-ENG115991-Leuchte6ABL LC5-Dimmwert AB 6,127 ,16
+ENG116942-ENG115995-Leuchte6ABL LC5-Dimmwert CD 6,0 ,16
+ENG116942-ENG115999-Leuchte6ABL LC5-Dimmwert EF 6,0 ,16
+ENG116942-ENG116003-Leuchte6ABL LC5-Dimmwert GH 6,0 ,16
+ENG116942-ENG115988-Leuchte6ABL LC5-Fehlerort mittleres Byte DTC-DFCC 6,1A ,16
+ENG116942-ENG116556-Leuchte6ABL LC5-Lampendefektbitposition 6,36 ,16
+ENG116942-ENG115986-Leuchte6ABL LC5-Lasttyp 6,3 - Xenon Abblendlicht ,16
+ENG116942-ENG115992-Leuchte6ABL LC5-Lichtansteuerung HD AB 6,Always ,16
+ENG116942-ENG115989-Leuchte6ABL LC5-Lichtfunktion A 6,Abblendlicht links ,16
+ENG116942-ENG115990-Leuchte6ABL LC5-Lichtfunktion B 6,Lichthupe generell ,16
+ENG116942-ENG115993-Leuchte6ABL LC5-Lichtfunktion C 6,not active ,16
+ENG116942-ENG115994-Leuchte6ABL LC5-Lichtfunktion D 6,not active ,16
+ENG116942-ENG115997-Leuchte6ABL LC5-Lichtfunktion E 6,not active ,16
+ENG116942-ENG115998-Leuchte6ABL LC5-Lichtfunktion F 6,not active ,16
+ENG116942-ENG116001-Leuchte6ABL LC5-Lichtfunktion G 6,not active ,16
+ENG116942-ENG116002-Leuchte6ABL LC5-Lichtfunktion H 6,not active ,16
+ENG116943-ENG116015-Leuchte7ABL RB1-Dimming Direction CD 7,maximize ,16
+ENG116943-ENG116019-Leuchte7ABL RB1-Dimming Direction EF 7,maximize ,16
+ENG116943-ENG116023-Leuchte7ABL RB1-Dimming Direction GH 7,maximize ,16
+ENG116943-ENG116010-Leuchte7ABL RB1-Dimmwert AB 7,127 ,16
+ENG116943-ENG116014-Leuchte7ABL RB1-Dimmwert CD 7,0 ,16
+ENG116943-ENG116018-Leuchte7ABL RB1-Dimmwert EF 7,0 ,16
+ENG116943-ENG116022-Leuchte7ABL RB1-Dimmwert GH 7,0 ,16
+ENG116943-ENG116007-Leuchte7ABL RB1-Fehlerort mittleres Byte DTC-DFCC 7,1B ,16
+ENG116943-ENG116557-Leuchte7ABL RB1-Lampendefektbitposition 7,40 ,16
+ENG116943-ENG116005-Leuchte7ABL RB1-Lasttyp 7,3 - Xenon Abblendlicht ,16
+ENG116943-ENG116011-Leuchte7ABL RB1-Lichtansteuerung HD AB 7,Always ,16
+ENG116943-ENG116008-Leuchte7ABL RB1-Lichtfunktion A 7,Abblendlicht rechts ,16
+ENG116943-ENG116009-Leuchte7ABL RB1-Lichtfunktion B 7,Lichthupe generell ,16
+ENG116943-ENG116012-Leuchte7ABL RB1-Lichtfunktion C 7,not active ,16
+ENG116943-ENG116013-Leuchte7ABL RB1-Lichtfunktion D 7,not active ,16
+ENG116943-ENG116016-Leuchte7ABL RB1-Lichtfunktion E 7,not active ,16
+ENG116943-ENG116017-Leuchte7ABL RB1-Lichtfunktion F 7,not active ,16
+ENG116943-ENG116020-Leuchte7ABL RB1-Lichtfunktion G 7,not active ,16
+ENG116943-ENG116021-Leuchte7ABL RB1-Lichtfunktion H 7,not active ,16
+ENG116944-ENG116034-Leuchte8FL LB39-Dimming Direction CD 8,maximize ,16
+ENG116944-ENG116038-Leuchte8FL LB39-Dimming Direction EF 8,maximize ,16
+ENG116944-ENG116042-Leuchte8FL LB39-Dimming Direction GH 8,maximize ,16
+ENG116944-ENG116029-Leuchte8FL LB39-Dimmwert AB 8,127 ,16
+ENG116944-ENG116033-Leuchte8FL LB39-Dimmwert CD 8,0 ,16
+ENG116944-ENG116037-Leuchte8FL LB39-Dimmwert EF 8,0 ,16
+ENG116944-ENG116041-Leuchte8FL LB39-Dimmwert GH 8,0 ,16
+ENG116944-ENG116026-Leuchte8FL LB39-Fehlerort mittleres Byte DTC-DFCC 8,26 ,16
+ENG116944-ENG116558-Leuchte8FL LB39-Lampendefektbitposition 8,35 ,16
+ENG116944-ENG116024-Leuchte8FL LB39-Lasttyp 8,36 - LED Kleinleistung ,16
+ENG116944-ENG116030-Leuchte8FL LB39-Lichtansteuerung HD AB 8,Always ,16
+ENG116944-ENG116027-Leuchte8FL LB39-Lichtfunktion A 8,Standlicht allgemein (Schlusslicht: Positionslicht: Begrenzungslicht) ,16
+ENG116944-ENG116028-Leuchte8FL LB39-Lichtfunktion B 8,Parklicht links (beidseitiges Parklicht aktiviert li & re) ,16
+ENG116944-ENG116031-Leuchte8FL LB39-Lichtfunktion C 8,not active ,16
+ENG116944-ENG116032-Leuchte8FL LB39-Lichtfunktion D 8,not active ,16
+ENG116944-ENG116035-Leuchte8FL LB39-Lichtfunktion E 8,not active ,16
+ENG116944-ENG116036-Leuchte8FL LB39-Lichtfunktion F 8,not active ,16
+ENG116944-ENG116039-Leuchte8FL LB39-Lichtfunktion G 8,not active ,16
+ENG116944-ENG116040-Leuchte8FL LB39-Lichtfunktion H 8,not active ,16
+ENG116945-ENG116053-Leuchte9FL RB2-Dimming Direction CD 9,maximize ,16
+ENG116945-ENG116057-Leuchte9FL RB2-Dimming Direction EF 9,maximize ,16
+ENG116945-ENG116061-Leuchte9FL RB2-Dimming Direction GH 9,maximize ,16
+ENG116945-ENG116048-Leuchte9FL RB2-Dimmwert AB 9,127 ,16
+ENG116945-ENG116052-Leuchte9FL RB2-Dimmwert CD 9,0 ,16
+ENG116945-ENG116056-Leuchte9FL RB2-Dimmwert EF 9,0 ,16
+ENG116945-ENG116060-Leuchte9FL RB2-Dimmwert GH 9,0 ,16
+ENG116945-ENG116045-Leuchte9FL RB2-Fehlerort mittleres Byte DTC-DFCC 9,27 ,16
+ENG116945-ENG116559-Leuchte9FL RB2-Lampendefektbitposition 9,3F ,16
+ENG116945-ENG116043-Leuchte9FL RB2-Lasttyp 9,36 - LED Kleinleistung ,16
+ENG116945-ENG116049-Leuchte9FL RB2-Lichtansteuerung HD AB 9,Always ,16
+ENG116945-ENG116046-Leuchte9FL RB2-Lichtfunktion A 9,Standlicht allgemein (Schlusslicht: Positionslicht: Begrenzungslicht) ,16
+ENG116945-ENG116047-Leuchte9FL RB2-Lichtfunktion B 9,Parking light right ,16
+ENG116945-ENG116050-Leuchte9FL RB2-Lichtfunktion C 9,not active ,16
+ENG116945-ENG116051-Leuchte9FL RB2-Lichtfunktion D 9,not active ,16
+ENG116945-ENG116054-Leuchte9FL RB2-Lichtfunktion E 9,not active ,16
+ENG116945-ENG116055-Leuchte9FL RB2-Lichtfunktion F 9,not active ,16
+ENG116945-ENG116058-Leuchte9FL RB2-Lichtfunktion G 9,not active ,16
+ENG116945-ENG116059-Leuchte9FL RB2-Lichtfunktion H 9,not active ,16
+ENG116950-ENG116148-Leuchten14AL LB6-Dimming Direction CD 14,maximize ,16
+ENG116950-ENG116152-Leuchten14AL LB6-Dimming Direction EF 14,maximize ,16
+ENG116950-ENG116156-Leuchten14AL LB6-Dimming Direction GH 14,maximize ,16
+ENG116950-ENG116143-Leuchten14AL LB6-Dimmwert AB 14,0 ,16
+ENG116950-ENG116147-Leuchten14AL LB6-Dimmwert CD 14,0 ,16
+ENG116950-ENG116151-Leuchten14AL LB6-Dimmwert EF 14,0 ,16
+ENG116950-ENG116155-Leuchten14AL LB6-Dimmwert GH 14,0 ,16
+ENG116950-ENG116140-Leuchten14AL LB6-Fehlerort mittleres Byte DTC-DFCC 14,00 ,16
+ENG116950-ENG116565-Leuchten14AL LB6-Lampendefektbitposition 14,00 ,16
+ENG116950-ENG116138-Leuchten14AL LB6-Lasttyp 14,not active ,16
+ENG116950-ENG116144-Leuchten14AL LB6-Lichtansteuerung HD AB 14,Always ,16
+ENG116950-ENG116141-Leuchten14AL LB6-Lichtfunktion A 14,not active ,16
+ENG116950-ENG116142-Leuchten14AL LB6-Lichtfunktion B 14,not active ,16
+ENG116950-ENG116145-Leuchten14AL LB6-Lichtfunktion C 14,not active ,16
+ENG116950-ENG116146-Leuchten14AL LB6-Lichtfunktion D 14,not active ,16
+ENG116950-ENG116149-Leuchten14AL LB6-Lichtfunktion E 14,not active ,16
+ENG116950-ENG116150-Leuchten14AL LB6-Lichtfunktion F 14,not active ,16
+ENG116950-ENG116153-Leuchten14AL LB6-Lichtfunktion G 14,not active ,16
+ENG116950-ENG116154-Leuchten14AL LB6-Lichtfunktion H 14,not active ,16
+ENG117284-ENG115658-LuB Lichtrouter Kennlinie 1-x0,0 ,12
+ENG117284-ENG101574-LuB Lichtrouter Kennlinie 1-X1,10 ,12
+ENG117284-ENG99557-LuB Lichtrouter Kennlinie 1-X2,100 ,12
+ENG117284-ENG102140-LuB Lichtrouter Kennlinie 1-X3,150 ,12
+ENG117284-ENG102936-LuB Lichtrouter Kennlinie 1-X4,220 ,12
+ENG117284-ENG103548-LuB Lichtrouter Kennlinie 1-X5,253 ,12
+ENG117284-ENG115659-LuB Lichtrouter Kennlinie 1-y0,0.0 %,12
+ENG117284-ENG99777-LuB Lichtrouter Kennlinie 1-Y1,6.0 %,12
+ENG117284-ENG100480-LuB Lichtrouter Kennlinie 1-Y2,16.0 %,12
+ENG117284-ENG100773-LuB Lichtrouter Kennlinie 1-Y3,30.0 %,12
+ENG117284-ENG100631-LuB Lichtrouter Kennlinie 1-Y4,60.0 %,12
+ENG117284-ENG102174-LuB Lichtrouter Kennlinie 1-Y5,100.0 %,12
+ENG148507-ENG148902-offset_illumination-offset_function_illumination_ugdo,No Response From Subnet Component,12
+ENG148507-ENG148903-offset_illumination-offset_search_illumination_ugdo,No Response From Subnet Component,12
