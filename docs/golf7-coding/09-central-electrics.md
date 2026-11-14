@@ -20,9 +20,15 @@ has been written to the car.
 | 9 | E4 | bit 2 Rear lid lock with pre-latch installed (set); bit 6 Door locks w/o SAFE function for North American region installed (set); bit 7 Rear passenger doors installed (set). Bit 5 is set but has no label |
 | 10 | 40 | bit 6 Hood switch installed (set) |
 | 11 | 00 | bit 2 Rear lid remote button directly connected to BCM; bit 7 Anti-theft system deactivation button directly connected to BCM |
-| 12-17 | 00 00 00 0C 07 28 | not photographed yet |
-| 18-19 | 10 0A | not photographed yet |
+| 12 | 00 | bit 0 Anti-theft system installed/active; bit 1 Anti-theft rear window/glass monitoring installed; bit 4 Alarm horn/sounder installed; bit 5 Inclination sensor installed; bit 6 Start anti-theft alarm delay with mechanical (door lock) opening (Thatcham); bit 7 Interior monitoring installed. None set: no factory alarm |
+| 13 | 0C | bit 2 Rear wiper installed (set); bit 3 Headlight washers installed (set); bit 4 Heated front washer jets installed |
+| 14 | 07 | bit 0 Coolant level sensor installed (set); bit 1 Brake fluid level sensor installed (set); bit 2 Washer fluid level sensor installed (set) |
+| 15 | 28 | bit 3 Start-stop deactivation button installed (set); bit 5 Drive select button installed (set); bit 7 Drive select button w/o function light installed |
+| 16 | 10 | bit 2 Auxiliary/parking heater installed; bit 3 Electric steering column lock (ESCL) installed; bit 4 External consumer via terminal 30G installed (set) |
+| 17 | 0A | bit 1 Ambient door panel light(s) installed (set); bit 2 Ambient cupholder light(s) installed; bit 3 Ambient footwell light(s) installed (set); bit 4 Ambient speaker light(s) installed |
+| 18-19 | 00 00 | no entries in the helper |
 | 20-29 | 00 | zeros |
 
-Bytes 0-11 all describe fitted equipment; none is a comfort setting. The
-comfort functions of this module are expected in its adaptation channels.
+All 30 bytes are transcribed. Every labelled bit describes fitted equipment;
+none is a comfort setting, so no named settings are offered for this module's
+long coding. Its comfort functions are expected in the adaptation channels.
