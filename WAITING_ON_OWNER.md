@@ -4,7 +4,7 @@ Things the app's development needs from the car's owner (2013 Golf 7, 1.4 TSI,
 Vgate iCar Pro BLE). Ask "what do you need from me?" to get this list. Remove
 an item once it is done.
 
-Last updated: 2026-11-14 (app build 22).
+Last updated: 2026-11-14 (app build 23).
 
 ## To answer or decide
 
@@ -33,13 +33,13 @@ Last updated: 2026-11-14 (app build 22).
 5. **Install build 21 and send one scan details file.**
    Confirms that all 16 faults now show their names on the phone.
 
-13. **Module explorer results files** (build 22). In Scan car, open a module,
+13. **Module explorer results files** (build 23). In Scan car, open a module,
     tap Explore data, run "Thorough" and share the results file. Most useful
     first: 17 Instrument cluster (mileage, fuel level), 19 Gateway (battery
     monitor), 02 Transmission (clutch temperatures), 5F Infotainment
     (software version). Read-only.
 
-14. **First use of build 22 on the car:** does "Clear all faults" clear the
+14. **First use of build 23 on the car:** does "Clear all faults" clear the
     twelve stored faults, does the boost reading look right against a known
     figure, is an estimated power shown (the 1.4 TSI may not report air
     flow), and are alerts spoken.
