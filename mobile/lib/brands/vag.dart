@@ -148,6 +148,7 @@ class VagBrand extends Brand {
   List<String> get profileAssets => const [
     'assets/profiles/vag_09_demo.json',
     'assets/profiles/vag_5f_mib_std1_5g0035832.json',
+    'assets/profiles/vag_17_5g0920861b.json',
   ];
 
   @override

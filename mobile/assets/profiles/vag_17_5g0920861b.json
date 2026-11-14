@@ -1,0 +1,33 @@
+{
+  "id": "vag_17_5g0920861b",
+  "name": "Instrument cluster (5G0 920 861 B)",
+  "description": "Display settings of the instrument cluster, taken from the VCDS Long Coding Helper for this exact unit. Equipment, safety-warning, fuel tank and tyre settings are left out on purpose.",
+  "brand": "vag",
+  "module": "17",
+  "part_numbers": [
+    "5G0920861B"
+  ],
+  "tx_id": "0x714",
+  "rx_id": "0x77E",
+  "session": "0x03",
+  "did": "0x0600",
+  "length": 15,
+  "options": [
+    {"key": "needle_sweep", "label": "Needle sweep at start", "byte": 1, "bit": 0, "type": "bool", "description": "The speedometer and rev counter needles swing to the end and back when the ignition is switched on."},
+    {"key": "lap_timer", "label": "Lap timer", "byte": 1, "bit": 3, "type": "bool", "description": "Adds a lap timer to the display between the dials."},
+    {"key": "speed_warning_120", "label": "Speed warning at 120 km/h", "byte": 0, "bit": 6, "type": "bool", "description": "A warning chime when the car passes 120 km/h (75 mph)."},
+    {"key": "temperature_unit", "label": "Temperature", "byte": 6, "bit": 0, "width": 1, "type": "enum", "values": {"0": "Celsius", "1": "Fahrenheit"}, "description": "Unit for the outside temperature."},
+    {"key": "distance_unit", "label": "Distance", "byte": 6, "bit": 1, "width": 1, "type": "enum", "values": {"0": "Kilometres", "1": "Miles"}, "description": "Unit for trip and range distances."},
+    {"key": "speed_unit", "label": "Digital speed", "byte": 6, "bit": 2, "width": 1, "type": "enum", "values": {"0": "km/h", "1": "mph"}, "description": "Unit for the digital speed display."},
+    {"key": "pressure_unit", "label": "Pressure", "byte": 6, "bit": 3, "width": 2, "type": "enum", "values": {"0": "bar", "1": "PSI", "2": "kPa"}, "description": "Unit for pressures shown in the display."},
+    {"key": "fuel_volume_unit", "label": "Fuel volume", "byte": 6, "bit": 5, "width": 2, "type": "enum", "values": {"0": "Litres", "1": "Gallons (UK)", "2": "Gallons (US)"}, "description": "Unit for fuel amounts."},
+    {"key": "clock_format", "label": "Clock", "byte": 6, "bit": 7, "width": 1, "type": "enum", "values": {"0": "24 hour", "1": "12 hour (AM/PM)"}, "description": "How the time is shown."},
+    {"key": "date_format", "label": "Date", "byte": 7, "bit": 0, "width": 2, "type": "enum", "values": {"0": "dd/mm/yyyy", "1": "mm/dd/yyyy", "2": "yyyy/mm/dd"}, "description": "How the date is shown."},
+    {"key": "consumption_unit", "label": "Fuel consumption", "byte": 7, "bit": 2, "width": 2, "type": "enum", "values": {"0": "mpg (UK)", "1": "mpg (US)", "2": "l/100 km", "3": "km/l"}, "description": "Unit for the fuel consumption display."},
+    {"key": "start_screen", "label": "Start screen", "byte": 9, "bit": 0, "width": 3, "type": "enum", "values": {"0": "Standard", "1": "Version 2", "2": "Version 3", "3": "Version 4", "4": "Version 5", "5": "Version 6", "6": "Version 7", "7": "Version 8"}, "description": "The picture between the dials when the ignition comes on. VCDS only numbers the versions; some may look the same or be blank on this cluster."},
+    {"key": "compass_bottom", "label": "Compass at the bottom", "byte": 9, "bit": 3, "type": "bool", "description": "Shows the compass at the bottom of the display instead of the top."},
+    {"key": "show_oil_temp", "label": "Show oil temperature", "byte": 10, "bit": 1, "type": "bool", "description": "Adds the engine oil temperature to the trip computer pages."},
+    {"key": "show_acceleration", "label": "Show acceleration", "byte": 10, "bit": 2, "type": "bool", "description": "Adds an acceleration page to the trip computer."},
+    {"key": "show_refuel_volume", "label": "Show refuel volume", "byte": 10, "bit": 4, "type": "bool", "description": "Adds a page showing how many litres fit in the tank right now."}
+  ]
+}

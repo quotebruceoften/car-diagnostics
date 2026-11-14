@@ -79,6 +79,40 @@ void main() {
       );
     });
 
+    test('Golf 7 instrument cluster profile reads the car\'s real coding', () {
+      final cluster = CodingProfile.parse(
+        File('assets/profiles/vag_17_5g0920861b.json').readAsStringSync(),
+        source: 'cluster',
+      );
+      final coding = hexToBytes('27A419087F80000E01882A03040000');
+      expect(cluster.matches(brandId: 'vag', moduleAddress: '17', partNumber: '5G0 920 861 B'), isTrue);
+      final d = cluster.decode(coding);
+      // What the VCDS helper shows for this car.
+      expect(d['needle_sweep'], 'off');
+      expect(d['lap_timer'], 'off');
+      expect(d['speed_warning_120'], 'off');
+      expect(d['temperature_unit'], 'Celsius');
+      expect(d['pressure_unit'], 'bar');
+      expect(d['fuel_volume_unit'], 'Litres');
+      expect(d['date_format'], 'yyyy/mm/dd');
+      expect(d['consumption_unit'], 'km/l');
+      expect(d['start_screen'], 'Standard');
+      expect(d['compass_bottom'], 'on');
+      expect(d['show_oil_temp'], 'on');
+      expect(d['show_acceleration'], 'off');
+      expect(d['show_refuel_volume'], 'off');
+      final changed = cluster.apply(coding, {'needle_sweep': 'on', 'consumption_unit': 'l/100 km'});
+      expect(changed[1], 0xA5);
+      expect(changed[7], 0x0A);
+      expect(
+        [
+          for (var i = 0; i < 15; i++)
+            if (changed[i] != coding[i]) i,
+        ],
+        [1, 7],
+      );
+    });
+
     test('rejects invalid profiles', () {
       for (final option in [
         {'key': 'x', 'byte': 9},
