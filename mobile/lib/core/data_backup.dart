@@ -5,7 +5,7 @@ import 'store.dart';
 /// Folders under the app's documents directory that hold the user's data.
 /// Car photos and videos are left out: they can be large and are easy to
 /// add again.
-const backupFolders = ['scan_history', 'coding_backups', 'service_log', 'trips', 'performance'];
+const backupFolders = ['scan_history', 'coding_backups', 'service_log', 'trips', 'performance', 'explorer'];
 
 const _format = 'car-diagnostics-backup';
 

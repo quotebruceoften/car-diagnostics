@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -39,8 +40,7 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
 
   @override
   void dispose() {
-    _cancel = true;
-    keepScreenOn(false);
+    _cancel = true; // leaving this screen stops the sweep
     super.dispose();
   }
 
@@ -52,15 +52,36 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
       _progress = null;
       _startedAt = DateTime.now();
     });
-    keepScreenOn(true);
     final transport = _session.transport;
+    // The screen may turn off and the app may go to the background: a
+    // notification keeps it running and shows the progress.
+    await _session.background.start('Exploring ${widget.module.name}', 'Starting...');
+    var lastShown = DateTime(0);
+    ExploreProgress? latest;
     try {
       // A module answers a read within a few hundredths of a second.
       if (transport is AdjustableResponseWait) await (transport as AdjustableResponseWait).setResponseWait(60);
       final uds = ModuleScanner(transport, _session.brand).client(widget.module);
       await for (final p in exploreModule(uds, _preset.ranges, cancelled: () => _cancel || !_session.connected)) {
+        latest = p;
         if (!mounted) return;
         setState(() => _progress = p);
+        if (DateTime.now().difference(lastShown) > const Duration(seconds: 5)) {
+          lastShown = DateTime.now();
+          unawaited(
+            _session.background.update(
+              '${p.asked} of ${p.total} asked · ${p.found.length} answered · ${_estimate(p.total - p.asked)} left',
+            ),
+          );
+        }
+      }
+      if (latest != null && !_cancel) {
+        unawaited(
+          _session.background.announce(
+            'Explorer finished: ${widget.module.name}',
+            '${latest.found.length} items answered. Open the app to share the results file.',
+          ),
+        );
       }
       HapticFeedback.mediumImpact();
     } catch (e) {
@@ -73,8 +94,29 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
       } catch (_) {
         // The adapter went away; the next connection sets it up again.
       }
-      keepScreenOn(false);
+      await _session.background.stop();
+      if (latest != null) await _save(latest);
       if (mounted) setState(() => _running = false);
+    }
+  }
+
+  String _resultText(ExploreProgress p) => exploreResultText(
+    car: _session.identity.title,
+    module: widget.module.label,
+    partNumber: widget.partNumber,
+    preset: _preset.name,
+    progress: p,
+    when: _startedAt ?? DateTime.now(),
+  );
+
+  /// Keeps the latest results of each module, for "Send to developer".
+  Future<void> _save(ExploreProgress p) async {
+    if (p.found.isEmpty && p.locked.isEmpty) return;
+    try {
+      final store = await _session.dataStore();
+      await store.write(explorerResultPath(_session.vin ?? '', widget.module.address), _resultText(p));
+    } catch (_) {
+      // The results can still be shared from this screen.
     }
   }
 
@@ -140,7 +182,9 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
                   const SizedBox(height: 6),
                   Text(
                     'Asks this module, one by one, which data items it has and shows every answer. '
-                    'It only reads: nothing in the car is changed.',
+                    'It only reads: nothing in the car is changed. You can lock the phone or use other apps '
+                    'while it runs; a notification shows the progress and another says when it is done. '
+                    'Leaving this screen stops it.',
                     style: theme.textTheme.bodyMedium,
                   ),
                   const SizedBox(height: 14),

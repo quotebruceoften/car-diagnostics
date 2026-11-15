@@ -4,6 +4,7 @@ import 'package:cardiag_mobile/core/history.dart';
 import 'package:cardiag_mobile/core/service_log.dart';
 import 'package:cardiag_mobile/core/store.dart';
 import 'package:cardiag_mobile/main.dart';
+import 'package:cardiag_mobile/platform/background.dart';
 import 'package:cardiag_mobile/platform/notifications.dart';
 import 'package:cardiag_mobile/platform/speech.dart';
 import 'package:cardiag_mobile/ui/screens/faults_tab.dart';
@@ -11,7 +12,12 @@ import 'package:cardiag_mobile/ui/session.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Future<DiagSession> _connect(WidgetTester tester, {DataStore? store, Speaker? speaker}) async {
+Future<DiagSession> _connect(
+  WidgetTester tester, {
+  DataStore? store,
+  Speaker? speaker,
+  BackgroundWork? background,
+}) async {
   tester.view.physicalSize = const Size(1080, 2400);
   tester.view.devicePixelRatio = 2.5;
   addTearDown(tester.view.reset);
@@ -21,6 +27,7 @@ Future<DiagSession> _connect(WidgetTester tester, {DataStore? store, Speaker? sp
     dataStore: store ?? MemoryDataStore(),
     notifier: NoopReminderNotifier(),
     speaker: speaker ?? SilentSpeaker(),
+    background: background ?? NoBackgroundWork(),
     demoLatency: Duration.zero,
   );
   await tester.pumpWidget(CarDiagApp(session: s));
@@ -196,7 +203,9 @@ void main() {
   });
 
   testWidgets('the module explorer lists what a module answers', (tester) async {
-    await _connect(tester);
+    final store = MemoryDataStore();
+    final background = NoBackgroundWork();
+    await _connect(tester, store: store, background: background);
     await tester.tap(find.text('Scan car'));
     await tester.pumpAndSettle();
     await tester.scrollUntilVisible(find.text('Instrument cluster'), 300);
@@ -214,6 +223,11 @@ void main() {
     expect(find.text('5G1920741B'), findsOneWidget);
     expect(find.text('KOMBI'), findsOneWidget);
     expect(find.text('Run again'), findsOneWidget);
+    // It ran as a background job and the results were kept for sending later.
+    expect(background.log.first, startsWith('start Exploring Instrument cluster'));
+    expect(background.log, contains(startsWith('announce Explorer finished: Instrument cluster')));
+    expect(background.log.last, 'stop');
+    expect(store.files['explorer/WVWZZZAUZHW123456/17.txt'], contains('5G1920741B'));
     await _finish(tester);
   });
 

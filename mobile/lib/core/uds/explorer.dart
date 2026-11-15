@@ -133,3 +133,7 @@ String exploreResultText({
   }
   return b.toString();
 }
+
+/// Where the latest explorer results of a module are kept.
+String explorerResultPath(String vin, String moduleAddress) =>
+    'explorer/${vin.isEmpty ? 'unknown' : vin}/${moduleAddress.isEmpty ? 'module' : moduleAddress}.txt';

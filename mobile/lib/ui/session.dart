@@ -26,6 +26,7 @@ import '../core/transport/byte_channel.dart';
 import '../core/transport/elm327.dart';
 import '../core/transport/transport.dart';
 import '../core/uds/uds_client.dart';
+import '../platform/background.dart';
 import '../platform/notifications.dart';
 import '../platform/speech.dart';
 import '../sim/elm_emulator.dart';
@@ -44,6 +45,7 @@ class DiagSession extends ChangeNotifier {
     DataStore? dataStore,
     ReminderNotifier? notifier,
     Speaker? speaker,
+    BackgroundWork? background,
     AssetBundle? assets,
     this.demoLatency = const Duration(milliseconds: 15),
   }) : settings = settings ?? AppSettings(),
@@ -53,6 +55,7 @@ class DiagSession extends ChangeNotifier {
        _dataStore = dataStore,
        notifier = notifier ?? LocalReminderNotifier(),
        speaker = speaker ?? TtsSpeaker(),
+       background = background ?? ForegroundServiceWork(),
        _assets = assets ?? rootBundle {
     scan.onComplete = _saveScan;
     alerts.onTriggered = _announce;
@@ -65,6 +68,9 @@ class DiagSession extends ChangeNotifier {
 
   /// Says alerts out loud while driving.
   final Speaker speaker;
+
+  /// Keeps long jobs running in the background.
+  final BackgroundWork background;
 
   void _announce(ActiveAlert a) {
     HapticFeedback.heavyImpact();
