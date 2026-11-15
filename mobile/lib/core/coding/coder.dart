@@ -102,8 +102,19 @@ class FileBackupStore implements BackupStore {
 
 /// How to get write access to a module's coding.
 class CodingAccess {
-  const CodingAccess({this.session = extendedSession, this.securityLevel, this.securityAlgorithm});
+  const CodingAccess({
+    this.session = extendedSession,
+    this.securityLevel,
+    this.securityAlgorithm,
+    this.fingerprint = false,
+  });
   final int session;
+
+  /// Write the workshop code (0xF198) and date (0xF199) before the coding, as
+  /// VW Group modules require; without it they answer "request sequence
+  /// error". The module's own existing workshop code is written back, so no
+  /// identity is invented.
+  final bool fingerprint;
   final int? securityLevel;
   final String? securityAlgorithm;
 }
@@ -158,6 +169,7 @@ class Coder {
         if (name == null) throw CodingException('This module needs security access but no algorithm is set');
         await uds.securityAccess(access.securityLevel!, securityAlgorithm(name));
       }
+      if (access.fingerprint) await _writeFingerprint();
       await uds.writeDataByIdentifier(did, newData);
       final readback = await read();
       if (!bytesEqual(readback, newData)) {
@@ -174,5 +186,38 @@ class Coder {
       }
     }
     return saved;
+  }
+
+  /// Where modules keep the workshop code: the standard place, and VW's
+  /// own "coding repair shop code" (on a Golf 7 cluster it holds the same
+  /// workshop number VCDS shows as "Shop #").
+  static const workshopCodeDids = [0xF198, 0xF1A5];
+  static const programmingDateDid = 0xF199;
+
+  /// Which workshop code item the last write used (for error reports).
+  int? fingerprintDid;
+
+  Future<void> _writeFingerprint() async {
+    for (final did in workshopCodeDids) {
+      final Uint8List workshop;
+      try {
+        workshop = await uds.readDataByIdentifier(did);
+      } on CarDiagException {
+        continue;
+      }
+      fingerprintDid = did;
+      // The module's own value, written back unchanged.
+      await uds.writeDataByIdentifier(did, workshop);
+      if (did == 0xF198) {
+        final now = DateTime.now();
+        int bcd(int v) => ((v ~/ 10) << 4) | (v % 10);
+        try {
+          await uds.writeDataByIdentifier(programmingDateDid, [bcd(now.year % 100), bcd(now.month), bcd(now.day)]);
+        } on NegativeResponseException {
+          // Some modules take only the workshop code.
+        }
+      }
+      return;
+    }
   }
 }

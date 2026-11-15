@@ -181,6 +181,37 @@ void main() {
     expect(await genericBrand.readCounters(SimulatorTransport(car('5G0920861B'))), isNull);
   });
 
+  group('VW coding sequence', () {
+    test('the workshop code is written back before the coding, as VW modules require', () async {
+      final v = Vehicle.demoGolf();
+      final cluster = v.ecu(0x714)!;
+      final uds = UdsClient(SimulatorTransport(v), 0x714, rxId: 0x77E);
+      final old = await uds.readDataByIdentifier(0x0600);
+      final changed = Uint8List.fromList(old)..[0] ^= 0x01;
+
+      // Without it the module answers "request sequence error", as the real cluster did.
+      final plain = Coder(uds, did: 0x0600, store: MemoryBackupStore(), moduleName: 'Cluster');
+      await expectLater(
+        plain.write(changed),
+        throwsA(isA<NegativeResponseException>().having((e) => e.nrc, 'nrc', 0x24)),
+      );
+      expect(cluster.dids[0x0600], old);
+
+      final workshop = Uint8List.fromList(cluster.dids[0xF198]!);
+      final coder = Coder(
+        uds,
+        did: 0x0600,
+        store: MemoryBackupStore(),
+        moduleName: 'Cluster',
+        access: const VagBrand().codingAccessFor(const VagBrand().modules.firstWhere((m) => m.address == '17')),
+      );
+      await coder.write(changed);
+      expect(cluster.dids[0x0600], changed);
+      expect(cluster.dids[0xF198], workshop); // unchanged: its own value written back
+      expect(coder.fingerprintDid, 0xF198);
+    });
+  });
+
   group('VW fault numbers', () {
     const brand = VagBrand();
     ModuleDef module(String address) => brand.modules.firstWhere((m) => m.address == address);
@@ -258,7 +289,13 @@ void main() {
       final (t, vehicle) = await setup();
       final store = MemoryBackupStore();
       final profile = loadDemoProfile();
-      final coder = Coder(UdsClient(t, 0x70E, rxId: 0x778), did: 0x0600, store: store, moduleName: 'Central electrics');
+      final coder = Coder(
+        UdsClient(t, 0x70E, rxId: 0x778),
+        did: 0x0600,
+        store: store,
+        moduleName: 'Central electrics',
+        access: const CodingAccess(fingerprint: true),
+      );
       final old = await coder.read();
       final updated = profile.apply(old, {'drl': 'off', 'comfort_blinks': '5', 'tail_drl': 'on'});
       final backup = await coder.write(updated, vin: 'WVWZZZAUZHW123456', profileId: profile.id);

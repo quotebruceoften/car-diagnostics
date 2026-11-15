@@ -1,3 +1,4 @@
+import '../core/coding/coder.dart';
 import '../core/errors.dart';
 import '../core/transport/transport.dart';
 import '../core/uds/uds_client.dart';
@@ -166,6 +167,9 @@ class VagBrand extends Brand {
     0xF1A2: 'ODX version',
   };
 
+  @override
+  CodingAccess codingAccessFor(ModuleDef module) => const CodingAccess(fingerprint: true);
+
   /// VW stores a module's "long coding" in DID 0x0600.
   @override
   int get codingDid => 0x0600;
@@ -179,6 +183,10 @@ class VagBrand extends Brand {
 
   @override
   String? explainError(CarDiagException error, {bool writing = false}) {
+    if (error is NegativeResponseException && writing && error.nrc == 0x24) {
+      return 'The module wants another step before it accepts coding. Nothing was changed. Send this message '
+          'to the developer.';
+    }
     if (error is NegativeResponseException && writing && const {0x22, 0x33, 0x35}.contains(error.nrc)) {
       return 'The module refused the change. On 2020+ VW Group cars (e.g. Golf 8, ID. models) many '
           'modules are protected by SFD and must be unlocked online through VW before they accept coding. '

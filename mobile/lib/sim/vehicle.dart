@@ -21,6 +21,7 @@ class VirtualEcu {
     Set<int> securedDids = const {},
     Set<int> lockedDids = const {},
     List<(String, int, int)> udsDtcs = const [],
+    this.requiresFingerprint = false,
   }) : dids = {for (final e in dids.entries) e.key: Uint8List.fromList(e.value)},
        writableDids = {...writableDids},
        securedDids = {...securedDids},
@@ -43,6 +44,11 @@ class VirtualEcu {
 
   /// (code, failure type, status)
   final List<(String, int, int)> udsDtcs;
+
+  /// Like VW modules: coding is only accepted after the workshop code
+  /// (0xF198) has been written in the same session.
+  final bool requiresFingerprint;
+  bool _fingerprinted = false;
 
   bool get obd => false;
   int session = 0x01;
@@ -77,7 +83,10 @@ class VirtualEcu {
   Uint8List _session(Uint8List p) {
     if (p.length != 2) return _nrc(0x10, 0x13);
     if (![1, 2, 3].contains(p[1])) return _nrc(0x10, 0x12);
-    if (p[1] != session) unlocked = false;
+    if (p[1] != session) {
+      unlocked = false;
+      _fingerprinted = false;
+    }
     session = p[1];
     return _b([0x50, p[1], 0x00, 0x32, 0x01, 0xF4]);
   }
@@ -93,6 +102,8 @@ class VirtualEcu {
     final did = (p[1] << 8) | p[2];
     if (did == 0xF186) return _b([0x62, p[1], p[2], session]);
     final value = dids[did];
+    // The real Golf 7 modules only show their workshop code in the extended session.
+    if (requiresFingerprint && session == 1 && (did == 0xF198 || did == 0xF199)) return _nrc(0x22, 0x31);
     if (value == null) return _nrc(0x22, 0x31);
     return _b([0x62, p[1], p[2], ...value]);
   }
@@ -100,10 +111,18 @@ class VirtualEcu {
   Uint8List _writeDid(Uint8List p) {
     if (p.length < 4) return _nrc(0x2E, 0x13);
     final did = (p[1] << 8) | p[2];
+    if (requiresFingerprint && (did == 0xF198 || did == 0xF199)) {
+      if (session != 3) return _nrc(0x2E, 0x7F);
+      if (p.length - 3 != (dids[did]?.length ?? 0)) return _nrc(0x2E, 0x13);
+      dids[did] = Uint8List.fromList(p.sublist(3));
+      if (did == 0xF198) _fingerprinted = true;
+      return _b([0x6E, p[1], p[2]]);
+    }
     if (lockedDids.contains(did)) return session == 3 ? _nrc(0x2E, 0x33) : _nrc(0x2E, 0x7F);
     if (!writableDids.contains(did) && !securedDids.contains(did)) return _nrc(0x2E, 0x31);
     if (session != 3) return _nrc(0x2E, 0x7F);
     if (securedDids.contains(did) && !unlocked) return _nrc(0x2E, 0x33);
+    if (requiresFingerprint && !_fingerprinted) return _nrc(0x2E, 0x24);
     if (p.length - 3 != dids[did]!.length) return _nrc(0x2E, 0x13);
     dids[did] = Uint8List.fromList(p.sublist(3));
     return _b([0x6E, p[1], p[2]]);
@@ -415,6 +434,8 @@ class Vehicle {
           0xF189: ascii('0254'),
           0xF197: ascii('BCM MQB'),
           0xF190: vinBytes,
+          0xF198: [0x00, 0x05, 0x4D, 0x05, 0x80, 0xC8],
+          0xF199: [0x13, 0x03, 0x14],
           0x0600: [
             0x15, 0x03, 0x1E, 0x00, 0x02, 0x00, 0x48, 0x10, 0x00, 0x00, //
             0x4F, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, //
@@ -422,6 +443,7 @@ class Vehicle {
           ],
         },
         writableDids: {0x0600},
+        requiresFingerprint: true,
         udsDtcs: [('U0155', 0x00, 0x08)],
       ),
       VirtualEcu(
@@ -439,8 +461,11 @@ class Vehicle {
           0xF197: ascii('KOMBI'),
           0xF190: vinBytes,
           0x0600: [0x2D, 0x0F, 0x00, 0x10, 0x01, 0x00, 0x00, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+          0xF198: [0x00, 0x05, 0x4D, 0x05, 0x80, 0xC8],
+          0xF199: [0x13, 0x03, 0x14],
         },
         writableDids: {0x0600},
+        requiresFingerprint: true,
       ),
       VirtualEcu(
         'Gateway',
