@@ -4,7 +4,7 @@ Things the app's development needs from the car's owner (2013 Golf 7, 1.4 TSI,
 Vgate iCar Pro BLE). Ask "what do you need from me?" to get this list. Remove
 an item once it is done.
 
-Last updated: 2026-11-15 (app build 28).
+Last updated: 2026-11-15 (app build 30). Coding from the app is verified on the cluster.
 
 ## To answer or decide
 
@@ -49,9 +49,6 @@ Last updated: 2026-11-15 (app build 28).
     each setting's name and current value but not where it lives. Matching
     them against the explorer results finds the addresses, which is what
     lets the app show and later change adaptations.
-
-16. **First coding change from the app** (build 25): one harmless cluster
-    setting, then report whether it applied or what the app said.
 
 17. **Explorer "The rest" on module 09** (build 28, about 90 minutes, on a
     charger). The Thorough sweep of the central electrics did not contain

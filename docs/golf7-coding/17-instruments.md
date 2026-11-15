@@ -28,3 +28,18 @@ lap timer, 120 km/h speed warning, display units, date format, start screen,
 compass position, and the oil temperature, acceleration and refuel volume
 pages. Not offered: seat belt warning (safety), and the
 equipment, fuel tank, model and tyre bytes.
+
+## Writing coding to this cluster (verified 2026-11-15)
+
+Needle sweep was switched on from the app (build 30) and confirmed on the
+car. The sequence the cluster accepts:
+
+1. Extended session (0x10 03).
+2. Read the stored workshop code from 0xF1A5 (0xF198 is not readable).
+3. Write it to 0xF198 (6 bytes). Writing it back to 0xF1A5 is refused
+   with NRC 0x31; skipping this step makes the coding write fail with
+   NRC 0x24.
+4. Write today's date to 0xF199 (3 bytes BCD).
+5. Write the coding to 0x0600 and read it back to verify.
+
+No security access (login code) was needed for the coding.
