@@ -52,6 +52,7 @@ const explorePresets = [
     ExploreRange(0x0000, 0x2FFF),
     ExploreRange(0xF000, 0xFFFF),
   ]),
+  ExplorePreset('The rest', 'What Thorough leaves out', [ExploreRange(0x3000, 0xEFFF)]),
   ExplorePreset('Everything', 'Every possible item', [ExploreRange(0x0000, 0xFFFF)]),
 ];
 

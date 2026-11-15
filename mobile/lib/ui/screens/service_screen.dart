@@ -217,6 +217,21 @@ class _ServiceScreenState extends State<ServiceScreen> {
                     onTap: _editMileage,
                   ),
                 ),
+                if (session.vin == widget.vin)
+                  if (session.counters case final c? when c.kmSinceService != null || c.daysSinceService != null)
+                    Card(
+                      child: ListTile(
+                        leading: const TintedIcon(Icons.speed_rounded, size: 40),
+                        title: const Text('Since the last service reset'),
+                        subtitle: Text(
+                          [
+                            if (c.kmSinceService != null) s.km(c.kmSinceService!.toDouble(), decimals: 0),
+                            if (c.daysSinceService != null) '${c.daysSinceService} days',
+                          ].join(' · '),
+                        ),
+                        trailing: const Pill('from the car', color: Colors.grey),
+                      ),
+                    ),
                 if (log.reminders(now) case final reminders when reminders.isNotEmpty) ...[
                   const SectionHeader('Coming up'),
                   Card(

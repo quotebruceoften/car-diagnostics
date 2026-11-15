@@ -1,4 +1,5 @@
 import '../core/errors.dart';
+import '../core/transport/transport.dart';
 import '../core/uds/uds_client.dart';
 import '../core/vin.dart';
 import '../core/obd/dtc.dart';
@@ -56,6 +57,31 @@ class VagBrand extends Brand {
 
   @override
   Map<String, DtcInfo> get dtcExplanations => vagDtcs;
+
+  /// Instrument clusters whose mileage and service counters were located
+  /// with the module explorer and matched against VCDS on a real car.
+  static const _clustersWithCounters = ['5G0920861B'];
+
+  @override
+  Future<CarCounters?> readCounters(Transport transport) async {
+    final cluster = UdsClient(transport, 0x714, rxId: 0x77E);
+    try {
+      final part = String.fromCharCodes(await cluster.readDataByIdentifier(0xF187)).replaceAll(' ', '');
+      if (!_clustersWithCounters.any(part.startsWith)) return null;
+      int number(List<int> b) => b.fold(0, (v, x) => (v << 8) | x);
+      final km = await cluster.readDataByIdentifier(0x2203);
+      if (km.length != 3) return null;
+      int? optional(List<int>? b, int length) => b == null || b.length != length ? null : number(b);
+      final rest = await cluster.readMany(const [0x2243, 0x2244]);
+      return CarCounters(
+        odometerKm: number(km),
+        kmSinceService: optional(rest[0x2243], 3),
+        daysSinceService: optional(rest[0x2244], 2),
+      );
+    } on CarDiagException {
+      return null;
+    }
+  }
 
   static final _number = RegExp(r'^\d+$');
 

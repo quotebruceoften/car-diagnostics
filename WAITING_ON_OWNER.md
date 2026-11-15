@@ -4,7 +4,7 @@ Things the app's development needs from the car's owner (2013 Golf 7, 1.4 TSI,
 Vgate iCar Pro BLE). Ask "what do you need from me?" to get this list. Remove
 an item once it is done.
 
-Last updated: 2026-11-14 (app build 23).
+Last updated: 2026-11-15 (app build 28).
 
 ## To answer or decide
 
@@ -52,6 +52,18 @@ Last updated: 2026-11-14 (app build 23).
 
 16. **First coding change from the app** (build 25): one harmless cluster
     setting, then report whether it applied or what the app said.
+
+17. **Explorer "The rest" on module 09** (build 28, about 90 minutes, on a
+    charger). The Thorough sweep of the central electrics did not contain
+    the comfort settings (indicator flashes and so on), so they are in the
+    part of the module it did not cover, or need a login to read.
+
+18. **Fuel level:** note the gauge position and the litres needed at the
+    next fill-up, then run Explore > Quick on the instrument cluster before
+    and after filling. The value that changes is the fuel level.
+
+19. **Check the mileage in the service log** after connecting with build
+    28: it should match the dashboard without typing it in.
 
 ## To send from VCDS
 

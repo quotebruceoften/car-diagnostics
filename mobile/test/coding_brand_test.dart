@@ -11,6 +11,7 @@ import 'package:cardiag_mobile/core/errors.dart';
 import 'package:cardiag_mobile/core/hex.dart';
 import 'package:cardiag_mobile/core/obd/dtc.dart';
 import 'package:cardiag_mobile/core/uds/uds_client.dart';
+import 'package:cardiag_mobile/sim/vehicle.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'helpers.dart';
@@ -155,6 +156,29 @@ void main() {
     expect(brandForVin('TMBJJ7NE0L0000000').id, 'vag');
     expect(brandForVin('1HGCM82633A004352').id, 'generic');
     expect(brandForVin(null).id, 'generic');
+  });
+
+  test('VW cluster mileage and service counters are read for verified clusters only', () async {
+    Vehicle car(String part) => Vehicle('test', 'WVWZZZAUZDW000001', [
+      VirtualEcu(
+        'Instrument cluster',
+        0x714,
+        0x77E,
+        dids: {
+          0xF187: '$part '.codeUnits,
+          0x2203: [0x02, 0x35, 0xE9], // as read from the real car: 144,873 km
+          0x2243: [0x00, 0x28, 0x3C],
+          0x2244: [0x01, 0x00],
+        },
+      ),
+    ]);
+    final c = (await const VagBrand().readCounters(SimulatorTransport(car('5G0920861B'))))!;
+    expect(c.odometerKm, 144873);
+    expect(c.kmSinceService, 10300);
+    expect(c.daysSinceService, 256);
+    expect(await const VagBrand().readCounters(SimulatorTransport(car('5G1920741B'))), isNull);
+    expect(await const VagBrand().readCounters(SimulatorTransport(Vehicle('none', '', []))), isNull);
+    expect(await genericBrand.readCounters(SimulatorTransport(car('5G0920861B'))), isNull);
   });
 
   group('VW fault numbers', () {

@@ -3,6 +3,7 @@ import '../core/errors.dart';
 import '../core/hex.dart';
 import '../core/obd/dtc.dart';
 import '../core/obd/dtc_info.dart';
+import '../core/transport/transport.dart';
 import '../core/uds/uds_client.dart';
 import '../core/vin.dart';
 
@@ -16,6 +17,16 @@ enum CarZone {
   const CarZone(this.label, this.short);
   final String label;
   final String short;
+}
+
+/// Counters read from the car's own modules.
+class CarCounters {
+  const CarCounters({required this.odometerKm, this.kmSinceService, this.daysSinceService});
+  final int odometerKm;
+
+  /// Distance and days since the service indicator was last reset.
+  final int? kmSinceService;
+  final int? daysSinceService;
 }
 
 /// What the app knows about the connected car from its VIN.
@@ -103,6 +114,10 @@ abstract class Brand {
     final v = vin.toUpperCase();
     return wmiPrefixes.any(v.startsWith);
   }
+
+  /// Reads the odometer and service counters from the car's modules, where
+  /// the make and module version are known; null otherwise. Read-only.
+  Future<CarCounters?> readCounters(Transport transport) async => null;
 
   /// Turns a fault as read from [module] over UDS into the make's own form.
   /// Most makes report standard codes; VW Group reports its own numbers.

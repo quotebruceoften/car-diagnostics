@@ -125,11 +125,26 @@ class DiagSession extends ChangeNotifier {
 
   /// Cars from about 2019 report the odometer over OBD; record it in the
   /// service log so reminders by distance stay current.
+  /// Service counters from the car's instrument cluster, where readable.
+  CarCounters? counters;
+
   Future<void> _syncOdometer() async {
     final v = vin;
     if (v == null) return;
+    double? km;
     try {
-      final km = (await obd.read('odometer')).numeric;
+      km = (await obd.read('odometer')).numeric;
+    } catch (_) {
+      km = null; // most cars before about 2019 don't report it over OBD
+    }
+    try {
+      if (km == null && connected && vin == v) {
+        final c = await brand.readCounters(transport);
+        if (c != null && connected && vin == v) {
+          counters = c;
+          km = c.odometerKm.toDouble();
+        }
+      }
       if (km == null || !connected || vin != v) return;
       odometerKm = km;
       final log = await loadServiceLog(v);
@@ -137,7 +152,7 @@ class DiagSession extends ChangeNotifier {
       await saveServiceLog(v, log);
       notifyListeners();
     } catch (_) {
-      // Most older cars don't report it; the owner types it in instead.
+      // The owner types the mileage in instead.
     }
   }
 
@@ -418,6 +433,7 @@ class DiagSession extends ChangeNotifier {
     carMedia = null;
     lastRecord = null;
     odometerKm = null;
+    counters = null;
     alerts.reset();
     scan.reset();
     brand = genericBrand;
