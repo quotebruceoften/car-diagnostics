@@ -170,6 +170,7 @@ class Coder {
         await uds.securityAccess(access.securityLevel!, securityAlgorithm(name));
       }
       if (access.fingerprint) await _writeFingerprint();
+      // A refusal here keeps its own code, so the make can explain it (e.g. SFD).
       await uds.writeDataByIdentifier(did, newData);
       final readback = await read();
       if (!bytesEqual(readback, newData)) {
@@ -188,36 +189,43 @@ class Coder {
     return saved;
   }
 
-  /// Where modules keep the workshop code: the standard place, and VW's
-  /// own "coding repair shop code" (on a Golf 7 cluster it holds the same
-  /// workshop number VCDS shows as "Shop #").
-  static const workshopCodeDids = [0xF198, 0xF1A5];
+  /// The workshop code is written to 0xF198. Many VW modules do not let it be
+  /// read back there; they keep the code from the last coding in VW's
+  /// "coding repair shop code" (0xF1A5), which on a Golf 7 cluster holds the
+  /// workshop number VCDS shows as "Shop #". That stored code is reused.
+  static const workshopCodeDid = 0xF198;
+  static const storedWorkshopCodeDid = 0xF1A5;
   static const programmingDateDid = 0xF199;
 
-  /// Which workshop code item the last write used (for error reports).
-  int? fingerprintDid;
+  /// Where the reused workshop code was read from (for reports and tests).
+  int? fingerprintSource;
 
   Future<void> _writeFingerprint() async {
-    for (final did in workshopCodeDids) {
-      final Uint8List workshop;
+    Uint8List? code;
+    for (final did in const [workshopCodeDid, storedWorkshopCodeDid]) {
       try {
-        workshop = await uds.readDataByIdentifier(did);
+        code = await uds.readDataByIdentifier(did);
+        fingerprintSource = did;
+        break;
       } on CarDiagException {
         continue;
       }
-      fingerprintDid = did;
-      // The module's own value, written back unchanged.
-      await uds.writeDataByIdentifier(did, workshop);
-      if (did == 0xF198) {
-        final now = DateTime.now();
-        int bcd(int v) => ((v ~/ 10) << 4) | (v % 10);
-        try {
-          await uds.writeDataByIdentifier(programmingDateDid, [bcd(now.year % 100), bcd(now.month), bcd(now.day)]);
-        } on NegativeResponseException {
-          // Some modules take only the workshop code.
-        }
-      }
-      return;
+    }
+    if (code == null) return; // nothing to reuse; try the coding without it
+    try {
+      await uds.writeDataByIdentifier(workshopCodeDid, code);
+    } on NegativeResponseException catch (e) {
+      throw CodingException(
+        'The module refused the workshop code (step 1 of 2: ${nrcNames[e.nrc] ?? 'NRC 0x${e.nrc.toRadixString(16)}'}). '
+        'Nothing was changed.',
+      );
+    }
+    final now = DateTime.now();
+    int bcd(int v) => ((v ~/ 10) << 4) | (v % 10);
+    try {
+      await uds.writeDataByIdentifier(programmingDateDid, [bcd(now.year % 100), bcd(now.month), bcd(now.day)]);
+    } on NegativeResponseException {
+      // Some modules take only the workshop code.
     }
   }
 }

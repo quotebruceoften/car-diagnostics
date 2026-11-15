@@ -190,6 +190,13 @@ void main() {
       final changed = Uint8List.fromList(old)..[0] ^= 0x01;
 
       // Without it the module answers "request sequence error", as the real cluster did.
+      // Writing the stored code back to F1A5 is "request out of range", also as on the car.
+      await uds.diagnosticSessionControl(extendedSession);
+      await expectLater(
+        uds.writeDataByIdentifier(0xF1A5, cluster.dids[0xF1A5]!),
+        throwsA(isA<NegativeResponseException>().having((e) => e.nrc, 'nrc', 0x31)),
+      );
+      await uds.diagnosticSessionControl(defaultSession);
       final plain = Coder(uds, did: 0x0600, store: MemoryBackupStore(), moduleName: 'Cluster');
       await expectLater(
         plain.write(changed),
@@ -197,7 +204,7 @@ void main() {
       );
       expect(cluster.dids[0x0600], old);
 
-      final workshop = Uint8List.fromList(cluster.dids[0xF198]!);
+      final workshop = Uint8List.fromList(cluster.dids[0xF1A5]!);
       final coder = Coder(
         uds,
         did: 0x0600,
@@ -207,8 +214,9 @@ void main() {
       );
       await coder.write(changed);
       expect(cluster.dids[0x0600], changed);
-      expect(cluster.dids[0xF198], workshop); // unchanged: its own value written back
-      expect(coder.fingerprintDid, 0xF198);
+      // Its own stored workshop code, written to F198 unchanged.
+      expect(cluster.dids[0xF1A5], workshop);
+      expect(coder.fingerprintSource, 0xF1A5);
     });
   });
 

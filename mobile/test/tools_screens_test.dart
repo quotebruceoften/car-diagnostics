@@ -209,8 +209,8 @@ void main() {
     expect(find.textContaining('It only reads'), findsOneWidget);
     await tester.tap(find.text('Start'));
     await tester.pumpAndSettle();
-    // Part number, system name and VIN from the F1xx range, coding from 0600.
-    expect(find.text('ANSWERED (5)'), findsOneWidget);
+    // Part number, system name, VIN and stored workshop code from the F1xx range, coding from 0600.
+    expect(find.text('ANSWERED (6)'), findsOneWidget);
     expect(find.text('5G1920741B'), findsOneWidget);
     expect(find.text('KOMBI'), findsOneWidget);
     expect(find.text('Run again'), findsOneWidget);

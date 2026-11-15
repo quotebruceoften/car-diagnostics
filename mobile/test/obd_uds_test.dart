@@ -102,7 +102,7 @@ void main() {
     );
     await uds.securityAccess(3, demoXor);
     await uds.securityAccess(3, demoXor); // zero seed: already unlocked
-    await uds.writeDataByIdentifier(0xF198, await uds.readDataByIdentifier(0xF198)); // VW workshop code first
+    await uds.writeDataByIdentifier(0xF198, await uds.readDataByIdentifier(0xF1A5)); // VW workshop code first
     await uds.writeDataByIdentifier(0x0600, List.filled(30, 0));
     expect(await uds.readDataByIdentifier(0x0600), List.filled(30, 0));
   });

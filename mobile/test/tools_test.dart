@@ -299,7 +299,7 @@ void main() {
       final quick = await exploreModule(uds, explorePresets.first.ranges).last;
       expect(quick.asked, quick.total);
       // F186 is the active session, which every module answers.
-      expect([for (final i in quick.found) i.id], ['F186', 'F187', 'F189', 'F190', 'F197', '0600']);
+      expect([for (final i in quick.found) i.id], ['F186', 'F187', 'F189', 'F190', 'F197', 'F1A5', '0600']);
       expect(quick.found[1].text, '5Q0937DEMO');
       expect(quick.found.last.text, isNull);
       expect(quick.found.last.data, hasLength(30));
