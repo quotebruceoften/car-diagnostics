@@ -32,15 +32,17 @@ const _canProtocols = {6: 3, 7: 8, 8: 3, 9: 8};
 /// Only CAN protocols (ISO 15765-4) are supported. The adapter runs with
 /// headers on and ISO-TP is reassembled here, so replies from several ECUs to
 /// one broadcast can be told apart.
-class Elm327Transport implements Transport, BatteryVoltageReader {
+class Elm327Transport implements Transport, BatteryVoltageReader, AdjustableResponseWait {
   Elm327Transport(this.channel, {this.timeout = const Duration(seconds: 5), int responseTimeoutMs = 500})
-    : _st = (responseTimeoutMs ~/ 4).clamp(1, 0xFF) {
+    : _normalWaitMs = responseTimeoutMs,
+      _st = (responseTimeoutMs ~/ 4).clamp(1, 0xFF) {
     _sub = channel.incoming.listen(_onData, onError: _onError, onDone: () => _onError('adapter disconnected'));
   }
 
   final ByteChannel channel;
   final Duration timeout;
-  final int _st;
+  final int _normalWaitMs;
+  int _st;
   final _lock = AsyncLock();
   late final StreamSubscription<List<int>> _sub;
   final _buffer = BytesBuilder();
@@ -118,6 +120,12 @@ class Elm327Transport implements Transport, BatteryVoltageReader {
     _customFlowControl = false;
     _txId = null;
     _rxId = -1;
+  });
+
+  @override
+  Future<void> setResponseWait(int? milliseconds) => _lock.run(() async {
+    _st = ((milliseconds ?? _normalWaitMs) ~/ 4).clamp(1, 0xFF);
+    await _expectOk('ATST${_hex2(_st)}');
   });
 
   /// Reads the adapter's measurement of battery voltage (AT RV).

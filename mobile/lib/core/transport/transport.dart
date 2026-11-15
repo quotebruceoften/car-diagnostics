@@ -34,6 +34,14 @@ abstract interface class BatteryVoltageReader {
   Future<double?> batteryVoltage();
 }
 
+/// Transports whose wait for further replies can be shortened. An ELM327
+/// waits a fixed time after each reply in case more follow; for thousands
+/// of small requests to one module that wait is nearly all of the time.
+abstract interface class AdjustableResponseWait {
+  /// Sets the wait in milliseconds; null restores the normal wait.
+  Future<void> setResponseWait(int? milliseconds);
+}
+
 /// Serialises async operations: adapters can only do one request at a time,
 /// but the UI (live data, scans, button presses) fires them concurrently.
 class AsyncLock {

@@ -179,4 +179,15 @@ void adapterTests() {
       expect(await uds.readDtcs(0xFF), hasLength(5)); // what the module lists in total
     });
   });
+
+  test('the adapter\'s wait for more replies can be shortened and restored', () async {
+    final elm = Elm327Emulator();
+    final t = Elm327Transport(elm);
+    await t.initialize();
+    await t.setResponseWait(60);
+    expect(elm.log.last, 'ATST0F');
+    expect(await UdsClient(t, 0x7E0, rxId: 0x7E8).readDataByIdentifier(0xF190), hasLength(17));
+    await t.setResponseWait(null);
+    expect(elm.log.last, 'ATST7D');
+  });
 }

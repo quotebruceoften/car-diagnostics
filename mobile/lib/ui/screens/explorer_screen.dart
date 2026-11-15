@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../brands/brand.dart';
 import '../../brands/scanner.dart';
+import '../../core/transport/transport.dart';
 import '../../core/uds/explorer.dart';
 import '../session.dart';
 import '../widgets/common.dart';
@@ -52,8 +53,11 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
       _startedAt = DateTime.now();
     });
     keepScreenOn(true);
+    final transport = _session.transport;
     try {
-      final uds = ModuleScanner(_session.transport, _session.brand).client(widget.module);
+      // A module answers a read within a few hundredths of a second.
+      if (transport is AdjustableResponseWait) await (transport as AdjustableResponseWait).setResponseWait(60);
+      final uds = ModuleScanner(transport, _session.brand).client(widget.module);
       await for (final p in exploreModule(uds, _preset.ranges, cancelled: () => _cancel || !_session.connected)) {
         if (!mounted) return;
         setState(() => _progress = p);
@@ -62,6 +66,13 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
     } catch (e) {
       if (mounted) setState(() => _error = e);
     } finally {
+      try {
+        if (transport is AdjustableResponseWait && _session.connected) {
+          await (transport as AdjustableResponseWait).setResponseWait(null);
+        }
+      } catch (_) {
+        // The adapter went away; the next connection sets it up again.
+      }
       keepScreenOn(false);
       if (mounted) setState(() => _running = false);
     }
@@ -96,7 +107,7 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
   /// Rough time for a sweep, from the pace so far or a typical adapter.
   String _estimate(int items) {
     final p = _progress, started = _startedAt;
-    var perItem = 0.08;
+    var perItem = 0.15;
     if (_running && p != null && started != null && p.asked > 20) {
       perItem = DateTime.now().difference(started).inMilliseconds / 1000 / p.asked;
     }
