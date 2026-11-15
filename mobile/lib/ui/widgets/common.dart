@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../../core/error_log.dart';
 import '../../core/errors.dart';
 import '../theme.dart';
 import 'skeleton.dart';
 
-String errorText(Object error) => error is CarDiagException ? error.message : '$error';
+/// The message to show for [error]; also remembered for "Send to developer".
+String errorText(Object error) {
+  final text = error is CarDiagException ? error.message : '$error';
+  ErrorLog.instance.record(text);
+  return text;
+}
 
 /// An error message with an optional make-specific hint and retry button.
 class ErrorPanel extends StatelessWidget {

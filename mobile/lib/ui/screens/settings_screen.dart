@@ -9,6 +9,7 @@ import '../../core/data_backup.dart';
 import '../../core/trip.dart';
 import '../session.dart';
 import '../settings.dart';
+import '../support.dart';
 import '../widgets/common.dart';
 import 'alerts_screen.dart';
 import 'trip_screen.dart';
@@ -189,6 +190,15 @@ class SettingsScreen extends StatelessWidget {
             Card(
               child: Column(
                 children: [
+                  ListTile(
+                    leading: const Icon(Icons.forward_to_inbox_outlined),
+                    title: const Text('Send to developer'),
+                    subtitle: const Text(
+                      'One file with the latest scan, explorer results, coding backups, recent errors and '
+                      'settings. Contains your VIN.',
+                    ),
+                    onTap: () => sendToDeveloper(context),
+                  ),
                   ListTile(
                     leading: const Icon(Icons.backup_outlined),
                     title: const Text('Back up all data'),

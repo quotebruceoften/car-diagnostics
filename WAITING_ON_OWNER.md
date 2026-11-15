@@ -4,7 +4,9 @@ Things the app's development needs from the car's owner (2013 Golf 7, 1.4 TSI,
 Vgate iCar Pro BLE). Ask "what do you need from me?" to get this list. Remove
 an item once it is done.
 
-Last updated: 2026-11-15 (app build 30). Coding from the app is verified on the cluster.
+Last updated: 2026-11-15 (app build 32). Coding from the app is verified on the cluster.
+
+To send results: Overview > Tools > Send to developer (or Settings > Your data).
 
 ## To answer or decide
 

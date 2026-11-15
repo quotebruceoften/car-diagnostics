@@ -5,6 +5,7 @@ import '../../core/obd/obd_client.dart';
 import '../../core/obd/pids.dart';
 import '../../core/obd/readiness.dart';
 import '../session.dart';
+import '../support.dart';
 import '../../core/service_log.dart';
 import '../widgets/car_card.dart';
 import '../widgets/skeleton.dart';
@@ -231,6 +232,11 @@ class _OverviewTabState extends State<OverviewTab> {
             icon: Icons.build_circle_outlined,
             label: 'Service log',
             onTap: () => _open(context, ServiceScreen(vin: session.vin ?? '', carName: session.identity.title)),
+          ),
+          _Shortcut(
+            icon: Icons.forward_to_inbox_outlined,
+            label: 'Send to developer',
+            onTap: () => sendToDeveloper(context),
           ),
         ],
       ),
