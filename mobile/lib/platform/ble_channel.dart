@@ -76,7 +76,36 @@ class BleByteChannel implements ByteChannel {
 
   static Future<BleByteChannel> connect(DiscoveredDevice device) => connectTo(device.id, device.name);
 
-  /// Connects to a known adapter by its id (no scan needed), e.g. one saved earlier.
+  /// Reconnects to an adapter saved earlier. Android often refuses to connect
+  /// to a Bluetooth LE device it has not seen in a scan since Bluetooth was
+  /// last switched on, so this looks for the adapter first. Adapters can also
+  /// change their address, so a match on the name counts too.
+  static Future<BleByteChannel> connectSaved(String id, String name) async {
+    await ensurePermissions();
+    String? found;
+    try {
+      final device = await ble
+          .scanForDevices(withServices: const [], scanMode: ScanMode.lowLatency)
+          .firstWhere((d) => d.id == id || (name.isNotEmpty && d.name == name))
+          .timeout(const Duration(seconds: 8));
+      found = device.id;
+    } on TimeoutException {
+      found = null;
+    } catch (_) {
+      found = null; // scanning failed; a direct connection may still work
+    }
+    try {
+      return await connectTo(found ?? id, name);
+    } on TransportException {
+      if (found != null) rethrow;
+      throw TransportException(
+        '$name was not found nearby. Check that it is plugged in with the ignition on, and that no other app '
+        'is connected to it.',
+      );
+    }
+  }
+
+  /// Connects to an adapter by its id, e.g. one just picked from a scan.
   static Future<BleByteChannel> connectTo(String id, String name) async {
     await ensurePermissions();
     final connected = Completer<void>();

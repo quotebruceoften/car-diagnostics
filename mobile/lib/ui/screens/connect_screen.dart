@@ -42,7 +42,7 @@ class _ConnectScreenState extends State<ConnectScreen> {
     final session = SessionScope.read(context);
     return _run(
       () => a.isBle
-          ? session.connectChannel(() => BleByteChannel.connectTo(a.id!, a.name), remember: a)
+          ? session.connectChannel(() => BleByteChannel.connectSaved(a.id!, a.name), remember: a)
           : session.connectWifi(a.host!, a.port!),
     );
   }
