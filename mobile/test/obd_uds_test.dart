@@ -8,6 +8,11 @@ import 'package:cardiag_mobile/core/obd/obd_client.dart';
 import 'package:cardiag_mobile/core/uds/uds_client.dart';
 import 'package:cardiag_mobile/sim/elm_emulator.dart';
 import 'package:cardiag_mobile/sim/vehicle.dart';
+import 'package:cardiag_mobile/ui/session.dart';
+import 'package:cardiag_mobile/core/coding/coder.dart';
+import 'package:cardiag_mobile/core/store.dart';
+import 'package:cardiag_mobile/core/history.dart';
+import 'package:cardiag_mobile/platform/notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'helpers.dart';
@@ -190,5 +195,50 @@ void adapterTests() {
     expect(await UdsClient(t, 0x7E0, rxId: 0x7E8).readDataByIdentifier(0xF190), hasLength(17));
     await t.setResponseWait(null);
     expect(elm.log.last, 'ATST7D');
+  });
+
+  group('losing the adapter', () {
+    test('the driver reports a dropped link once, but not a deliberate close', () async {
+      final elm = Elm327Emulator();
+      final t = Elm327Transport(elm);
+      await t.initialize();
+      var lost = 0;
+      t.onLost = () => lost++;
+      await elm.unplug();
+      await Future<void>.delayed(Duration.zero);
+      expect(lost, 1);
+
+      final elm2 = Elm327Emulator();
+      final t2 = Elm327Transport(elm2);
+      await t2.initialize();
+      t2.onLost = () => lost++;
+      await t2.close();
+      await Future<void>.delayed(Duration.zero);
+      expect(lost, 1);
+    });
+
+    testWidgets('the session disconnects and marks the connection as lost', (tester) async {
+      final session = DiagSession(
+        backupStore: MemoryBackupStore(),
+        dataStore: MemoryDataStore(),
+        historyStore: MemoryHistoryStore(),
+        notifier: NoopReminderNotifier(),
+      );
+      final elm = Elm327Emulator();
+      await tester.runAsync(() => session.connectChannel(() async => elm));
+      expect(session.connected, isTrue);
+      expect(session.connectionLost, isFalse);
+      await elm.unplug();
+      await tester.pump(const Duration(milliseconds: 10));
+      expect(session.connected, isFalse);
+      expect(session.connectionLost, isTrue);
+
+      // A deliberate disconnect is not a loss.
+      final elm2 = Elm327Emulator();
+      await tester.runAsync(() => session.connectChannel(() async => elm2));
+      expect(session.connectionLost, isFalse);
+      await tester.runAsync(session.disconnect);
+      expect(session.connectionLost, isFalse);
+    });
   });
 }

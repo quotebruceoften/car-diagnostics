@@ -109,18 +109,27 @@ class BleByteChannel implements ByteChannel {
   static Future<BleByteChannel> connectTo(String id, String name) async {
     await ensurePermissions();
     final connected = Completer<void>();
+    final lost = Completer<void>();
     final connection = ble
         .connectToDevice(id: id, connectionTimeout: const Duration(seconds: 10))
         .listen(
           (update) {
-            if (connected.isCompleted) return;
+            if (connected.isCompleted) {
+              // The link dropped after connecting (ignition off, out of range).
+              if (update.connectionState == DeviceConnectionState.disconnected && !lost.isCompleted) lost.complete();
+              return;
+            }
             if (update.connectionState == DeviceConnectionState.connected) connected.complete();
             if (update.connectionState == DeviceConnectionState.disconnected) {
               connected.completeError(TransportException('Could not connect to $name. Is it plugged in?'));
             }
           },
           onError: (Object e) {
-            if (!connected.isCompleted) connected.completeError(TransportException('Bluetooth error: $e'));
+            if (!connected.isCompleted) {
+              connected.completeError(TransportException('Bluetooth error: $e'));
+            } else if (!lost.isCompleted) {
+              lost.complete();
+            }
           },
         );
     try {
@@ -136,7 +145,9 @@ class BleByteChannel implements ByteChannel {
       final services = await ble.getDiscoveredServices(id);
       final (notify, write) = _pickCharacteristics(services);
       final withResponse = !write.isWritableWithoutResponse;
-      return BleByteChannel._(name.isEmpty ? id : name, connection, notify, write, withResponse);
+      final channel = BleByteChannel._(name.isEmpty ? id : name, connection, notify, write, withResponse);
+      unawaited(lost.future.then((_) => channel._closeIncoming()));
+      return channel;
     } catch (e) {
       await connection.cancel();
       if (e is CarDiagException) rethrow;
@@ -179,10 +190,15 @@ class BleByteChannel implements ByteChannel {
     }
   }
 
+  /// Ends [incoming], which tells the adapter driver the link is gone.
+  void _closeIncoming() {
+    if (!_incoming.isClosed) _incoming.close();
+  }
+
   @override
   Future<void> close() async {
     await _notifySub.cancel();
     await _connection.cancel(); // cancelling the connection stream disconnects
-    await _incoming.close();
+    _closeIncoming();
   }
 }

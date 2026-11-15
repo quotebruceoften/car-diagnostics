@@ -325,6 +325,16 @@ class DiagSession extends ChangeNotifier {
   /// Set once the app has tried reconnecting to the saved adapter at launch.
   bool autoReconnectTried = false;
 
+  /// Set when the link to the adapter dropped by itself (ignition off, out
+  /// of range); the connect screen then reconnects on its own.
+  bool connectionLost = false;
+
+  Future<void> _onLost(Transport t) async {
+    if (_transport != t) return; // already replaced or disconnected on purpose
+    connectionLost = true;
+    await disconnect();
+  }
+
   Future<void> connectWifi(String host, int port) =>
       _connect(remember: SavedAdapter.wifi(host: host, port: port), () async {
         _setStatus('Connecting to $host:$port...');
@@ -370,6 +380,9 @@ class DiagSession extends ChangeNotifier {
       await _loadProfiles();
       // Only now do the screens switch over to the connected car.
       _transport = t;
+      connectionLost = false;
+      final opened = t;
+      if (opened is Elm327Transport) opened.onLost = () => unawaited(_onLost(opened));
       if (remember != null) settings.setLastAdapter(remember);
       if (vin case final v? when demoVehicle == null) settings.setLastCar(SavedCar(vin: v, name: identity.title));
       unawaited(learnFaultNames());

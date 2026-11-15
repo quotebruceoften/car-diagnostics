@@ -82,12 +82,16 @@ class Elm327Emulator implements ByteChannel {
   @override
   Future<void> close() => _out.close();
 
+  /// Simulates the adapter losing power or going out of range.
+  Future<void> unplug() => _out.close();
+
   void _reply(String cmd, List<String> lines) {
     final text = '${_echo ? '$cmd\r' : ''}${lines.map((l) => '$l\r').join()}\r>';
     // Deliver asynchronously and in two chunks, like a real serial link.
     final bytes = ascii.encode(text);
     final half = bytes.length ~/ 2;
     scheduleMicrotask(() {
+      if (_out.isClosed) return; // unplugged: nothing comes back
       _out.add(bytes.sublist(0, half));
       _out.add(bytes.sublist(half));
     });

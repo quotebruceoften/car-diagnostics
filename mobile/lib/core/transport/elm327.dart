@@ -36,7 +36,11 @@ class Elm327Transport implements Transport, BatteryVoltageReader, AdjustableResp
   Elm327Transport(this.channel, {this.timeout = const Duration(seconds: 5), int responseTimeoutMs = 500})
     : _normalWaitMs = responseTimeoutMs,
       _st = (responseTimeoutMs ~/ 4).clamp(1, 0xFF) {
-    _sub = channel.incoming.listen(_onData, onError: _onError, onDone: () => _onError('adapter disconnected'));
+    _sub = channel.incoming.listen(
+      _onData,
+      onError: (Object e) => _lose(e),
+      onDone: () => _lose('adapter disconnected'),
+    );
   }
 
   final ByteChannel channel;
@@ -137,6 +141,7 @@ class Elm327Transport implements Transport, BatteryVoltageReader, AdjustableResp
 
   @override
   Future<void> close() async {
+    _closing = true;
     await _sub.cancel();
     await channel.close();
   }
@@ -150,6 +155,18 @@ class Elm327Transport implements Transport, BatteryVoltageReader, AdjustableResp
       _pending = null;
       pending.complete(text.substring(0, text.lastIndexOf('>')));
     }
+  }
+
+  /// Called once when the link to the adapter is lost (not on [close]).
+  void Function()? onLost;
+  bool _lost = false;
+  bool _closing = false;
+
+  void _lose(Object error) {
+    _onError(error);
+    if (_lost || _closing) return;
+    _lost = true;
+    onLost?.call();
   }
 
   void _onError(Object error) {

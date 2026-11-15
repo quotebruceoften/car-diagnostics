@@ -29,32 +29,77 @@ class _ConnectScreenState extends State<ConnectScreen> {
     super.didChangeDependencies();
     final session = SessionScope.read(context);
     final saved = session.settings.lastAdapter;
-    // Reconnect to the last adapter once per app launch.
-    if (!session.autoReconnectTried && session.settings.autoReconnect && saved != null) {
+    if (saved == null || !session.settings.autoReconnect || _autoRunning) return;
+    // Look for the adapter at launch, and again after the link dropped.
+    if (!session.autoReconnectTried || session.connectionLost) {
       session.autoReconnectTried = true;
+      final lost = session.connectionLost;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted && !session.connected && !session.busy) _reconnect(saved);
+        if (mounted && !session.connected && !session.busy) _autoConnect(saved, afterLoss: lost);
       });
     }
   }
 
-  Future<void> _reconnect(SavedAdapter a) {
+  /// Keeps trying the saved adapter for a while, so plugging it in and
+  /// switching the ignition on is enough.
+  static const _autoWindow = Duration(minutes: 2);
+  static const _autoPause = Duration(seconds: 5);
+  bool _autoRunning = false;
+  bool _autoStop = false;
+  int _autoAttempt = 0;
+  bool _autoAfterLoss = false;
+
+  Future<void> _autoConnect(SavedAdapter a, {bool afterLoss = false}) async {
     final session = SessionScope.read(context);
-    return _run(
-      () => a.isBle
-          ? session.connectChannel(() => BleByteChannel.connectSaved(a.id!, a.name), remember: a)
-          : session.connectWifi(a.host!, a.port!),
-    );
+    setState(() {
+      _autoRunning = true;
+      _autoStop = false;
+      _autoAttempt = 0;
+      _autoAfterLoss = afterLoss;
+      _error = null;
+    });
+    final until = DateTime.now().add(_autoWindow);
+    Object? last;
+    while (mounted && !_autoStop && !session.connected && DateTime.now().isBefore(until)) {
+      setState(() => _autoAttempt++);
+      try {
+        await _open(a);
+        last = null;
+        break;
+      } catch (e) {
+        last = e;
+      }
+      if (!mounted || _autoStop || session.connected) break;
+      await Future<void>.delayed(_autoPause);
+    }
+    if (!mounted) return;
+    session.connectionLost = false;
+    setState(() {
+      _autoRunning = false;
+      if (last != null && !_autoStop) _error = last;
+    });
   }
+
+  Future<void> _open(SavedAdapter a) {
+    final session = SessionScope.read(context);
+    return a.isBle
+        ? session.connectChannel(() => BleByteChannel.connectSaved(a.id!, a.name), remember: a)
+        : session.connectWifi(a.host!, a.port!);
+  }
+
+  Future<void> _reconnect(SavedAdapter a) => _run(() => _open(a));
 
   @override
   void dispose() {
+    _autoStop = true;
     _host.dispose();
     _port.dispose();
     super.dispose();
   }
 
   Future<void> _run(Future<void> Function() connect) async {
+    // A manual choice replaces the automatic search.
+    _autoStop = true;
     setState(() => _error = null);
     try {
       await connect();
@@ -93,12 +138,31 @@ class _ConnectScreenState extends State<ConnectScreen> {
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(0, 8, 0, 32),
             sliver: SliverList.list(
-              children: session.busy
+              children: session.busy || _autoRunning
                   ? [
+                      if (_autoRunning)
+                        StatusBanner(
+                          tone: _autoAfterLoss ? Tone.warn : Tone.neutral,
+                          icon: _autoAfterLoss ? Icons.link_off_rounded : Icons.bluetooth_searching_rounded,
+                          title: _autoAfterLoss
+                              ? 'Connection lost, reconnecting'
+                              : 'Looking for ${session.settings.lastAdapter?.name ?? 'your adapter'}',
+                          subtitle: 'Attempt $_autoAttempt. Plug the adapter in and switch the ignition on.',
+                          action: TextButton(
+                            onPressed: () => setState(() => _autoStop = true),
+                            child: const Text('Stop'),
+                          ),
+                        ),
                       Card(
                         child: Padding(
                           padding: const EdgeInsets.all(32),
-                          child: LoadingView(message: session.status.isEmpty ? 'Connecting...' : session.status),
+                          child: LoadingView(
+                            message: !session.busy
+                                ? 'Trying again in a few seconds...'
+                                : session.status.isEmpty
+                                ? 'Connecting...'
+                                : session.status,
+                          ),
                         ),
                       ),
                     ]
