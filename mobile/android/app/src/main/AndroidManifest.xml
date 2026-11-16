@@ -61,7 +61,7 @@
             </intent-filter>
         </receiver>
         <service
-            android:name="com.pravera.flutter_foreground_task.service.ForegroundService"
+            android:name="com.dexterous.flutterlocalnotifications.ForegroundService"
             android:foregroundServiceType="connectedDevice"
             android:exported="false"
             android:stopWithTask="true" />

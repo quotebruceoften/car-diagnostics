@@ -1,4 +1,3 @@
-import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 /// Keeps a long job (the module explorer) running with the screen off or
@@ -36,94 +35,105 @@ class NoBackgroundWork implements BackgroundWork {
 
 /// Android: a "connected device" foreground service keeps the app and its
 /// Bluetooth link alive. The work itself stays in the app; the service only
-/// stops Android from pausing it.
+/// shows the progress notification and stops Android from pausing the app.
+///
+/// This uses the notification plugin's own service, which runs no code of its
+/// own. (An earlier version used a library that started a second copy of the
+/// app's engine, and that copy kept cutting the Bluetooth link.)
 class ForegroundServiceWork implements BackgroundWork {
-  bool _initialized = false;
+  static const _id = 701;
   final _notifications = FlutterLocalNotificationsPlugin();
   bool _notificationsReady = false;
-
-  void _init() {
-    if (_initialized) return;
-    FlutterForegroundTask.init(
-      androidNotificationOptions: AndroidNotificationOptions(
-        channelId: 'long_jobs',
-        channelName: 'Long jobs',
-        channelDescription: 'Shows progress while the app works in the background',
-        onlyAlertOnce: true,
-      ),
-      iosNotificationOptions: const IOSNotificationOptions(showNotification: false, playSound: false),
-      foregroundTaskOptions: ForegroundTaskOptions(
-        eventAction: ForegroundTaskEventAction.nothing(),
-        allowWakeLock: true,
-        allowAutoRestart: false,
-        stopWithTask: true,
-      ),
-    );
-    _initialized = true;
-  }
+  bool _running = false;
+  String _title = '';
 
   /// Why background mode could not start, for the developer report.
   String? lastError;
 
+  AndroidFlutterLocalNotificationsPlugin? get _android =>
+      _notifications.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
+  Future<void> _ready() async {
+    if (_notificationsReady) return;
+    await _notifications.initialize(
+      settings: const InitializationSettings(
+        android: AndroidInitializationSettings('@drawable/ic_launcher_foreground'),
+        iOS: DarwinInitializationSettings(
+          requestAlertPermission: false,
+          requestBadgePermission: false,
+          requestSoundPermission: false,
+        ),
+      ),
+    );
+    _notificationsReady = true;
+  }
+
+  static const _progress = AndroidNotificationDetails(
+    'long_jobs',
+    'Long jobs',
+    channelDescription: 'Shows progress while the app works in the background',
+    icon: '@drawable/ic_launcher_foreground',
+    importance: Importance.low,
+    priority: Priority.low,
+    onlyAlertOnce: true,
+    ongoing: true,
+    showWhen: false,
+  );
+
+  Future<void> _show(String text) => _android!.startForegroundService(
+    id: _id,
+    title: _title,
+    body: text,
+    notificationDetails: _progress,
+    startType: AndroidServiceStartType.startNotSticky,
+    foregroundServiceTypes: {AndroidServiceForegroundType.foregroundServiceTypeConnectedDevice},
+  );
+
   @override
   Future<bool> start(String title, String text) async {
     try {
-      _init();
-      if (await FlutterForegroundTask.checkNotificationPermission() != NotificationPermission.granted) {
-        await FlutterForegroundTask.requestNotificationPermission();
-      }
-      final ServiceRequestResult result;
-      if (await FlutterForegroundTask.isRunningService) {
-        result = await FlutterForegroundTask.updateService(notificationTitle: title, notificationText: text);
-      } else {
-        result = await FlutterForegroundTask.startService(
-          serviceId: 701,
-          notificationTitle: title,
-          notificationText: text,
-        );
-      }
-      if (result is ServiceRequestFailure) {
-        lastError = '${result.error}';
+      await _ready();
+      final android = _android;
+      if (android == null) {
+        lastError = 'only available on Android';
         return false;
       }
+      if (await android.areNotificationsEnabled() != true) {
+        await android.requestNotificationsPermission();
+      }
+      _title = title;
+      await _show(text);
+      _running = true;
       lastError = null;
-      return await FlutterForegroundTask.isRunningService;
+      return true;
     } catch (e) {
       lastError = '$e';
+      _running = false;
       return false;
     }
   }
 
   @override
   Future<void> update(String text) async {
+    if (!_running) return;
     try {
-      await FlutterForegroundTask.updateService(notificationText: text);
+      // Starting again with the same id only refreshes the notification.
+      await _show(text);
     } catch (_) {}
   }
 
   @override
   Future<void> stop() async {
+    _running = false;
     try {
-      await FlutterForegroundTask.stopService();
+      await _android?.stopForegroundService();
     } catch (_) {}
   }
 
   @override
   Future<void> announce(String title, String text) async {
     try {
-      if (!_notificationsReady) {
-        await _notifications.initialize(
-          settings: const InitializationSettings(
-            android: AndroidInitializationSettings('@drawable/ic_launcher_foreground'),
-            iOS: DarwinInitializationSettings(
-              requestAlertPermission: false,
-              requestBadgePermission: false,
-              requestSoundPermission: false,
-            ),
-          ),
-        );
-        _notificationsReady = true;
-      }
+      await _ready();
       await _notifications.show(
         id: 702,
         title: title,

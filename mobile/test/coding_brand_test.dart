@@ -283,6 +283,12 @@ void main() {
       expect(brand.explainDtc(other.code).isGeneric, isTrue);
     });
 
+    test('use the detailed name in lists when the short list lacks it', () {
+      final u0428 = brand.resolveModuleDtc(module('01'), const Dtc('P001B', failureType: 0xEE, status: 0x20));
+      expect(u0428.code, 'U0428');
+      expect(brand.describeDtc(u0428), 'Implausible data from the steering angle sensor');
+    });
+
     test('the verified translations cover the faults of the scanned Golf', () {
       String at(String address, int number) => brand
           .resolveModuleDtc(

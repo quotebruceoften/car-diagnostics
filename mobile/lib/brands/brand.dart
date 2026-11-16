@@ -134,7 +134,11 @@ abstract class Brand {
 
   String describeDtc(Dtc dtc) {
     final specific = dtcExplanations[dtc.code.toUpperCase()];
-    return specific?.title ?? describeGenericDtc(dtc.code);
+    if (specific != null) return specific.title;
+    if (genericDtcDescriptions.containsKey(dtc.code)) return describeGenericDtc(dtc.code);
+    // The detailed explanations know some codes the short list does not.
+    final info = dtcInfo(dtc.code);
+    return info.isGeneric ? describeGenericDtc(dtc.code) : info.title;
   }
 
   /// Make-specific meanings of manufacturer codes, used before the generic table.

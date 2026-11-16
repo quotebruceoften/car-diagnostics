@@ -98,6 +98,11 @@ To send results: Overview > Tools > Send to developer (or Settings > Your data).
     passenger mirror heater (B11F8) were present on 2026-10-29 and gone on
     2026-11-13.
 
+13. **Background mode retest**: turn "Background mode for long jobs" back on,
+    start the explorer, switch to other apps for a few minutes, then send a
+    report. The old background service cut the Bluetooth link every 1-3
+    minutes; the new one should not.
+
 ## Optional, later
 
 - A Google Play developer account ($25, in the owner's name) if the app
