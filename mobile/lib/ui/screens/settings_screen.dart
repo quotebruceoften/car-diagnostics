@@ -164,6 +164,19 @@ class SettingsScreen extends StatelessWidget {
               child: Column(
                 children: [
                   SwitchListTile(
+                    secondary: const Icon(Icons.phonelink_lock_outlined),
+                    title: const Text('Background mode for long jobs'),
+                    subtitle: const Text(
+                      'Keeps the module explorer running while you use other apps. If the adapter keeps '
+                      'disconnecting, turn this off: the screen then stays on during the sweep instead.',
+                    ),
+                    value: settings.backgroundMode,
+                    onChanged: (v) {
+                      HapticFeedback.selectionClick();
+                      settings.setBackgroundMode(v);
+                    },
+                  ),
+                  SwitchListTile(
                     secondary: const Icon(Icons.bluetooth_connected_rounded),
                     title: const Text('Reconnect automatically'),
                     subtitle: const Text('Connect to your last adapter when the app opens'),

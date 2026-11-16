@@ -75,6 +75,7 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
     _cancel = true; // leaving this screen stops the sweep
     _session.removeListener(_onSession);
     if (_interrupted != null) unawaited(_session.background.stop());
+    keepScreenOn(false);
     super.dispose();
   }
 
@@ -95,17 +96,22 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
     // The screen may turn off and the app may go to the background: a
     // notification keeps it running and shows the progress.
     _pace.clear();
-    final background = await _session.background.start(
-      'Exploring ${widget.module.name}',
-      resume == null ? 'Starting...' : 'Continuing after reconnecting...',
-    );
-    if (!background) {
+    final useBackground = _session.settings.backgroundMode;
+    final background =
+        useBackground &&
+        await _session.background.start(
+          'Exploring ${widget.module.name}',
+          resume == null ? 'Starting...' : 'Continuing after reconnecting...',
+        );
+    // Without background mode the screen stays on so the sweep keeps going.
+    if (!useBackground) keepScreenOn(true);
+    if (useBackground && !background) {
       final work = _session.background;
       ErrorLog.instance.record(
         'Background mode did not start${work is ForegroundServiceWork && work.lastError != null ? ': ${work.lastError}' : ''}',
       );
     }
-    if (mounted) setState(() => _background = background);
+    if (mounted) setState(() => _background = useBackground ? background : null);
     var lastShown = DateTime(0);
     var latest = resume;
     try {
@@ -155,7 +161,10 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
         // The adapter went away; the next connection sets it up again.
       }
       // Background mode stays on while waiting to reconnect.
-      if (_interrupted == null) await _session.background.stop();
+      if (_interrupted == null) {
+        if (useBackground) await _session.background.stop();
+        keepScreenOn(false);
+      }
       if (latest != null) await _save(latest);
       if (mounted) setState(() => _running = false);
       if (_interrupted != null) _onSession(); // already reconnected?

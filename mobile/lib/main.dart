@@ -1,6 +1,7 @@
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter/material.dart';
 
+import 'core/error_log.dart';
 import 'ui/screens/connect_screen.dart';
 import 'ui/screens/home_screen.dart';
 import 'ui/session.dart';
@@ -39,7 +40,17 @@ class _CarDiagAppState extends State<CarDiagApp> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) => session.lifecycle = state;
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final before = session.lifecycle;
+    session.lifecycle = state;
+    // While connected, note when the app leaves and returns to the screen,
+    // to line up dropped connections in the developer report.
+    if (session.connected && (state == AppLifecycleState.resumed) != (before == AppLifecycleState.resumed)) {
+      ErrorLog.instance.record(
+        state == AppLifecycleState.resumed ? 'App back on screen' : 'App left the screen (${state.name})',
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) => SessionScope(

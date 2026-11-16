@@ -44,7 +44,7 @@ String buildSupportReport({
     ..writeln('Adapter: ${adapter.isEmpty ? 'not connected' : adapter}${connected ? '' : ' (not connected now)'}');
   if (counters.isNotEmpty) b.writeln('From the car: $counters');
 
-  section('Recent errors (${errors.length})');
+  section('Recent errors and events (${errors.length})');
   if (errors.isEmpty) b.writeln('none');
   for (final (t, m) in errors.reversed) {
     b.writeln('${_stamp(t)}  $m');

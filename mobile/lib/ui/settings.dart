@@ -67,6 +67,7 @@ class AppSettings extends ChangeNotifier {
     autoReconnect = p.getBool('autoReconnect') ?? true;
     serviceNotifications = p.getBool('serviceNotifications') ?? true;
     spokenAlerts = p.getBool('spokenAlerts') ?? true;
+    backgroundMode = p.getBool('backgroundMode') ?? true;
     shiftRpm = p.getInt('shiftRpm') ?? 5500;
     economy = EconomyUnit.values.asNameMap()[p.getString('economy')] ?? EconomyUnit.lPer100km;
     fuelPrice = p.getDouble('fuelPrice');
@@ -101,6 +102,10 @@ class AppSettings extends ChangeNotifier {
   /// Say live-data alerts out loud.
   bool spokenAlerts = true;
 
+  /// Keep long jobs (the module explorer) running with the app in the
+  /// background, through an Android foreground service.
+  bool backgroundMode = true;
+
   /// Engine speed at which the shift light flashes.
   int shiftRpm = 5500;
   SavedAdapter? lastAdapter;
@@ -125,6 +130,7 @@ class AppSettings extends ChangeNotifier {
 
   void setServiceNotifications(bool v) =>
       _set(() => serviceNotifications = v, (p) => p.setBool('serviceNotifications', v));
+  void setBackgroundMode(bool v) => _set(() => backgroundMode = v, (p) => p.setBool('backgroundMode', v));
   void setSpokenAlerts(bool v) => _set(() => spokenAlerts = v, (p) => p.setBool('spokenAlerts', v));
   void setShiftRpm(int v) => _set(() => shiftRpm = v, (p) => p.setInt('shiftRpm', v));
   void setLastCar(SavedCar c) => _set(() => lastCar = c, (p) => p.setString('lastCar', jsonEncode(c.toJson())));
@@ -157,6 +163,7 @@ class AppSettings extends ChangeNotifier {
     'autoReconnect': autoReconnect,
     'serviceNotifications': serviceNotifications,
     'spokenAlerts': spokenAlerts,
+    'backgroundMode': backgroundMode,
     'shiftRpm': shiftRpm,
     'fuelPrice': fuelPrice,
     'currency': currency,
@@ -172,6 +179,7 @@ class AppSettings extends ChangeNotifier {
     if (j['autoReconnect'] case final bool v) setAutoReconnect(v);
     if (j['serviceNotifications'] case final bool v) setServiceNotifications(v);
     if (j['spokenAlerts'] case final bool v) setSpokenAlerts(v);
+    if (j['backgroundMode'] case final bool v) setBackgroundMode(v);
     if (j['shiftRpm'] case final int v) setShiftRpm(v);
     if (j.containsKey('fuelPrice') || j.containsKey('currency')) {
       setFuelPrice((j['fuelPrice'] as num?)?.toDouble(), (j['currency'] ?? currency) as String);
