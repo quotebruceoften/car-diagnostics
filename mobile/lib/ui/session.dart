@@ -134,6 +134,33 @@ class DiagSession extends ChangeNotifier {
   /// Service counters from the car's instrument cluster, where readable.
   CarCounters? counters;
 
+  /// Resets the service indicator in the car and records it in the service
+  /// log. Returns the counters as they were before.
+  Future<CarCounters> resetServiceIndicator({ServiceType? logAs}) async {
+    final before = counters ?? await brand.readCounters(transport);
+    if (before == null) throw CarDiagException('The service counters could not be read');
+    counters = await brand.resetServiceIndicator(transport);
+    final v = vin;
+    if (v != null && logAs != null) {
+      final log = await loadServiceLog(v);
+      log.upsert(
+        ServiceEntry(
+          id: DateTime.now().microsecondsSinceEpoch.toString(),
+          type: logAs,
+          date: DateTime.now(),
+          km: before.odometerKm,
+          note:
+              'Service indicator reset from the app (was ${before.kmSinceService} km and '
+              '${before.daysSinceService} days since the last reset)',
+        ),
+      );
+      log.updateMileage(before.odometerKm, DateTime.now());
+      await saveServiceLog(v, log);
+    }
+    notifyListeners();
+    return before;
+  }
+
   Future<void> _syncOdometer() async {
     final v = vin;
     if (v == null) return;

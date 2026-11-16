@@ -84,6 +84,52 @@ class VagBrand extends Brand {
     }
   }
 
+  /// Distance (3 bytes, km) and days (2 bytes) since the last service reset
+  /// on the verified clusters: the "FIX: distance covered / time since last
+  /// inspection" counters of VCDS, found with the module explorer.
+  static const _kmSinceServiceDid = 0x2243;
+  static const _daysSinceServiceDid = 0x2244;
+
+  @override
+  bool canResetService(CarCounters? counters) => counters?.kmSinceService != null && counters?.daysSinceService != null;
+
+  @override
+  Future<CarCounters> resetServiceIndicator(Transport transport) async {
+    final before = await readCounters(transport);
+    if (before == null || !canResetService(before)) {
+      throw CarDiagException('Resetting the service indicator is only verified for the Golf 7 cluster 5G0 920 861 B');
+    }
+    final cluster = UdsClient(transport, 0x714, rxId: 0x77E);
+    await cluster.diagnosticSessionControl(extendedSession);
+    try {
+      await writeWorkshopCode(cluster);
+      try {
+        await cluster.writeDataByIdentifier(_kmSinceServiceDid, const [0, 0, 0]);
+        await cluster.writeDataByIdentifier(_daysSinceServiceDid, const [0, 0]);
+      } on NegativeResponseException catch (e) {
+        throw CarDiagException(
+          'The cluster refused the reset (step 2 of 2: ${nrcNames[e.nrc] ?? 'NRC 0x${e.nrc.toRadixString(16)}'}, '
+          'NRC 0x${e.nrc.toRadixString(16).toUpperCase()}).',
+        );
+      }
+    } finally {
+      try {
+        await cluster.diagnosticSessionControl(defaultSession);
+      } on CarDiagException {
+        // The session times out by itself anyway.
+      }
+    }
+    final after = await readCounters(transport);
+    if (after == null || after.kmSinceService != 0 || after.daysSinceService != 0) {
+      throw CarDiagException(
+        'The cluster accepted the reset but still reports '
+        '${after?.kmSinceService ?? '?'} km and ${after?.daysSinceService ?? '?'} days. Check the dashboard; the '
+        "car's own Service menu can also reset it.",
+      );
+    }
+    return after;
+  }
+
   static final _number = RegExp(r'^\d+$');
 
   /// The VW fault number of a fault read over UDS (its three bytes).

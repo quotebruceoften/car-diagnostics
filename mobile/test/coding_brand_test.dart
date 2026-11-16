@@ -220,6 +220,46 @@ void main() {
     });
   });
 
+  group('VW service reset', () {
+    Vehicle car(String part) => Vehicle('test', 'WVWZZZAUZDW000001', [
+      VirtualEcu(
+        'Instrument cluster',
+        0x714,
+        0x77E,
+        dids: {
+          0xF187: '$part '.codeUnits,
+          0xF1A5: [0x10, 0x7A, 0xEF, 0xAA, 0x1B, 0xDA],
+          0x2203: [0x02, 0x35, 0xE9],
+          0x2243: [0x00, 0x28, 0x3C],
+          0x2244: [0x01, 0x00],
+        },
+        writableDids: {0x2243, 0x2244},
+        requiresFingerprint: true,
+      ),
+    ]);
+
+    test('sets distance and days since the service to zero, after the workshop code', () async {
+      final v = car('5G0920861B');
+      final t = SimulatorTransport(v);
+      const brand = VagBrand();
+      expect(brand.canResetService(await brand.readCounters(t)), isTrue);
+      final after = await brand.resetServiceIndicator(t);
+      expect(after.kmSinceService, 0);
+      expect(after.daysSinceService, 0);
+      expect(after.odometerKm, 144873); // the odometer is not touched
+      expect(v.ecu(0x714)!.dids[0x2203], [0x02, 0x35, 0xE9]);
+      expect(v.ecu(0x714)!.session, defaultSession);
+    });
+
+    test('refuses on clusters that are not verified', () async {
+      const brand = VagBrand();
+      final t = SimulatorTransport(car('5G1920741B'));
+      expect(brand.canResetService(await brand.readCounters(t)), isFalse);
+      await expectLater(brand.resetServiceIndicator(t), throwsA(isA<CarDiagException>()));
+      expect(genericBrand.canResetService(null), isFalse);
+    });
+  });
+
   group('VW fault numbers', () {
     const brand = VagBrand();
     ModuleDef module(String address) => brand.modules.firstWhere((m) => m.address == address);

@@ -115,6 +115,15 @@ abstract class Brand {
     return wmiPrefixes.any(v.startsWith);
   }
 
+  /// Whether [counters] came from a module whose service reset is verified.
+  bool canResetService(CarCounters? counters) => false;
+
+  /// Sets the distance and days since the last service back to zero, where
+  /// the make and module version are verified. Returns the counters after
+  /// the reset (read back from the car).
+  Future<CarCounters> resetServiceIndicator(Transport transport) =>
+      throw CarDiagException('Resetting the service indicator is not supported for this car');
+
   /// Reads the odometer and service counters from the car's modules, where
   /// the make and module version are known; null otherwise. Read-only.
   Future<CarCounters?> readCounters(Transport transport) async => null;

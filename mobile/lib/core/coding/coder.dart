@@ -189,43 +189,51 @@ class Coder {
     return saved;
   }
 
-  /// The workshop code is written to 0xF198. Many VW modules do not let it be
-  /// read back there; they keep the code from the last coding in VW's
-  /// "coding repair shop code" (0xF1A5), which on a Golf 7 cluster holds the
-  /// workshop number VCDS shows as "Shop #". That stored code is reused.
-  static const workshopCodeDid = 0xF198;
-  static const storedWorkshopCodeDid = 0xF1A5;
-  static const programmingDateDid = 0xF199;
-
   /// Where the reused workshop code was read from (for reports and tests).
   int? fingerprintSource;
 
-  Future<void> _writeFingerprint() async {
-    Uint8List? code;
-    for (final did in const [workshopCodeDid, storedWorkshopCodeDid]) {
-      try {
-        code = await uds.readDataByIdentifier(did);
-        fingerprintSource = did;
-        break;
-      } on CarDiagException {
-        continue;
-      }
-    }
-    if (code == null) return; // nothing to reuse; try the coding without it
+  Future<void> _writeFingerprint() async => fingerprintSource = await writeWorkshopCode(uds);
+}
+
+const workshopCodeDid = 0xF198;
+const storedWorkshopCodeDid = 0xF1A5;
+const programmingDateDid = 0xF199;
+
+/// Records the workshop identification, as VW Group modules require before
+/// they accept a change (coding, adaptation). Must run in the extended
+/// session. The workshop code is written to 0xF198; many VW modules do not
+/// let it be read back there and keep the code of the last change in VW's
+/// "coding repair shop code" (0xF1A5), which on a Golf 7 cluster holds the
+/// workshop number VCDS shows as "Shop #". That stored code is reused, so no
+/// identity is invented. Returns where it was read from, or null when the
+/// module keeps none.
+Future<int?> writeWorkshopCode(UdsClient uds) async {
+  Uint8List? code;
+  int? source;
+  for (final did in const [workshopCodeDid, storedWorkshopCodeDid]) {
     try {
-      await uds.writeDataByIdentifier(workshopCodeDid, code);
-    } on NegativeResponseException catch (e) {
-      throw CodingException(
-        'The module refused the workshop code (step 1 of 2: ${nrcNames[e.nrc] ?? 'NRC 0x${e.nrc.toRadixString(16)}'}). '
-        'Nothing was changed.',
-      );
-    }
-    final now = DateTime.now();
-    int bcd(int v) => ((v ~/ 10) << 4) | (v % 10);
-    try {
-      await uds.writeDataByIdentifier(programmingDateDid, [bcd(now.year % 100), bcd(now.month), bcd(now.day)]);
-    } on NegativeResponseException {
-      // Some modules take only the workshop code.
+      code = await uds.readDataByIdentifier(did);
+      source = did;
+      break;
+    } on CarDiagException {
+      continue;
     }
   }
+  if (code == null) return null;
+  try {
+    await uds.writeDataByIdentifier(workshopCodeDid, code);
+  } on NegativeResponseException catch (e) {
+    throw CodingException(
+      'The module refused the workshop code (step 1 of 2: ${nrcNames[e.nrc] ?? 'NRC 0x${e.nrc.toRadixString(16)}'}). '
+      'Nothing was changed.',
+    );
+  }
+  final now = DateTime.now();
+  int bcd(int v) => ((v ~/ 10) << 4) | (v % 10);
+  try {
+    await uds.writeDataByIdentifier(programmingDateDid, [bcd(now.year % 100), bcd(now.month), bcd(now.day)]);
+  } on NegativeResponseException {
+    // Some modules take only the workshop code.
+  }
+  return source;
 }

@@ -43,3 +43,16 @@ car. The sequence the cluster accepts:
 5. Write the coding to 0x0600 and read it back to verify.
 
 No security access (login code) was needed for the coding.
+
+## Service indicator (found 2026-11-15, reset not yet verified on the car)
+
+Matched between the module explorer and the VCDS adaptation list:
+
+| DID | Value then | VCDS adaptation |
+|---|---|---|
+| 0x2203 | 144873 | Mileage |
+| 0x2243 | 10300 (3 bytes) | FIX/ESI: distance since last inspection |
+| 0x2244 | 256 (2 bytes) | FIX/ESI: time since last inspection (days) |
+
+The app's "Reset service indicator" writes 0 to 0x2243 and 0x2244 after the
+workshop code step above, then reads them back.

@@ -5,6 +5,9 @@ import 'package:cardiag_mobile/core/store.dart';
 import 'package:cardiag_mobile/platform/notifications.dart';
 import 'package:cardiag_mobile/ui/session.dart';
 import 'package:cardiag_mobile/ui/settings.dart';
+import 'package:cardiag_mobile/sim/vehicle.dart';
+import 'package:cardiag_mobile/sim/elm_emulator.dart';
+import 'package:cardiag_mobile/core/history.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -59,5 +62,53 @@ void main() {
     settings.setServiceNotifications(false);
     await session.syncServiceNotifications('WVWZZZAUZDW000001');
     expect(notifier.synced['WVWZZZAUZDW000001'], isEmpty);
+  });
+
+  testWidgets('a service reset from the app is recorded in the service log', (tester) async {
+    final vehicle = Vehicle('Golf', 'WVWZZZAUZDW000001', [
+      ObdEcu(
+        'Engine',
+        0x7E0,
+        0x7E8,
+        vin: 'WVWZZZAUZDW000001',
+        live: {
+          0x0D: (t) => [0],
+        },
+      ),
+      VirtualEcu(
+        'Instrument cluster',
+        0x714,
+        0x77E,
+        dids: {
+          0xF187: '5G0920861B '.codeUnits,
+          0xF1A5: [0x10, 0x7A, 0xEF, 0xAA, 0x1B, 0xDA],
+          0x2203: [0x02, 0x35, 0xE9],
+          0x2243: [0x00, 0x28, 0x3C],
+          0x2244: [0x01, 0x00],
+        },
+        writableDids: {0x2243, 0x2244},
+        requiresFingerprint: true,
+      ),
+    ]);
+    final store = MemoryDataStore();
+    final session = DiagSession(
+      backupStore: MemoryBackupStore(),
+      dataStore: store,
+      notifier: NoopReminderNotifier(),
+      historyStore: MemoryHistoryStore(),
+    );
+    await tester.runAsync(() => session.connectChannel(() async => Elm327Emulator(vehicle)));
+    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 200)));
+    expect(session.counters?.kmSinceService, 10300);
+
+    final before = (await tester.runAsync(() => session.resetServiceIndicator(logAs: ServiceType.oil)))!;
+    expect(before.kmSinceService, 10300);
+    expect(session.counters!.kmSinceService, 0);
+    final log = ServiceLog.parse(store.files['service_log/WVWZZZAUZDW000001.json']);
+    final entry = log.entries.single;
+    expect(entry.type, ServiceType.oil);
+    expect(entry.km, 144873);
+    expect(entry.note, contains('was 10300 km and 256 days'));
+    await tester.runAsync(session.disconnect);
   });
 }

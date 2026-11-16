@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../brands/brand.dart';
 import '../../core/service_log.dart';
 import '../session.dart';
 import '../settings.dart';
@@ -101,6 +102,75 @@ class _ServiceScreenState extends State<ServiceScreen> {
   Future<void> _delete(ServiceEntry e) async {
     _log!.entries.removeWhere((x) => x.id == e.id);
     await _save();
+  }
+
+  bool _resetting = false;
+
+  /// After a service done at home: sets the car's "service due" counters back
+  /// to zero and optionally records the service in the log.
+  Future<void> _resetIndicator(CarCounters c) async {
+    final session = SessionScope.read(context);
+    final s = session.settings;
+    var logAs = ServiceType.oil;
+    var addToLog = true;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialog) => AlertDialog(
+          title: const Text('Reset the service indicator?'),
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'The car counts ${s.km(c.kmSinceService!.toDouble(), decimals: 0)} and ${c.daysSinceService} days '
+                  'since the last service. Resetting sets both to zero, so the dashboard counts to the next service '
+                  'from today. Do this after the service is done.',
+                ),
+                const SizedBox(height: 12),
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  value: addToLog,
+                  onChanged: (v) => setDialog(() => addToLog = v ?? false),
+                  title: const Text('Also add it to the service log'),
+                ),
+                if (addToLog)
+                  DropdownButtonFormField<ServiceType>(
+                    initialValue: logAs,
+                    decoration: const InputDecoration(labelText: 'What was done'),
+                    items: [
+                      for (final t in ServiceType.values.where((t) => t != ServiceType.other))
+                        DropdownMenuItem(value: t, child: Text(t.label)),
+                    ],
+                    onChanged: (t) => setDialog(() => logAs = t ?? logAs),
+                  ),
+                const SizedBox(height: 12),
+                const Text('Ignition on, engine off.'),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+            FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Reset')),
+          ],
+        ),
+      ),
+    );
+    if (ok != true || !mounted) return;
+    setState(() => _resetting = true);
+    try {
+      await session.resetServiceIndicator(logAs: addToLog ? logAs : null);
+      HapticFeedback.mediumImpact();
+      await _load();
+      if (mounted) {
+        showMessage(context, 'Service indicator reset. Switch the ignition off and on to see it on the dashboard.');
+      }
+    } catch (e) {
+      if (mounted) showMessage(context, errorText(e));
+    } finally {
+      if (mounted) setState(() => _resetting = false);
+    }
   }
 
   Future<void> _editMileage() async {
@@ -220,16 +290,37 @@ class _ServiceScreenState extends State<ServiceScreen> {
                 if (session.vin == widget.vin)
                   if (session.counters case final c? when c.kmSinceService != null || c.daysSinceService != null)
                     Card(
-                      child: ListTile(
-                        leading: const TintedIcon(Icons.speed_rounded, size: 40),
-                        title: const Text('Since the last service reset'),
-                        subtitle: Text(
-                          [
-                            if (c.kmSinceService != null) s.km(c.kmSinceService!.toDouble(), decimals: 0),
-                            if (c.daysSinceService != null) '${c.daysSinceService} days',
-                          ].join(' · '),
-                        ),
-                        trailing: const Pill('from the car', color: Colors.grey),
+                      child: Column(
+                        children: [
+                          ListTile(
+                            leading: const TintedIcon(Icons.speed_rounded, size: 40),
+                            title: const Text('Since the last service reset'),
+                            subtitle: Text(
+                              [
+                                if (c.kmSinceService != null) s.km(c.kmSinceService!.toDouble(), decimals: 0),
+                                if (c.daysSinceService != null) '${c.daysSinceService} days',
+                              ].join(' · '),
+                            ),
+                            trailing: const Pill('from the car', color: Colors.grey),
+                          ),
+                          if (session.connected && session.brand.canResetService(c))
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton.icon(
+                                  icon: _resetting
+                                      ? const SizedBox.square(
+                                          dimension: 16,
+                                          child: CircularProgressIndicator(strokeWidth: 2),
+                                        )
+                                      : const Icon(Icons.restart_alt_rounded),
+                                  label: Text(_resetting ? 'Resetting...' : 'Reset service indicator'),
+                                  onPressed: _resetting ? null : () => _resetIndicator(c),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
                 if (log.reminders(now) case final reminders when reminders.isNotEmpty) ...[

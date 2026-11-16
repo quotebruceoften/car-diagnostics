@@ -4,7 +4,7 @@ Things the app's development needs from the car's owner (2013 Golf 7, 1.4 TSI,
 Vgate iCar Pro BLE). Ask "what do you need from me?" to get this list. Remove
 an item once it is done.
 
-Last updated: 2026-11-15 (app build 32). Coding from the app is verified on the cluster.
+Last updated: 2026-11-15 (app build 34). Coding from the app is verified on the cluster.
 
 To send results: Overview > Tools > Send to developer (or Settings > Your data).
 
@@ -63,6 +63,10 @@ To send results: Overview > Tools > Send to developer (or Settings > Your data).
 
 19. **Check the mileage in the service log** after connecting with build
     28: it should match the dashboard without typing it in.
+
+20. **First service indicator reset** (build 34, after your next service):
+    Service log > "Reset service indicator". Report the message, and
+    whether the dashboard shows the new interval after ignition off/on.
 
 ## To send from VCDS
 
