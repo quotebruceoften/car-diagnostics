@@ -82,6 +82,13 @@ class BleByteChannel implements ByteChannel {
   /// change their address, so a match on the name counts too.
   static Future<BleByteChannel> connectSaved(String id, String name) async {
     await ensurePermissions();
+    // First straight to the saved address: this also works with the app in
+    // the background, where Android holds back the results of a plain scan.
+    try {
+      return await connectTo(id, name, timeout: const Duration(seconds: 8));
+    } on TransportException {
+      // Not seen since Bluetooth was switched on, or the address changed: look for it.
+    }
     String? found;
     try {
       final device = await ble
@@ -92,31 +99,41 @@ class BleByteChannel implements ByteChannel {
     } on TimeoutException {
       found = null;
     } catch (_) {
-      found = null; // scanning failed; a direct connection may still work
+      found = null;
     }
-    try {
-      return await connectTo(found ?? id, name);
-    } on TransportException {
-      if (found != null) rethrow;
+    if (found == null) {
       throw TransportException(
         '$name was not found nearby. Check that it is plugged in with the ignition on, and that no other app '
         'is connected to it.',
       );
     }
+    return connectTo(found, name);
   }
 
+  /// Why the last link dropped, as Bluetooth reported it (for the report).
+  static String? lastDropReason;
+
   /// Connects to an adapter by its id, e.g. one just picked from a scan.
-  static Future<BleByteChannel> connectTo(String id, String name) async {
+  static Future<BleByteChannel> connectTo(
+    String id,
+    String name, {
+    Duration timeout = const Duration(seconds: 15),
+  }) async {
     await ensurePermissions();
     final connected = Completer<void>();
     final lost = Completer<void>();
     final connection = ble
-        .connectToDevice(id: id, connectionTimeout: const Duration(seconds: 10))
+        .connectToDevice(id: id, connectionTimeout: timeout - const Duration(seconds: 2))
         .listen(
           (update) {
             if (connected.isCompleted) {
               // The link dropped after connecting (ignition off, out of range).
-              if (update.connectionState == DeviceConnectionState.disconnected && !lost.isCompleted) lost.complete();
+              if (update.connectionState == DeviceConnectionState.disconnected && !lost.isCompleted) {
+                lastDropReason = update.failure == null
+                    ? 'Bluetooth reported a disconnect'
+                    : 'Bluetooth reported: ${update.failure!.code.name} ${update.failure!.message}'.trim();
+                lost.complete();
+              }
               return;
             }
             if (update.connectionState == DeviceConnectionState.connected) connected.complete();
@@ -128,12 +145,16 @@ class BleByteChannel implements ByteChannel {
             if (!connected.isCompleted) {
               connected.completeError(TransportException('Bluetooth error: $e'));
             } else if (!lost.isCompleted) {
+              lastDropReason = 'Bluetooth error: $e';
               lost.complete();
             }
           },
         );
     try {
-      await connected.future.timeout(const Duration(seconds: 15));
+      await connected.future.timeout(
+        timeout,
+        onTimeout: () => throw TransportException('Could not connect to $name. Is it plugged in?'),
+      );
       if (Platform.isAndroid) {
         try {
           await ble.requestMtu(deviceId: id, mtu: 247);

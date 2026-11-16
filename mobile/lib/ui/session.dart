@@ -13,6 +13,7 @@ import '../brands/vag_dtcs.dart';
 import '../core/alerts.dart';
 import '../core/coding/coder.dart';
 import '../core/coding/profile.dart';
+import '../core/error_log.dart';
 import '../core/errors.dart';
 import '../core/history.dart';
 import '../core/obd/dtc.dart';
@@ -27,6 +28,7 @@ import '../core/transport/elm327.dart';
 import '../core/transport/transport.dart';
 import '../core/uds/uds_client.dart';
 import '../platform/background.dart';
+import '../platform/ble_channel.dart';
 import '../platform/notifications.dart';
 import '../platform/speech.dart';
 import '../sim/elm_emulator.dart';
@@ -362,8 +364,18 @@ class DiagSession extends ChangeNotifier {
   /// of range); the connect screen then reconnects on its own.
   bool connectionLost = false;
 
+  /// Whether the app is on screen (for explaining dropped connections).
+  AppLifecycleState lifecycle = AppLifecycleState.resumed;
+  DateTime? _connectedAt;
+
   Future<void> _onLost(Transport t) async {
     if (_transport != t) return; // already replaced or disconnected on purpose
+    final after = _connectedAt == null ? '' : ' after ${DateTime.now().difference(_connectedAt!).inSeconds} s';
+    ErrorLog.instance.record(
+      'Adapter link dropped$after, app ${lifecycle == AppLifecycleState.resumed ? 'on screen' : 'in the background (${lifecycle.name})'}'
+      '${BleByteChannel.lastDropReason == null ? '' : '. ${BleByteChannel.lastDropReason}'}',
+    );
+    BleByteChannel.lastDropReason = null;
     connectionLost = true;
     await disconnect();
   }
@@ -413,6 +425,7 @@ class DiagSession extends ChangeNotifier {
       await _loadProfiles();
       // Only now do the screens switch over to the connected car.
       _transport = t;
+      _connectedAt = DateTime.now();
       connectionLost = false;
       final opened = t;
       if (opened is Elm327Transport) opened.onLost = () => unawaited(_onLost(opened));

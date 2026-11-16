@@ -386,7 +386,7 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
                 ),
               ),
           ],
-          if (p != null && !_running && p.found.isEmpty && !p.stoppedResponding)
+          if (p != null && !_running && p.found.isEmpty && !p.stoppedResponding && _interrupted == null)
             const EmptyState(
               icon: Icons.search_off_rounded,
               title: 'Nothing answered',

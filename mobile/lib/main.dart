@@ -15,9 +15,31 @@ Future<void> main() async {
   runApp(CarDiagApp(session: DiagSession(settings: settings)));
 }
 
-class CarDiagApp extends StatelessWidget {
+class CarDiagApp extends StatefulWidget {
   const CarDiagApp({super.key, required this.session});
   final DiagSession session;
+
+  @override
+  State<CarDiagApp> createState() => _CarDiagAppState();
+}
+
+class _CarDiagAppState extends State<CarDiagApp> with WidgetsBindingObserver {
+  DiagSession get session => widget.session;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) => session.lifecycle = state;
 
   @override
   Widget build(BuildContext context) => SessionScope(
