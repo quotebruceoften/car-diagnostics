@@ -94,6 +94,7 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
     final transport = _session.transport;
     // The screen may turn off and the app may go to the background: a
     // notification keeps it running and shows the progress.
+    _pace.clear();
     final background = await _session.background.start(
       'Exploring ${widget.module.name}',
       resume == null ? 'Starting...' : 'Continuing after reconnecting...',
@@ -210,12 +211,23 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
     }
   }
 
-  /// Rough time for a sweep, from the pace so far or a typical adapter.
+  /// (time, items asked) over the last minute, for the time estimate.
+  final _pace = <(DateTime, int)>[];
+
+  /// Rough time for [items] more, from the pace of the last minute (so a slow
+  /// stretch in the background does not weigh on it afterwards) or, before
+  /// that, a typical adapter.
   String _estimate(int items) {
-    final p = _progress, started = _startedAt;
+    final p = _progress;
     var perItem = 0.15;
-    if (_running && p != null && started != null && p.asked > 20) {
-      perItem = DateTime.now().difference(started).inMilliseconds / 1000 / p.asked;
+    if (_running && p != null) {
+      final now = DateTime.now();
+      _pace
+        ..add((now, p.asked))
+        ..removeWhere((e) => now.difference(e.$1) > const Duration(seconds: 60));
+      final (t0, a0) = _pace.first;
+      final seconds = now.difference(t0).inMilliseconds / 1000;
+      if (p.asked - a0 >= 20 && seconds > 0) perItem = seconds / (p.asked - a0);
     }
     final seconds = (items * perItem).round();
     return seconds < 90 ? 'about $seconds s' : 'about ${(seconds / 60).round()} min';

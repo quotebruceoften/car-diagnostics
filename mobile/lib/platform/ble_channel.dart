@@ -161,6 +161,14 @@ class BleByteChannel implements ByteChannel {
         } catch (_) {
           // Optional; we write in small chunks anyway.
         }
+        // Every request to the car is several Bluetooth exchanges; the fast
+        // setting shortens the gap between them (Android otherwise spaces
+        // them out, more so with the app in the background).
+        try {
+          await ble.requestConnectionPriority(deviceId: id, priority: ConnectionPriority.highPerformance);
+        } catch (_) {
+          // Optional: everything still works, only slower.
+        }
       }
       await ble.discoverAllServices(id);
       final services = await ble.getDiscoveredServices(id);
