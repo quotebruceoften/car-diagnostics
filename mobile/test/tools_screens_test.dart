@@ -3,6 +3,7 @@ import 'package:cardiag_mobile/core/coding/coder.dart';
 import 'package:cardiag_mobile/core/history.dart';
 import 'package:cardiag_mobile/core/service_log.dart';
 import 'package:cardiag_mobile/core/store.dart';
+import 'package:cardiag_mobile/core/uds/explorer.dart';
 import 'package:cardiag_mobile/main.dart';
 import 'package:cardiag_mobile/platform/background.dart';
 import 'package:cardiag_mobile/platform/notifications.dart';
@@ -228,6 +229,26 @@ void main() {
     expect(background.log, contains(startsWith('announce Explorer finished: Instrument cluster')));
     expect(background.log.last, 'stop');
     expect(store.files['explorer/WVWZZZAUZHW123456/17.txt'], contains('5G1920741B'));
+    await _finish(tester);
+  });
+
+  testWidgets('the explorer says when background mode is not available', (tester) async {
+    await _connect(tester, background: NoBackgroundWork()..available = false);
+    await tester.tap(find.text('Scan car'));
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(find.text('Instrument cluster'), 300);
+    await tester.drag(find.byType(Scrollable).last, const Offset(0, -200));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Instrument cluster'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Explore data'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(SegmentedButton<ExplorePreset>, 'Everything'));
+    await tester.pump();
+    await tester.tap(find.text('Start'));
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pumpAndSettle();
+    expect(find.text('Background mode is off', skipOffstage: false), findsOneWidget);
     await _finish(tester);
   });
 

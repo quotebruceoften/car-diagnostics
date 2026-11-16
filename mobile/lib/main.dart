@@ -1,3 +1,4 @@
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter/material.dart';
 
 import 'ui/screens/connect_screen.dart';
@@ -8,6 +9,8 @@ import 'ui/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Needed by the background mode (foreground service) used for long jobs.
+  FlutterForegroundTask.initCommunicationPort();
   final settings = await AppSettings.load();
   runApp(CarDiagApp(session: DiagSession(settings: settings)));
 }

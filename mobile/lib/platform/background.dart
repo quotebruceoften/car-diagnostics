@@ -4,7 +4,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 /// Keeps a long job (the module explorer) running with the screen off or
 /// the app in the background, with its progress in a notification.
 abstract class BackgroundWork {
-  Future<void> start(String title, String text);
+  /// Returns whether background mode is running (false: keep the app open).
+  Future<bool> start(String title, String text);
   Future<void> update(String text);
   Future<void> stop();
 
@@ -15,8 +16,13 @@ abstract class BackgroundWork {
 class NoBackgroundWork implements BackgroundWork {
   final log = <String>[];
 
+  bool available = true;
+
   @override
-  Future<void> start(String title, String text) async => log.add('start $title: $text');
+  Future<bool> start(String title, String text) async {
+    log.add('start $title: $text');
+    return available;
+  }
 
   @override
   Future<void> update(String text) async => log.add('update $text');
@@ -56,20 +62,35 @@ class ForegroundServiceWork implements BackgroundWork {
     _initialized = true;
   }
 
+  /// Why background mode could not start, for the developer report.
+  String? lastError;
+
   @override
-  Future<void> start(String title, String text) async {
+  Future<bool> start(String title, String text) async {
     try {
       _init();
       if (await FlutterForegroundTask.checkNotificationPermission() != NotificationPermission.granted) {
         await FlutterForegroundTask.requestNotificationPermission();
       }
+      final ServiceRequestResult result;
       if (await FlutterForegroundTask.isRunningService) {
-        await FlutterForegroundTask.updateService(notificationTitle: title, notificationText: text);
+        result = await FlutterForegroundTask.updateService(notificationTitle: title, notificationText: text);
       } else {
-        await FlutterForegroundTask.startService(serviceId: 701, notificationTitle: title, notificationText: text);
+        result = await FlutterForegroundTask.startService(
+          serviceId: 701,
+          notificationTitle: title,
+          notificationText: text,
+        );
       }
-    } catch (_) {
-      // Without the service the job still runs while the app is on screen.
+      if (result is ServiceRequestFailure) {
+        lastError = '${result.error}';
+        return false;
+      }
+      lastError = null;
+      return await FlutterForegroundTask.isRunningService;
+    } catch (e) {
+      lastError = '$e';
+      return false;
     }
   }
 

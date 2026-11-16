@@ -70,11 +70,21 @@ class ExploreProgress {
 /// Asks a module for each data identifier in [ranges] (read-only, service
 /// 0x22 in the default session) and reports what it answers. Stops when
 /// [cancelled] returns true, or when the module stops responding.
-Stream<ExploreProgress> exploreModule(UdsClient uds, List<ExploreRange> ranges, {bool Function()? cancelled}) async* {
-  final progress = ExploreProgress(ranges.fold(0, (n, r) => n + r.count));
+Stream<ExploreProgress> exploreModule(
+  UdsClient uds,
+  List<ExploreRange> ranges, {
+  bool Function()? cancelled,
+  ExploreProgress? resume,
+}) async* {
+  // Continuing an interrupted sweep: keep what it found and skip what it asked.
+  final progress = resume ?? ExploreProgress(ranges.fold(0, (n, r) => n + r.count));
+  progress.stoppedResponding = false;
+  final skip = progress.asked;
+  var index = 0;
   var silent = 0;
   for (final range in ranges) {
-    for (var did = range.first; did <= range.last; did++) {
+    for (var did = range.first; did <= range.last; did++, index++) {
+      if (index < skip) continue;
       if (cancelled?.call() ?? false) return;
       try {
         progress.found.add(ExploredItem(did, await uds.readDataByIdentifier(did)));
@@ -85,6 +95,8 @@ Stream<ExploreProgress> exploreModule(UdsClient uds, List<ExploreRange> ranges, 
       } on NoResponseException {
         // A sleeping or disconnected module would make the whole sweep time out.
         if (++silent >= 12) {
+          // Continuing later asks the unanswered ones again.
+          progress.asked -= silent - 1;
           progress.stoppedResponding = true;
           yield progress;
           return;

@@ -14,6 +14,8 @@ import 'package:cardiag_mobile/core/uds/explorer.dart';
 import 'package:cardiag_mobile/core/uds/uds_client.dart';
 import 'package:cardiag_mobile/ui/settings.dart';
 import 'package:cardiag_mobile/sim/vehicle.dart';
+import 'package:cardiag_mobile/core/transport/transport.dart';
+import 'package:cardiag_mobile/core/errors.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -309,6 +311,41 @@ void main() {
       expect(stopped.asked, lessThan(200));
     });
 
+    test('an interrupted sweep continues where it stopped and finds the same', () async {
+      final v = Vehicle.demoGolf();
+      final full = await exploreModule(
+        UdsClient(SimulatorTransport(v), 0x70E, rxId: 0x778),
+        explorePresets.first.ranges,
+      ).last;
+
+      // The link drops after 300 requests.
+      final dropping = _DroppingTransport(SimulatorTransport(v), after: 300);
+      ExploreProgress? latest;
+      Object? error;
+      try {
+        await for (final p in exploreModule(UdsClient(dropping, 0x70E, rxId: 0x778), explorePresets.first.ranges)) {
+          latest = p;
+        }
+      } catch (e) {
+        error = e;
+      }
+      expect(error, isA<TransportException>());
+      expect(latest!.asked, inInclusiveRange(290, 300));
+
+      // Reconnected: continue with the same progress on a working link.
+      final requestsBefore = dropping.requests;
+      final counting = _DroppingTransport(SimulatorTransport(v), after: 1 << 30);
+      final done = await exploreModule(
+        UdsClient(counting, 0x70E, rxId: 0x778),
+        explorePresets.first.ranges,
+        resume: latest,
+      ).last;
+      expect(done.asked, done.total);
+      expect([for (final i in done.found) i.id], [for (final i in full.found) i.id]);
+      // Only what was left was asked again.
+      expect(counting.requests + requestsBefore - 1, inInclusiveRange(done.total, done.total + 8));
+    });
+
     test('gives up on a module that does not answer', () async {
       final uds = UdsClient(SimulatorTransport(Vehicle.demoGolf()), 0x7AA, rxId: 0x7BB);
       final p = await exploreModule(uds, const [ExploreRange(0, 0xFFFF)]).last;
@@ -377,4 +414,23 @@ void main() {
       expect(store.files.keys, ['trips/ok.json']);
     });
   });
+}
+
+class _DroppingTransport implements Transport {
+  _DroppingTransport(this.inner, {required this.after});
+  final Transport inner;
+  final int after;
+  int requests = 0;
+
+  @override
+  String get description => inner.description;
+
+  @override
+  Future<List<Message>> send(int txId, List<int> payload, {int? rxId}) {
+    if (++requests > after) throw TransportException('adapter disconnected');
+    return inner.send(txId, payload, rxId: rxId);
+  }
+
+  @override
+  Future<void> close() async {}
 }
