@@ -65,7 +65,9 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
   void _onSession() {
     if (!mounted || _interrupted == null || _running || !_session.connected) return;
     if (_session.vin != null && _vin.isNotEmpty && _session.vin != _vin) return;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    // Not a post-frame callback: no frames are drawn while the app is in the
+    // background, and the sweep should continue there too.
+    Future(() {
       if (mounted && _interrupted != null && !_running && _session.connected) _start(resume: _interrupted);
     });
   }
@@ -111,6 +113,10 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
         'Background mode did not start${work is ForegroundServiceWork && work.lastError != null ? ': ${work.lastError}' : ''}',
       );
     }
+    ErrorLog.instance.record(
+      'Explorer ${resume == null ? 'started' : 'continued at ${resume.asked}'} on ${widget.module.name}'
+      '${useBackground ? (background ? ', background mode on' : '') : ', screen kept on'}',
+    );
     if (mounted) setState(() => _background = useBackground ? background : null);
     var lastShown = DateTime(0);
     var latest = resume;
@@ -143,6 +149,10 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
     } catch (e) {
       // A dropped connection is not the end: the app reconnects and the sweep continues.
       final lost = !_session.connected || e is TransportException;
+      if (lost && latest != null && !_cancel) {
+        ErrorLog.instance.record('Explorer interrupted at ${latest.asked} of ${latest.total}');
+        if (background) unawaited(_session.background.update('Connection lost at ${latest.asked}, reconnecting...'));
+      }
       if (mounted) {
         setState(() {
           if (lost && latest != null && !_cancel) {

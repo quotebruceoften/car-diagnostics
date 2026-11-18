@@ -9,6 +9,8 @@ import 'package:cardiag_mobile/core/uds/uds_client.dart';
 import 'package:cardiag_mobile/sim/elm_emulator.dart';
 import 'package:cardiag_mobile/sim/vehicle.dart';
 import 'package:cardiag_mobile/ui/session.dart';
+import 'package:cardiag_mobile/ui/settings.dart';
+import 'package:cardiag_mobile/core/error_log.dart';
 import 'package:cardiag_mobile/core/coding/coder.dart';
 import 'package:cardiag_mobile/core/store.dart';
 import 'package:cardiag_mobile/core/history.dart';
@@ -239,6 +241,46 @@ void adapterTests() {
       expect(session.connectionLost, isFalse);
       await tester.runAsync(session.disconnect);
       expect(session.connectionLost, isFalse);
+    });
+
+    testWidgets('after a drop the session reconnects by itself, without the connect screen', (tester) async {
+      final elms = <Elm327Emulator>[];
+      final settings = AppSettings()..setLastAdapter(const SavedAdapter.ble(id: 'AA', name: 'IOS-Vlink'));
+      final session = DiagSession(
+        settings: settings,
+        backupStore: MemoryBackupStore(),
+        dataStore: MemoryDataStore(),
+        historyStore: MemoryHistoryStore(),
+        notifier: NoopReminderNotifier(),
+        reconnectPause: const Duration(milliseconds: 20),
+        openSaved: (s, a) async {
+          // The first try fails (adapter still waking up), the second works.
+          if (elms.length == 1) {
+            elms.add(Elm327Emulator());
+            throw TransportException('not found nearby');
+          }
+          final elm = Elm327Emulator();
+          elms.add(elm);
+          await s.connectChannel(() async => elm, remember: a);
+        },
+      );
+      final first = Elm327Emulator();
+      elms.add(first);
+      await tester.runAsync(() => session.connectChannel(() async => first));
+      expect(session.connected, isTrue);
+
+      await tester.runAsync(() async {
+        await first.unplug();
+        for (var i = 0; i < 100 && !session.connected; i++) {
+          await Future<void>.delayed(const Duration(milliseconds: 20));
+        }
+      });
+      expect(session.connected, isTrue);
+      expect(session.reconnectAttempt, 2);
+      expect(session.reconnecting, isFalse);
+      expect(session.connectionLost, isFalse);
+      expect(ErrorLog.instance.entries.last.$2, startsWith('Reconnected after 2 tries'));
+      await tester.runAsync(session.disconnect);
     });
   });
 }

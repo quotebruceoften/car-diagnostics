@@ -287,6 +287,9 @@ void main() {
       final u0428 = brand.resolveModuleDtc(module('01'), const Dtc('P001B', failureType: 0xEE, status: 0x20));
       expect(u0428.code, 'U0428');
       expect(brand.describeDtc(u0428), 'Implausible data from the steering angle sensor');
+      // A name saved by an earlier scan does not override the app's own.
+      vagLearnedFaults['01|7150'] = const VagFault('U0428', 0xEE, 'Network fault (generic)');
+      expect(brand.describeDtc(u0428), 'Implausible data from the steering angle sensor');
     });
 
     test('the verified translations cover the faults of the scanned Golf', () {

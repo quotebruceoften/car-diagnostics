@@ -156,11 +156,13 @@ class VagBrand extends Brand {
   @override
   String describeDtc(Dtc dtc) {
     if (_number.hasMatch(dtc.code)) return 'VW fault number (name not in the app yet)';
-    if (dtcExplanations.containsKey(dtc.code.toUpperCase())) return super.describeDtc(dtc);
+    final known = super.describeDtc(dtc);
+    // The app's own names win; earlier scans may have saved a generic one.
+    if (known != describeGenericDtc(dtc.code) || genericDtcDescriptions.containsKey(dtc.code)) return known;
     for (final f in vagLearnedFaults.values) {
       if (f.code == dtc.code && f.description.isNotEmpty) return f.description;
     }
-    return super.describeDtc(dtc);
+    return known;
   }
 
   @override

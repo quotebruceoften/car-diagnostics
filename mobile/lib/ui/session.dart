@@ -50,7 +50,11 @@ class DiagSession extends ChangeNotifier {
     BackgroundWork? background,
     AssetBundle? assets,
     this.demoLatency = const Duration(milliseconds: 15),
-  }) : settings = settings ?? AppSettings(),
+    Future<void> Function(DiagSession session, SavedAdapter adapter)? openSaved,
+    this.reconnectWindow = const Duration(minutes: 2),
+    this.reconnectPause = const Duration(seconds: 5),
+  }) : _openSaved = openSaved,
+       settings = settings ?? AppSettings(),
        _backupStore = backupStore,
        _mediaStore = mediaStore,
        _historyStore = historyStore,
@@ -378,6 +382,79 @@ class DiagSession extends ChangeNotifier {
     BleByteChannel.lastDropReason = null;
     connectionLost = true;
     await disconnect();
+    // Reconnect here rather than from the connect screen, so it also works
+    // while the app is in the background (no screen is drawn then).
+    unawaited(reconnectSaved(afterLoss: true));
+  }
+
+  final Future<void> Function(DiagSession session, SavedAdapter adapter)? _openSaved;
+
+  /// How long the automatic reconnect keeps trying, and the pause between tries.
+  final Duration reconnectWindow;
+  final Duration reconnectPause;
+
+  /// Whether the app is trying the saved adapter on its own.
+  bool reconnecting = false;
+  bool reconnectAfterLoss = false;
+  int reconnectAttempt = 0;
+
+  /// Why the automatic reconnect gave up, if it did.
+  Object? reconnectError;
+  bool _reconnectStop = false;
+
+  /// Connects to the adapter used last time.
+  Future<void> openSaved(SavedAdapter a) {
+    if (_openSaved case final open?) return open(this, a);
+    return a.isBle
+        ? connectChannel(() => BleByteChannel.connectSaved(a.id!, a.name), remember: a)
+        : connectWifi(a.host!, a.port!);
+  }
+
+  void stopReconnect() {
+    _reconnectStop = true;
+    notifyListeners();
+  }
+
+  /// Keeps trying the saved adapter for a while, so plugging it in and
+  /// switching the ignition on is enough.
+  Future<void> reconnectSaved({bool afterLoss = false}) async {
+    final a = settings.lastAdapter;
+    if (a == null || !settings.autoReconnect || reconnecting || connected) return;
+    reconnecting = true;
+    reconnectAfterLoss = afterLoss;
+    reconnectAttempt = 0;
+    reconnectError = null;
+    _reconnectStop = false;
+    notifyListeners();
+    final until = DateTime.now().add(reconnectWindow);
+    Object? last;
+    while (!_reconnectStop && !connected && DateTime.now().isBefore(until)) {
+      reconnectAttempt++;
+      notifyListeners();
+      try {
+        if (!busy) await openSaved(a);
+        last = null;
+        if (connected) break;
+      } catch (e) {
+        last = e;
+      }
+      if (_reconnectStop || connected) break;
+      await Future<void>.delayed(reconnectPause);
+    }
+    if (afterLoss) {
+      ErrorLog.instance.record(
+        connected
+            ? 'Reconnected after $reconnectAttempt ${reconnectAttempt == 1 ? 'try' : 'tries'}, '
+                  'app ${lifecycle == AppLifecycleState.resumed ? 'on screen' : 'in the background'}'
+            : _reconnectStop
+            ? 'Reconnect stopped by hand'
+            : 'Could not reconnect within ${reconnectWindow.inMinutes} min${last == null ? '' : ': $last'}',
+      );
+    }
+    reconnecting = false;
+    connectionLost = false;
+    if (!_reconnectStop) reconnectError = last;
+    notifyListeners();
   }
 
   Future<void> connectWifi(String host, int port) =>
