@@ -68,47 +68,96 @@ class ExploreProgress {
 }
 
 /// Asks a module for each data identifier in [ranges] (read-only, service
-/// 0x22 in the default session) and reports what it answers. Stops when
-/// [cancelled] returns true, or when the module stops responding.
+/// 0x22) and reports what it answers. Stops when [cancelled] returns true,
+/// or when the module stops responding.
+///
+/// With [extended], the questions are asked in the extended diagnostic
+/// session, where VW modules show more (VCDS reads adaptations there). The
+/// session only widens what can be read; nothing is written. The module is
+/// put back in its normal session at the end.
 Stream<ExploreProgress> exploreModule(
   UdsClient uds,
   List<ExploreRange> ranges, {
   bool Function()? cancelled,
   ExploreProgress? resume,
+  bool extended = false,
 }) async* {
   // Continuing an interrupted sweep: keep what it found and skip what it asked.
   final progress = resume ?? ExploreProgress(ranges.fold(0, (n, r) => n + r.count));
   progress.stoppedResponding = false;
-  final skip = progress.asked;
-  var index = 0;
-  var silent = 0;
-  for (final range in ranges) {
-    for (var did = range.first; did <= range.last; did++, index++) {
-      if (index < skip) continue;
-      if (cancelled?.call() ?? false) return;
-      try {
-        progress.found.add(ExploredItem(did, await uds.readDataByIdentifier(did)));
-        silent = 0;
-      } on NegativeResponseException catch (e) {
-        silent = 0;
-        if (e.nrc == 0x33) progress.locked.add(did);
-      } on NoResponseException {
-        // A sleeping or disconnected module would make the whole sweep time out.
-        if (++silent >= 12) {
-          // Continuing later asks the unanswered ones again.
-          progress.asked -= silent - 1;
-          progress.stoppedResponding = true;
-          yield progress;
-          return;
-        }
-      } on ProtocolException {
-        silent = 0;
-      }
-      progress.asked++;
-      if (progress.asked % 8 == 0) yield progress;
+  if (extended) {
+    try {
+      await uds.diagnosticSessionControl(extendedSession);
+    } on NegativeResponseException catch (e) {
+      throw CarDiagException('The module would not switch to the deeper mode: ${e.message}');
     }
   }
-  yield progress;
+  try {
+    final skip = progress.asked;
+    var index = 0;
+    var silent = 0;
+    for (final range in ranges) {
+      for (var did = range.first; did <= range.last; did++, index++) {
+        if (index < skip) continue;
+        if (cancelled?.call() ?? false) return;
+        // Renew the session now and then, in case the module fell back to
+        // its normal one (it does after a few seconds without questions).
+        if (extended && index > skip && index % 64 == 0) await _renew(uds);
+        try {
+          progress.found.add(ExploredItem(did, await _read(uds, did, extended)));
+          silent = 0;
+        } on NegativeResponseException catch (e) {
+          silent = 0;
+          if (e.nrc == 0x33) progress.locked.add(did);
+        } on NoResponseException {
+          // A sleeping or disconnected module would make the whole sweep time out.
+          if (++silent >= 12) {
+            // Continuing later asks the unanswered ones again.
+            progress.asked -= silent - 1;
+            progress.stoppedResponding = true;
+            yield progress;
+            return;
+          }
+        } on ProtocolException {
+          silent = 0;
+        }
+        progress.asked++;
+        if (progress.asked % 8 == 0) yield progress;
+      }
+    }
+    yield progress;
+  } finally {
+    if (extended) {
+      try {
+        await uds.diagnosticSessionControl(defaultSession);
+      } catch (_) {
+        // Gone or busy: the module returns to its normal session by itself.
+      }
+    }
+  }
+}
+
+Future<Uint8List> _read(UdsClient uds, int did, bool extended) async {
+  try {
+    return await uds.readDataByIdentifier(did);
+  } on NegativeResponseException catch (e) {
+    // "Not in this session": the session ran out; renew it and ask again.
+    if (!extended || e.nrc != 0x7F) rethrow;
+    await _renew(uds);
+    return uds.readDataByIdentifier(did);
+  }
+}
+
+Future<void> _renew(UdsClient uds) async {
+  try {
+    await uds.diagnosticSessionControl(extendedSession);
+  } on NegativeResponseException {
+    // Asking keeps going; the answers show what it allows.
+  } on NoResponseException {
+    // The next question finds out whether the module is still there.
+  } on ProtocolException {
+    // Same.
+  }
 }
 
 /// A text file of what a module answered, for sharing.

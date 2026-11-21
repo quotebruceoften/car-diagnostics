@@ -52,6 +52,13 @@ To send results: Overview > Tools > Send to developer (or Settings > Your data).
     them against the explorer results finds the addresses, which is what
     lets the app show and later change adaptations.
 
+21. **Explorer in deeper mode on module 09** (build 40): Scan car >
+    Central electrics > Explore data, pick "Thorough", switch on "Deeper
+    mode", Start (about half an hour, background mode is fine). Send the
+    results file; comparing it with the normal Thorough sweep shows what
+    only the extended session reveals, which is where the comfort settings
+    are expected.
+
 18. **Fuel level:** note the gauge position and the litres needed at the
     next fill-up, then run Explore > Quick on the instrument cluster before
     and after filling. The value that changes is the fuel level.

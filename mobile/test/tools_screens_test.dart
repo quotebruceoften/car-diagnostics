@@ -221,6 +221,7 @@ void main() {
     await tester.pumpAndSettle();
     // Part number, system name, VIN and stored workshop code from the F1xx range, coding from 0600.
     expect(find.text('ANSWERED (6)'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('5G1920741B'), 200);
     expect(find.text('5G1920741B'), findsOneWidget);
     expect(find.text('KOMBI'), findsOneWidget);
     expect(find.text('Run again'), findsOneWidget);

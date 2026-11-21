@@ -20,12 +20,14 @@ class VirtualEcu {
     Set<int> writableDids = const {},
     Set<int> securedDids = const {},
     Set<int> lockedDids = const {},
+    Map<int, List<int>> extendedDids = const {},
     List<(String, int, int)> udsDtcs = const [],
     this.requiresFingerprint = false,
   }) : dids = {for (final e in dids.entries) e.key: Uint8List.fromList(e.value)},
        writableDids = {...writableDids},
        securedDids = {...securedDids},
        lockedDids = {...lockedDids},
+       extendedDids = {for (final e in extendedDids.entries) e.key: Uint8List.fromList(e.value)},
        udsDtcs = [...udsDtcs];
 
   final String name;
@@ -41,6 +43,9 @@ class VirtualEcu {
 
   /// Never writable (simulates SFD-protected modules).
   final Set<int> lockedDids;
+
+  /// Readable only in the extended session (like VW adaptation channels).
+  final Map<int, Uint8List> extendedDids;
 
   /// (code, failure type, status)
   final List<(String, int, int)> udsDtcs;
@@ -101,7 +106,7 @@ class VirtualEcu {
     if (p.length != 3) return _nrc(0x22, 0x13);
     final did = (p[1] << 8) | p[2];
     if (did == 0xF186) return _b([0x62, p[1], p[2], session]);
-    final value = dids[did];
+    final value = dids[did] ?? (session == 3 ? extendedDids[did] : null);
     // The real Golf 7 modules do not let the workshop code be read at F198.
     if (requiresFingerprint && (did == 0xF198 || did == 0xF199)) return _nrc(0x22, 0x31);
     if (value == null) return _nrc(0x22, 0x31);
@@ -445,6 +450,10 @@ class Vehicle {
             0x4F, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, //
             0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
           ],
+        },
+        // An adaptation-like value that only the extended session shows.
+        extendedDids: {
+          0x0450: [0x03],
         },
         writableDids: {0x0600},
         requiresFingerprint: true,

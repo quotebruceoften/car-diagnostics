@@ -311,6 +311,34 @@ void main() {
       expect(stopped.asked, lessThan(200));
     });
 
+    test('deeper mode asks in the extended session and puts the module back afterwards', () async {
+      final v = Vehicle.demoGolf();
+      final bcm = v.ecus.firstWhere((e) => e.txId == 0x70E);
+      final uds = UdsClient(SimulatorTransport(v), 0x70E, rxId: 0x778);
+      final normal = await exploreModule(uds, explorePresets.first.ranges).last;
+      expect([for (final i in normal.found) i.id], isNot(contains('0450')));
+
+      final deeper = await exploreModule(uds, explorePresets.first.ranges, extended: true).last;
+      expect([for (final i in deeper.found) i.id], contains('0450'));
+      // F186 reports the session the module was in while asked.
+      expect(deeper.found.firstWhere((i) => i.id == 'F186').data, [0x03]);
+      expect(bcm.session, 0x01);
+
+      // The module falling back to its normal session mid-sweep is noticed.
+      final ranges = [const ExploreRange(0x0400, 0x0460)];
+      var asked = 0;
+      final again = await exploreModule(
+        uds,
+        ranges,
+        extended: true,
+        cancelled: () {
+          if (++asked == 20) bcm.session = 0x01;
+          return false;
+        },
+      ).last;
+      expect([for (final i in again.found) i.id], contains('0450'));
+    });
+
     test('an interrupted sweep continues where it stopped and finds the same', () async {
       final v = Vehicle.demoGolf();
       final full = await exploreModule(

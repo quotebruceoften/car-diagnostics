@@ -28,6 +28,12 @@ class ExplorerScreen extends StatefulWidget {
 
 class _ExplorerScreenState extends State<ExplorerScreen> {
   ExplorePreset _preset = explorePresets.first;
+
+  /// Asks in the extended diagnostic session (fixed for the sweep's run,
+  /// including after a reconnect).
+  bool _deeper = false;
+
+  String get _sweepName => _deeper ? '${_preset.name}, deeper mode' : _preset.name;
   ExploreProgress? _progress;
   bool _running = false;
   bool _cancel = false;
@@ -115,6 +121,7 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
     }
     ErrorLog.instance.record(
       'Explorer ${resume == null ? 'started' : 'continued at ${resume.asked}'} on ${widget.module.name}'
+      '${_deeper ? ' (deeper mode)' : ''}'
       '${useBackground ? (background ? ', background mode on' : '') : ', screen kept on'}',
     );
     if (mounted) setState(() => _background = useBackground ? background : null);
@@ -124,7 +131,13 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
       // A module answers a read within a few hundredths of a second.
       if (transport is AdjustableResponseWait) await (transport as AdjustableResponseWait).setResponseWait(60);
       final uds = ModuleScanner(transport, _session.brand).client(widget.module);
-      await for (final p in exploreModule(uds, _preset.ranges, cancelled: () => _cancel, resume: resume)) {
+      await for (final p in exploreModule(
+        uds,
+        _preset.ranges,
+        cancelled: () => _cancel,
+        resume: resume,
+        extended: _deeper,
+      )) {
         latest = p;
         if (!mounted) return;
         setState(() => _progress = p);
@@ -185,7 +198,7 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
     car: _car.isEmpty ? _session.identity.title : _car,
     module: widget.module.label,
     partNumber: widget.partNumber,
-    preset: _preset.name,
+    preset: _sweepName,
     progress: p,
     when: _startedAt ?? DateTime.now(),
   );
@@ -196,7 +209,10 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
     try {
       final store = await _session.dataStore();
       await store.write(
-        explorerResultPath(_vin.isEmpty ? (_session.vin ?? '') : _vin, widget.module.address),
+        explorerResultPath(
+          _vin.isEmpty ? (_session.vin ?? '') : _vin,
+          _deeper ? '${widget.module.address}-deeper' : widget.module.address,
+        ),
         _resultText(p),
       );
     } catch (_) {
@@ -211,7 +227,7 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
       car: _session.identity.title,
       module: widget.module.label,
       partNumber: widget.partNumber,
-      preset: _preset.name,
+      preset: _sweepName,
       progress: p,
       when: _startedAt ?? DateTime.now(),
     );
@@ -297,6 +313,16 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
                     '${_preset.description}: ${_preset.count} items, ${_estimate(_preset.count)}. '
                     'Keep the ignition on.',
                     style: theme.textTheme.bodySmall,
+                  ),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('Deeper mode'),
+                    subtitle: const Text(
+                      'Asks in the module\'s extended diagnostic mode, where VCDS reads adaptations such as '
+                      'comfort settings. Some modules show more there. It still only reads.',
+                    ),
+                    value: _deeper,
+                    onChanged: _running || _interrupted != null ? null : (v) => setState(() => _deeper = v),
                   ),
                   const SizedBox(height: 14),
                   if (_running && p != null) ...[
