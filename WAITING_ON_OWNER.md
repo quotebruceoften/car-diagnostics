@@ -4,7 +4,7 @@ Things the app's development needs from the car's owner (2013 Golf 7, 1.4 TSI,
 Vgate iCar Pro BLE). Ask "what do you need from me?" to get this list. Remove
 an item once it is done.
 
-Last updated: 2026-11-15 (app build 34). Coding from the app is verified on the cluster.
+Last updated: 2026-11-21 (app build 39). Coding from the app is verified on the cluster.
 
 To send results: Overview > Tools > Send to developer (or Settings > Your data).
 
@@ -52,11 +52,6 @@ To send results: Overview > Tools > Send to developer (or Settings > Your data).
     them against the explorer results finds the addresses, which is what
     lets the app show and later change adaptations.
 
-17. **Explorer "The rest" on module 09** (build 28, about 90 minutes, on a
-    charger). The Thorough sweep of the central electrics did not contain
-    the comfort settings (indicator flashes and so on), so they are in the
-    part of the module it did not cover, or need a login to read.
-
 18. **Fuel level:** note the gauge position and the litres needed at the
     next fill-up, then run Explore > Quick on the instrument cluster before
     and after filling. The value that changes is the fuel level.
@@ -97,11 +92,6 @@ To send results: Overview > Tools > Send to developer (or Settings > Your data).
 12. **Faults that return**: the camshaft sensor code (P0366) and the
     passenger mirror heater (B11F8) were present on 2026-10-29 and gone on
     2026-11-13.
-
-13. **Background mode retest**: turn "Background mode for long jobs" back on,
-    start the explorer, switch to other apps for a few minutes, then send a
-    report. The old background service cut the Bluetooth link every 1-3
-    minutes; the new one should not.
 
 ## Optional, later
 

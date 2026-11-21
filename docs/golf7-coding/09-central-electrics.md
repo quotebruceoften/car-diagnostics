@@ -32,3 +32,28 @@ has been written to the car.
 All 30 bytes are transcribed. Every labelled bit describes fitted equipment;
 none is a comfort setting, so no named settings are offered for this module's
 long coding. Its comfort functions are expected in the adaptation channels.
+
+## Explorer: "The rest" (0x3000-0xEFFF), 2026-11-21
+
+With Thorough (0x0000-0x2FFF, 0xF000-0xFFFF) this covers every data
+identifier the module could answer in the default session. Results:
+explorer-09-rest.txt. Only 18 answered, and none of them is a comfort setting:
+
+| DIDs | Meaning (read from the values) |
+|------|--------------------------------|
+| 6001 / 6002 | Serial numbers of two LIN devices attached to the module |
+| 6201, 6601 / 6202, 6602 | Part numbers: 5G2955119A (front wiper motor) and 5Q0955547 (rain/light sensor) |
+| 6401 / 6402 | Software versions: 0551 and 0042 |
+| 6801 / 6802 | Hardware versions: 042 and 024 |
+| 6A01 / 6A02 | Serial numbers; the sensor's says it was made 2013-04-02 08:37 |
+| 6C01 / 6C02 | System names: "WWS" (wiper system, dated 13-03-16) and "RLFS" (rain/light/humidity sensor) |
+| 3800, 3A3B-3A3D | Unknown, unchanged since the earlier sweep |
+
+So the comfort settings in adaptations-09.csv (indicator flashes and so on)
+are not readable with a plain read in the default session. Next to try:
+the same sweep in the extended diagnostic session (what VCDS uses for
+adaptations), still read-only.
+
+The sweep ran in the background with build 39: about 1.3 items/s for the first
+1000 items (on screen and off), then the remaining 43,000 items within an hour
+in the background, so background mode does not slow it down.
