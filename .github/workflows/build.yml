@@ -92,8 +92,27 @@ jobs:
             gh release delete latest-build --cleanup-tag --yes && break
             sleep $((attempt * 10))
           done
+          # A publish that failed half way leaves a draft (not found by tag) and
+          # the tag behind; clear both so the new release gets this commit.
+          for id in $(gh api "repos/$GH_REPO/releases" --jq '.[] | select(.draft and (.name | startswith("Latest build"))) | .id'); do
+            gh api -X DELETE "repos/$GH_REPO/releases/$id" || true
+          done
+          gh api -X DELETE "repos/$GH_REPO/git/refs/tags/latest-build" >/dev/null 2>&1 || true
           gh release create latest-build car-diagnostics.apk "car-diagnostics-build-${{ github.run_number }}.apk" \
             --prerelease \
             --target "${{ github.sha }}" \
             --title "Latest build (#${{ github.run_number }})" \
-            --notes "Build ${{ github.run_number }}, from ${{ github.ref_name }} at ${{ github.sha }}. Download car-diagnostics-build-${{ github.run_number }}.apk below and open it on your Android phone. Settings > About in the app shows the build number."
+            --notes "Build ${{ github.run_number }}, from ${{ github.ref_name }} at ${{ github.sha }}. Download car-diagnostics-build-${{ github.run_number }}.apk below and open it on your Android phone. Settings > About in the app shows the build number." \
+            || echo "Creating the release reported an error; checking what it left"
+          # The release can stay a draft when the last step of creating it fails,
+          # which makes the download links answer "not found". Publish it if so.
+          name="Latest build (#${{ github.run_number }})"
+          for attempt in 1 2 3 4 5; do
+            draft=$(gh api "repos/$GH_REPO/releases" --jq "[.[] | select(.name == \"$name\")][0].draft")
+            [ "$draft" = "false" ] && break
+            id=$(gh api "repos/$GH_REPO/releases" --jq "[.[] | select(.name == \"$name\")][0].id")
+            gh api -X PATCH "repos/$GH_REPO/releases/$id" -f tag_name=latest-build -F draft=false -F prerelease=true >/dev/null || true
+            sleep $((attempt * 5))
+          done
+          [ "$draft" = "false" ] || { echo "The release is still a draft"; exit 1; }
+          curl -sfIL --retry 5 --retry-all-errors --retry-delay 5 -o /dev/null "https://github.com/$GH_REPO/releases/download/latest-build/car-diagnostics-build-${{ github.run_number }}.apk"
