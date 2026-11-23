@@ -52,12 +52,17 @@ To send results: Overview > Tools > Send to developer (or Settings > Your data).
     them against the explorer results finds the addresses, which is what
     lets the app show and later change adaptations.
 
-21. **Explorer in deeper mode on module 09** (build 40): Scan car >
-    Central electrics > Explore data, pick "Thorough", switch on "Deeper
-    mode", Start (about half an hour, background mode is fine). Send the
-    results file; comparing it with the normal Thorough sweep shows what
-    only the extended session reveals, which is where the comfort settings
-    are expected.
+21. **Comfort settings before and after** (build 42, about 5 minutes,
+    ignition on):
+    a. Scan car > Central electrics > Explore data > "Settings" (deeper
+       mode switches on by itself) > Start. Share the file.
+    b. On the radio (CAR > Setup): turn **lane change flashing** off, set
+       **coming home** to a different time, and turn **lower mirror when
+       reversing** off. Write down what you changed.
+    c. Run "Settings" again and share the second file.
+    d. Change the three settings back on the radio.
+    Each setting sits in a different block (0D00, 0D04, 0D0D), so the two
+    files show exactly which bits they are.
 
 18. **Fuel level:** note the gauge position and the litres needed at the
     next fill-up, then run Explore > Quick on the instrument cluster before

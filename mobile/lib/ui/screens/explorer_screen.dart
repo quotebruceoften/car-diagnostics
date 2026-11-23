@@ -301,11 +301,22 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
                   const SizedBox(height: 14),
                   SizedBox(
                     width: double.infinity,
-                    child: SegmentedButton<ExplorePreset>(
-                      showSelectedIcon: false,
-                      segments: [for (final e in explorePresets) ButtonSegment(value: e, label: Text(e.name))],
-                      selected: {_preset},
-                      onSelectionChanged: _running ? null : (s) => setState(() => _preset = s.first),
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
+                      children: [
+                        for (final e in explorePresets)
+                          ChoiceChip(
+                            label: Text(e.name),
+                            selected: e == _preset,
+                            onSelected: _running || _interrupted != null
+                                ? null
+                                : (_) => setState(() {
+                                    _preset = e;
+                                    if (e.deeper) _deeper = true;
+                                  }),
+                          ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 8),

@@ -35,10 +35,13 @@ class ExploreRange {
 }
 
 class ExplorePreset {
-  const ExplorePreset(this.name, this.description, this.ranges);
+  const ExplorePreset(this.name, this.description, this.ranges, {this.deeper = false});
   final String name;
   final String description;
   final List<ExploreRange> ranges;
+
+  /// Turns deeper mode on when picked (the items only show there).
+  final bool deeper;
 
   int get count => ranges.fold(0, (n, r) => n + r.count);
 }
@@ -54,6 +57,12 @@ const explorePresets = [
   ]),
   ExplorePreset('The rest', 'What Thorough leaves out', [ExploreRange(0x3000, 0xEFFF)]),
   ExplorePreset('Everything', 'Every possible item', [ExploreRange(0x0000, 0xFFFF)]),
+  // Where the Golf 7 central electrics keeps its comfort settings
+  // (docs/golf7-coding/09-central-electrics.md), for before/after checks.
+  ExplorePreset('Settings', 'Where VW modules keep comfort settings, in deeper mode', [
+    ExploreRange(0x04F0, 0x05FF),
+    ExploreRange(0x0D00, 0x0DFF),
+  ], deeper: true),
 ];
 
 class ExploreProgress {

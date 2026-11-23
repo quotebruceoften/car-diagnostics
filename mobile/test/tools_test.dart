@@ -311,6 +311,14 @@ void main() {
       expect(stopped.asked, lessThan(200));
     });
 
+    test('the Settings preset covers the central electrics comfort blocks in deeper mode', () {
+      final settings = explorePresets.firstWhere((p) => p.name == 'Settings');
+      expect(settings.deeper, isTrue);
+      bool covers(int did) => settings.ranges.any((r) => did >= r.first && did <= r.last);
+      expect([0x0D00, 0x0D05, 0x0D21, 0x0510, 0x0572].every(covers), isTrue);
+      expect(settings.count, lessThan(600));
+    });
+
     test('deeper mode asks in the extended session and puts the module back afterwards', () async {
       final v = Vehicle.demoGolf();
       final bcm = v.ecus.firstWhere((e) => e.txId == 0x70E);

@@ -3,7 +3,6 @@ import 'package:cardiag_mobile/core/coding/coder.dart';
 import 'package:cardiag_mobile/core/history.dart';
 import 'package:cardiag_mobile/core/service_log.dart';
 import 'package:cardiag_mobile/core/store.dart';
-import 'package:cardiag_mobile/core/uds/explorer.dart';
 import 'package:cardiag_mobile/main.dart';
 import 'package:cardiag_mobile/platform/background.dart';
 import 'package:cardiag_mobile/platform/notifications.dart';
@@ -220,6 +219,7 @@ void main() {
     await tester.tap(find.text('Start'));
     await tester.pumpAndSettle();
     // Part number, system name, VIN and stored workshop code from the F1xx range, coding from 0600.
+    await tester.scrollUntilVisible(find.text('ANSWERED (6)'), 200);
     expect(find.text('ANSWERED (6)'), findsOneWidget);
     await tester.scrollUntilVisible(find.text('5G1920741B'), 200);
     expect(find.text('5G1920741B'), findsOneWidget);
@@ -244,7 +244,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Explore data'));
     await tester.pumpAndSettle();
-    await tester.tap(find.widgetWithText(SegmentedButton<ExplorePreset>, 'Everything'));
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Everything'));
     await tester.pump();
     await tester.tap(find.text('Start'));
     await tester.pump(const Duration(milliseconds: 100));

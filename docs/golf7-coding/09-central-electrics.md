@@ -57,3 +57,45 @@ adaptations), still read-only.
 The sweep ran in the background with build 39: about 1.3 items/s for the first
 1000 items (on screen and off), then the remaining 43,000 items within an hour
 in the background, so background mode does not slow it down.
+
+## Explorer: Thorough in deeper mode (extended session), 2026-11-23
+
+Results: explorer-09-deeper.txt (VIN removed). 206 items answered against
+122 in the default session. The 85 extra items are all in 04FB-0572,
+0D00-0D21 and 1690. The comfort settings are in **0D00-0D21**: matching the
+byte counts and values against adaptations-09.csv gives these blocks.
+"Sure" means several values line up; nothing here has been written.
+
+| DID | Bytes | VCDS adaptation group | How it matches | |
+|-----|-------|----------------------|----------------|---|
+| 0D05 | 05 00 20 C8 20 00 A2 03 00 | IDE01268 Windshield wiper (9) | 5 washes per wipe; 2000 ms = C8 x10; 320 ms = 20 x10 | sure |
+| 0D06 | 02 0F 06 AA AA 00 00 00 | IDE04927 Window heater (8) | 600 s = 06 x100; 35.0 °C = AA x0.5 - 50 (twice) | sure |
+| 0D1D | 02 00 10 00 50 00 00 B4 78 64 C8 BE A0 | IDE03638 Stationary cornering lamp (13) | 180°, 120°, 40 km/h = 50 x0.5, 95/80 °C = BE/A0 x0.5, 100 °C = C8 x0.5 | sure |
+| 0D1E | 5E 62 5E 62 94 98 94 98 DA DC DA DC 0A 16 | IDE06089 Seat heater levels (14) | 23.5/24.5/37/38/54.5/55 °C = x0.25; 10 s; 1.10 °C = 16 x0.05 | sure |
+| 0D04 | 05 0A 6A 0A 74 | IDE04926 Coming/leaving home (5) | 10 s and 10 s; brightness threshold 116 = 74 | sure |
+| 0D1F | 32 32 32 04 | IDE02957 Ambient lighting (4) | three 50 % profile defaults = 32 | sure |
+| 0D0C | 01 0D C8 01 | IDE08786 Assistance light functions (4) | AFL delay 2000 ms = C8 x10 | likely |
+| 0D21 | 00 00 00 00 | IDE08788 Dynamic turn signal modes (4) | all 17 "not active" | likely |
+| 0D20 | 16 77 35 | IDE02711 Rear wiper (3) | interval pauses 7, 7, 3, 5 s as nibbles | likely |
+| 0D03 | 00 23 64 00 00 00 | IDE06096 Interior lights (6) | search light 100 % = 64 | likely |
+| 0D0D | 65 C0 AC AF 78 03 | IDE08542 Access control 2 (6): comfort closing, mirror fold and dip | window release 600 s = 78 x5 | likely |
+| 0D13 | 00 01 00 00 00 | IDE07470 Park light after-run (5) | 1 min | likely |
+| 0D01 | 4C 3C 01 00 ... (14) | IDE04924 Driving and parking light (14) | turn light on-time 15 min = 3C x15 s | likely |
+| 0D00 | F2 14 19 | IDE04923 Turn signal control (3), incl. comfort flashes = 3 | 10.0 % = 14 x0.5; 0.100 % = 19 x0.004; the flash count is probably in the low bits of F2 | likely |
+| 0D08 | 0A B4 00 05 | IDE05142 Access control (4): auto lock/unlock | the remaining 4-byte block | guess |
+| 0D14-0D19 | 3C 9B, 0B 32, 02 AA, 0A 7C (2 each) | MAS01471/2, MAS05055/6, IDE01550, IDE07356 wiper positions | angles; pairs repeat | guess |
+| 0D02, 0D0E, 0D0F | 00 00, 18 00, 00 00 | IDE06864 Daytime running lamps, IDE02269 Acknowledgement signals, IDE07007 Remote heating (2 each) | DRL and remote all off/zero; 18 = "DELAY" flags | guess |
+| 0D07, 0D10, 0D11 | 40, 30, 01 | IDE04928 Anti-theft, IDE08787 Auxiliary functions, IDE06425 Dynamometer (1 each) | | guess |
+
+Other new items:
+
+- **0550-0572** (35 x 16 bytes): one block per lamp output, Leuchte 0-34
+  (the ENG116936-ENG116970 groups, each 16 bytes long). **0D0B** (560 bytes)
+  is the same 35 blocks in one piece: IDE05145 Light configuration (560).
+- **0510-051E** (15 blocks of 6-22 bytes): the interior light dimming curves
+  (ENG116831-ENG116980, ENG117284, ENG148505), lengths match one for one.
+
+Next: confirm the bit positions by changing a setting from the radio's
+menu (Settings > Lights / Mirrors and wipers / Opening and closing) and
+reading 0D00-0D21 before and after. Only after that could the app offer
+these as named settings.
