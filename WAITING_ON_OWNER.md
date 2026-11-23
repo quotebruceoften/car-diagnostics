@@ -52,17 +52,15 @@ To send results: Overview > Tools > Send to developer (or Settings > Your data).
     them against the explorer results finds the addresses, which is what
     lets the app show and later change adaptations.
 
-21. **Comfort settings before and after** (build 42, about 5 minutes,
-    ignition on):
-    a. Scan car > Central electrics > Explore data > "Settings" (deeper
-       mode switches on by itself) > Start. Share the file.
-    b. On the radio (CAR > Setup): turn **lane change flashing** off, set
-       **coming home** to a different time, and turn **lower mirror when
-       reversing** off. Write down what you changed.
-    c. Run "Settings" again and share the second file.
-    d. Change the three settings back on the radio.
-    Each setting sits in a different block (0D00, 0D04, 0D0D), so the two
-    files show exactly which bits they are.
+21. **One adaptation change in VCDS, before and after** (about 10 minutes):
+    a. App: Scan car > Central electrics > Explore data > "Settings" >
+       Start. Share the file.
+    b. VCDS: 09 > Adaptation > "Turn signal control-Komfortblinken
+       Blinkzyklen", change 3 to 4, Save.
+    c. App: run "Settings" again and share the file.
+    d. VCDS: set it back to 3.
+    The radio menu test changed nothing in these blocks (2026-11-23), so a
+    VCDS adaptation change is needed to confirm how a value is stored.
 
 18. **Fuel level:** note the gauge position and the litres needed at the
     next fill-up, then run Explore > Quick on the instrument cluster before

@@ -99,3 +99,15 @@ Next: confirm the bit positions by changing a setting from the radio's
 menu (Settings > Lights / Mirrors and wipers / Opening and closing) and
 reading 0D00-0D21 before and after. Only after that could the app offer
 these as named settings.
+
+### Radio menu test, 2026-11-23: no change
+
+The owner changed three settings on the radio (CAR > Setup: lane change
+flashing (or lane assist), coming home time, lower mirror when reversing)
+between two "Settings" sweeps. Both sweeps are byte for byte identical, and
+equal to the morning's Thorough deeper sweep. So the radio menu does not
+store its choices in 04F0-05FF or 0D00-0DFF. With personalization profiles
+coded on (long coding byte 8 bit 2), the menu choices are most likely kept
+per key profile elsewhere, and the 0D blocks hold the workshop adaptation
+values (VCDS's "Werkseinstellung"/defaults and hidden options). Confirming
+an encoding therefore needs a change made with VCDS adaptation instead.
