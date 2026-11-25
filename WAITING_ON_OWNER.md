@@ -4,85 +4,80 @@ Things the app's development needs from the car's owner (2013 Golf 7, 1.4 TSI,
 Vgate iCar Pro BLE). Ask "what do you need from me?" to get this list. Remove
 an item once it is done.
 
-Last updated: 2026-11-21 (app build 39). Coding from the app is verified on the cluster.
+Last updated: 2026-11-25 (app build 43). Coding from the app is verified on the cluster.
 
 To send results: Overview > Tools > Send to developer (or Settings > Your data).
 
-## To answer or decide
+## The one VCDS session
 
-1. **Module 14 (adaptive suspension) search: yes or no?**
-   The app can't find this module; VCDS can. The fix is a read-only search
-   that asks each possible address for its part number and matches the one
-   VCDS shows (5Q0 907 376).
+Everything the app still needs from VCDS, in one sitting, so the app can
+stand alone afterwards. About 1.5-2 hours with the ignition on, engine off.
+Connect a battery charger if you have one. The car has one diagnostic port,
+so swap between the VCDS cable and the Vgate where a step says so. Save
+every VCDS file (they go to C:\Ross-Tech\VCDS\Logs or \Scans) and send them
+all at the end.
 
-2. **Which coding settings do you want in plain words?**
-   For example needle sweep, auto-lock, comfort indicator flashes, mirror
-   folding. Needed to know which module and bytes to look at in step 6.
+**A. Auto-Scan (10 min, VCDS).** Auto-Scan > all modules > Save.
+   - Names every stored fault, including engine fault 4629 that the app
+     shows only as a number.
+   - Shows whether module 14 (adaptive suspension) exists and at which
+     address (the app can't find it).
+   - Gives the gateway's installation list and every module's coding.
+   - Afterwards: in the app, Import VCDS scan, so the names are learned.
+
+**B. Long Coding Helper, remaining modules (30 min, VCDS).** For each
+   module below: open it > Coding > Long Coding Helper, and screenshot every
+   byte (as you did for 09, 17 and 5F). These become the plain-word
+   settings in the app.
+   - 08 Climate, 13 Adaptive cruise, 16 Steering wheel, 19 Gateway,
+     42 Driver door, 52 Passenger door, 55 Headlight range, A5 Front camera.
+   - Skip 01 Engine, 02 Gearbox, 03 ABS, 15 Airbags and 44 Steering assist:
+     the app will not offer coding changes on those for safety.
+
+**C. Adaptation lists, remaining modules (15 min, VCDS).** For each module:
+   Adaptation > Save (the same CSV export you sent for 09 and 17).
+   - 5F Infotainment, 08, 13, 16, 19, 42, 52, 55, A5.
+
+**D. The adaptation changes you actually want (20 min, VCDS + app).**
+   Each change both gives you the feature and shows the app how it is
+   stored. The "before" sweep already exists (2026-11-23).
+   1. VCDS: 09 > Adaptation > "Turn signal control-Komfortblinken
+      Blinkzyklen" 3 > 4 (or another number you prefer). Save.
+   2. **Write down whether VCDS asked for a login / security access code**
+      before saving, and which code it used. This decides whether the app
+      can make adaptation changes on its own.
+   3. Swap to the Vgate. App: Scan car > Central electrics > Explore data >
+      "Settings" > Start. Share the file.
+   4. Repeat 1-3 for up to five other 09 settings you want, one at a time,
+      with an app "Settings" sweep after each. Write down each change
+      (name, old value, new value). Ideas from your car's list: horn chirp
+      when locking ("Akustische Rueckmeldung verriegeln"), comfort opening
+      with the key ("Access control 2-Comfort opening"), daytime running
+      lights options, coming home lights, rear wiper when reversing.
+   Change values back afterwards only if you don't want them.
+
+**E. Fuel level (5 min, VCDS + app).**
+   1. VCDS: 17 Instruments > Advanced Measuring Values > tick the fuel level
+      values (litres and sensor). Screenshot them.
+   2. Swap to the Vgate straight away. App: Live > note "Fuel level"; then
+      Scan car > Instrument cluster > Explore data > "Quick" > Start.
+      Share the file.
+   Matching the litres against the sweep finds the real fuel value, so the
+   fill-up test is no longer needed.
+
+**Not needed from VCDS any more:** coding writes (the app does these), the
+service reset (the app does this; still to be tried after your next
+service), explorer sweeps, fault reading and clearing.
+
+**What stays outside the app afterwards:** a fault the app has never seen
+shows as a VW number until it is named (from a later VCDS scan or public
+sources), and settings that need a login code if step D2 says so.
 
 ## To do at the car
 
-3. **Fuel level after a full tank.**
-   Fill the tank completely, open Live > Fuel level and report the number.
-   About 50 means the engine reports litres; about 100 means percent. On
-   2026-11-13 the app showed 21.6 while the gauge was a little under half.
-
-4. **Clear the twelve stored faults, then rescan.**
-   Cruise control 287-296, instrument cluster 16777018 and front camera
-   327680 are stored, not active (camera overheated on 2026-11-08). Clear
-   them (VCDS, or the module's clear-faults option in the app, which is not
-   yet tested on a real car), rescan, and report whether any come back.
-
-5. **Install build 21 and send one scan details file.**
-   Confirms that all 16 faults now show their names on the phone.
-
-13. **Module explorer results files** (build 23). In Scan car, open a module,
-    tap Explore data, run "Thorough" and share the results file. Most useful
-    first: 17 Instrument cluster (mileage, fuel level), 19 Gateway (battery
-    monitor), 02 Transmission (clutch temperatures), 5F Infotainment
-    (software version). Read-only.
-
-14. **First use of build 23 on the car:** does "Clear all faults" clear the
-    twelve stored faults, does the boost reading look right against a known
-    figure, is an estimated power shown (the 1.4 TSI may not report air
-    flow), and are alerts spoken.
-
-15. **Explorer results for modules 09 and 17, "Thorough"** (most wanted).
-    The VCDS adaptation lists (docs/golf7-coding/adaptations-*.csv) give
-    each setting's name and current value but not where it lives. Matching
-    them against the explorer results finds the addresses, which is what
-    lets the app show and later change adaptations.
-
-21. **One adaptation change in VCDS, before and after** (about 10 minutes):
-    a. App: Scan car > Central electrics > Explore data > "Settings" >
-       Start. Share the file.
-    b. VCDS: 09 > Adaptation > "Turn signal control-Komfortblinken
-       Blinkzyklen", change 3 to 4, Save.
-    c. App: run "Settings" again and share the file.
-    d. VCDS: set it back to 3.
-    The radio menu test changed nothing in these blocks (2026-11-23), so a
-    VCDS adaptation change is needed to confirm how a value is stored.
-
-18. **Fuel level:** note the gauge position and the litres needed at the
-    next fill-up, then run Explore > Quick on the instrument cluster before
-    and after filling. The value that changes is the fuel level.
-
-19. **Check the mileage in the service log** after connecting with build
-    28: it should match the dashboard without typing it in.
-
-20. **First service indicator reset** (build 34, after your next service):
-    Service log > "Reset service indicator". Report the message, and
-    whether the dashboard shows the new interval after ignition off/on.
-
-## To send from VCDS
-
-6. **Long Coding Helper screenshots.**
-   For each setting chosen in step 2: open the module in VCDS, Coding >
-   Long Coding Helper, and screenshot the bytes with those settings. These
-   become the named settings for this exact module version. Nothing is
-   written to the car from guessed positions.
-
-7. **A new VCDS auto-scan whenever a fault shows only as a number.**
-   Importing it teaches the app the name.
+1. **First service indicator reset** (after your next service): Service log >
+   "Reset service indicator". Report the message, and whether the dashboard
+   shows the new interval after ignition off/on.
 
 ## To report if it happens
 
